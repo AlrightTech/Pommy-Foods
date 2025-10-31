@@ -59,15 +59,19 @@ A comprehensive Order Management System (OMS) built with Next.js 14, TypeScript,
    ```
 
 2. **Set up environment variables:**
-   Create a `.env.local` file in the root directory:
+   Create a `.env.local` file in the root directory (see `ENV_VARIABLES.md` for detailed instructions):
+   
+   **For Supabase:**
    ```env
-   DATABASE_URL="postgresql://user:password@localhost:5432/pommy_foods?schema=public"
-   JWT_SECRET="your-super-secret-jwt-key-change-in-production"
-   NEXTAUTH_SECRET="your-nextauth-secret-change-in-production"
+   DATABASE_URL="postgresql://postgres:[YOUR-PASSWORD]@db.[PROJECT-REF].supabase.co:5432/postgres"
+   JWT_SECRET="your-super-secret-jwt-key-minimum-32-characters-change-this"
+   NEXTAUTH_SECRET="your-nextauth-secret-minimum-32-characters-change-this"
    NEXTAUTH_URL="http://localhost:3000"
    NODE_ENV="development"
    UPLOAD_MAX_SIZE="10485760"
    ```
+   
+   Copy `.env.local.example` as a template or see `ENV_VARIABLES.md` for complete setup guide.
 
 3. **Set up the database:**
    ```bash
