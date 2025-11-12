@@ -1,52 +1,55 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { Search } from "lucide-react";
+import { Search, Download, Eye } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
 
-interface Payment {
+interface Invoice {
   id: string;
-  amount: number;
-  payment_method: string;
+  invoice_number: string;
+  total_amount: number;
   payment_status: string;
-  payment_date: string | null;
+  due_date: string | null;
+  created_at: string;
+  stores: {
+    id: string;
+    name: string;
+  } | null;
   orders: {
     id: string;
     order_number: string;
-    stores: {
-      id: string;
-      name: string;
-    } | null;
   } | null;
 }
 
-export default function PaymentsPage() {
-  const [payments, setPayments] = useState<Payment[]>([]);
+export default function InvoicesPage() {
+  const router = useRouter();
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchPayments();
+    fetchInvoices();
   }, [statusFilter]);
 
-  const fetchPayments = async () => {
+  const fetchInvoices = async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
       if (statusFilter) params.append('status', statusFilter);
 
-      const response = await fetch(`/api/payments?${params.toString()}`);
+      const response = await fetch(`/api/invoices?${params.toString()}`);
       if (!response.ok) {
-        throw new Error('Failed to fetch payments');
+        throw new Error('Failed to fetch invoices');
       }
 
       const data = await response.json();
-      setPayments(data.payments || []);
+      setInvoices(data.invoices || []);
     } catch (error) {
-      console.error('Error fetching payments:', error);
+      console.error('Error fetching invoices:', error);
     } finally {
       setLoading(false);
     }
@@ -75,13 +78,15 @@ export default function PaymentsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-3xl md:text-4xl text-neutral-900 dark:text-neutral-100">
-          Payments
-        </h1>
-        <p className="text-neutral-600 dark:text-neutral-400 mt-2">
-          Manage payments and invoices
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="font-display text-3xl md:text-4xl text-neutral-900 dark:text-neutral-100">
+            Invoices
+          </h1>
+          <p className="text-neutral-600 dark:text-neutral-400 mt-2">
+            View and manage all invoices
+          </p>
+        </div>
       </div>
 
       {/* Filters */}
@@ -100,15 +105,15 @@ export default function PaymentsPage() {
         </div>
       </Card>
 
-      {/* Payments Table */}
+      {/* Invoices Table */}
       <Card>
         {loading ? (
           <div className="text-center py-8 text-neutral-600 dark:text-neutral-400">
-            Loading payments...
+            Loading invoices...
           </div>
-        ) : payments.length === 0 ? (
+        ) : invoices.length === 0 ? (
           <div className="text-center py-8 text-neutral-600 dark:text-neutral-400">
-            No payments found
+            No invoices found
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -116,50 +121,61 @@ export default function PaymentsPage() {
               <thead>
                 <tr className="bg-neutral-100 dark:bg-neutral-800 border-b-2 border-neutral-200 dark:border-neutral-700">
                   <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-                    Order
+                    Invoice #
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                     Store
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                    Order
                   </th>
                   <th className="px-6 py-4 text-right text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                     Amount
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-                    Method
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                     Status
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-                    Date
+                    Due Date
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                    Actions
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {payments.map((payment) => (
+                {invoices.map((invoice) => (
                   <tr
-                    key={payment.id}
+                    key={invoice.id}
                     className="border-b border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
                   >
                     <td className="px-6 py-4 text-sm font-mono text-primary-600 dark:text-primary-400">
-                      {payment.orders?.order_number || 'N/A'}
+                      {invoice.invoice_number}
                     </td>
                     <td className="px-6 py-4 text-sm text-neutral-700 dark:text-neutral-300">
-                      {payment.orders?.stores?.name || 'Unknown'}
+                      {invoice.stores?.name || 'Unknown'}
+                    </td>
+                    <td className="px-6 py-4 text-sm font-mono text-neutral-600 dark:text-neutral-400">
+                      {invoice.orders?.order_number || 'N/A'}
                     </td>
                     <td className="px-6 py-4 text-sm font-semibold text-neutral-900 dark:text-neutral-100 text-right">
-                      {formatCurrency(payment.amount)}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-neutral-700 dark:text-neutral-300 capitalize">
-                      {payment.payment_method.replace('_', ' ')}
+                      {formatCurrency(invoice.total_amount)}
                     </td>
                     <td className="px-6 py-4">
-                      {getStatusBadge(payment.payment_status)}
+                      {getStatusBadge(invoice.payment_status)}
                     </td>
                     <td className="px-6 py-4 text-sm text-neutral-600 dark:text-neutral-400">
-                      {payment.payment_date
-                        ? format(new Date(payment.payment_date), 'MMM dd, yyyy')
+                      {invoice.due_date
+                        ? format(new Date(invoice.due_date), 'MMM dd, yyyy')
                         : 'N/A'}
+                    </td>
+                    <td className="px-6 py-4">
+                      <Link
+                        href={`/admin/invoices/${invoice.id}`}
+                        className="text-primary-600 hover:text-primary-700"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Link>
                     </td>
                   </tr>
                 ))}
@@ -168,14 +184,6 @@ export default function PaymentsPage() {
           </div>
         )}
       </Card>
-
-      <div className="flex justify-end">
-        <Link href="/admin/invoices">
-          <button className="text-primary-600 hover:text-primary-700 font-semibold">
-            View All Invoices →
-          </button>
-        </Link>
-      </div>
     </div>
   );
 }

@@ -1,10 +1,73 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Plus } from "lucide-react";
+import { Badge } from "@/components/ui/Badge";
+import { Plus, Search, Edit, Eye } from "lucide-react";
+
+interface Store {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  city: string | null;
+  state: string | null;
+  credit_limit: number;
+  current_balance: number;
+  is_active: boolean;
+}
 
 export default function StoresPage() {
+  const router = useRouter();
+  const [stores, setStores] = useState<Store[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({
+    total: 0,
+    totalPages: 1,
+    page: 1,
+    limit: 20,
+  });
+
+  useEffect(() => {
+    fetchStores();
+  }, [page, searchQuery]);
+
+  const fetchStores = async () => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams();
+      if (searchQuery) params.append('search', searchQuery);
+      params.append('page', page.toString());
+      params.append('limit', '20');
+
+      const response = await fetch(`/api/stores?${params.toString()}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch stores');
+      }
+
+      const data = await response.json();
+      setStores(data.stores || []);
+      setPagination(data.pagination || pagination);
+    } catch (error) {
+      console.error('Error fetching stores:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+    }).format(amount);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -16,16 +79,145 @@ export default function StoresPage() {
             Manage convenience stores and restaurants
           </p>
         </div>
-        <Button>
-          <Plus className="w-4 h-4 mr-2" />
-          Add Store
-        </Button>
+        <Link href="/admin/stores/new">
+          <Button>
+            <Plus className="w-4 h-4 mr-2" />
+            Add Store
+          </Button>
+        </Link>
       </div>
 
+      {/* Search */}
       <Card>
-        <p className="text-neutral-600 dark:text-neutral-400">
-          Stores management coming soon...
-        </p>
+        <div className="flex items-center space-x-2 bg-neutral-100 dark:bg-neutral-800 rounded-lg px-4 py-2">
+          <Search className="w-4 h-4 text-neutral-500" />
+          <input
+            type="text"
+            placeholder="Search stores by name or email..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setPage(1);
+            }}
+            className="flex-1 bg-transparent border-none outline-none text-sm text-neutral-900 dark:text-neutral-100 placeholder-neutral-500"
+          />
+        </div>
+      </Card>
+
+      {/* Stores Table */}
+      <Card>
+        {loading ? (
+          <div className="text-center py-8 text-neutral-600 dark:text-neutral-400">
+            Loading stores...
+          </div>
+        ) : stores.length === 0 ? (
+          <div className="text-center py-8 text-neutral-600 dark:text-neutral-400">
+            No stores found
+          </div>
+        ) : (
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-neutral-100 dark:bg-neutral-800 border-b-2 border-neutral-200 dark:border-neutral-700">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                      Store Name
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                      Email
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                      Location
+                    </th>
+                    <th className="px-6 py-4 text-right text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                      Credit Limit
+                    </th>
+                    <th className="px-6 py-4 text-right text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                      Balance
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                      Status
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stores.map((store) => (
+                    <tr
+                      key={store.id}
+                      className="border-b border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
+                    >
+                      <td className="px-6 py-4 text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+                        {store.name}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-neutral-700 dark:text-neutral-300">
+                        {store.email}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-neutral-700 dark:text-neutral-300">
+                        {store.city && store.state ? `${store.city}, ${store.state}` : 'N/A'}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-neutral-900 dark:text-neutral-100 text-right">
+                        {formatCurrency(store.credit_limit)}
+                      </td>
+                      <td className="px-6 py-4 text-sm font-semibold text-neutral-900 dark:text-neutral-100 text-right">
+                        {formatCurrency(store.current_balance)}
+                      </td>
+                      <td className="px-6 py-4">
+                        {store.is_active ? (
+                          <Badge variant="success">Active</Badge>
+                        ) : (
+                          <Badge variant="error">Inactive</Badge>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center space-x-2">
+                          <Link
+                            href={`/admin/stores/${store.id}`}
+                            className="text-primary-600 hover:text-primary-700"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Link>
+                          <Link
+                            href={`/admin/stores/${store.id}/edit`}
+                            className="text-primary-600 hover:text-primary-700"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Link>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination */}
+            <div className="flex items-center justify-between mt-6 pt-6 border-t border-neutral-200 dark:border-neutral-800">
+              <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                Showing {(page - 1) * pagination.limit + 1}-
+                {Math.min(page * pagination.limit, pagination.total)} of {pagination.total} stores
+              </p>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="px-4 py-2 border-2 border-neutral-300 dark:border-neutral-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-800 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
+                  disabled={page >= pagination.totalPages}
+                  className="px-4 py-2 border-2 border-neutral-300 dark:border-neutral-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-800 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </Card>
     </div>
   );
