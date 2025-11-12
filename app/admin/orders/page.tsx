@@ -301,3 +301,15 @@ function OrdersPageContent() {
   );
 }
 
+export default function OrdersPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-neutral-600">Loading...</div>
+      </div>
+    }>
+      <OrdersPageContent />
+    </Suspense>
+  );
+}
+
