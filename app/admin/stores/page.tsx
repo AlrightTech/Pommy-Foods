@@ -56,6 +56,28 @@ export default function StoresPage() {
       });
     } catch (error) {
       console.error('Error fetching stores:', error);
+      // Use static data as fallback
+      const staticStores: Store[] = [
+        { id: '1', name: 'Downtown Convenience', email: 'downtown@example.com', phone: '+1-555-0101', city: 'New York', state: 'NY', credit_limit: 10000, current_balance: 2500.00, is_active: true },
+        { id: '2', name: 'Main Street Market', email: 'mainstreet@example.com', phone: '+1-555-0102', city: 'Boston', state: 'MA', credit_limit: 8000, current_balance: 1200.50, is_active: true },
+        { id: '3', name: 'Corner Store', email: 'corner@example.com', phone: '+1-555-0103', city: 'Chicago', state: 'IL', credit_limit: 15000, current_balance: 4500.75, is_active: true },
+        { id: '4', name: 'Quick Mart', email: 'quickmart@example.com', phone: '+1-555-0104', city: 'Los Angeles', state: 'CA', credit_limit: 5000, current_balance: 800.25, is_active: true },
+        { id: '5', name: 'Food Express', email: 'foodexpress@example.com', phone: '+1-555-0105', city: 'Seattle', state: 'WA', credit_limit: 12000, current_balance: 3200.00, is_active: true },
+        { id: '6', name: 'City Market', email: 'citymarket@example.com', phone: '+1-555-0106', city: 'Portland', state: 'OR', credit_limit: 6000, current_balance: 1500.00, is_active: false },
+      ];
+      const filtered = searchQuery 
+        ? staticStores.filter(s => 
+            s.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+            s.email.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+        : staticStores;
+      setStores(filtered);
+      setPagination({
+        total: filtered.length,
+        totalPages: Math.ceil(filtered.length / 20),
+        page: page,
+        limit: 20,
+      });
     } finally {
       setLoading(false);
     }

@@ -53,8 +53,8 @@ export const StatusChart: React.FC<StatusChartProps> = ({ data }) => {
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
           </Pie>
-          <Tooltip />
-          <Legend />
+          <Tooltip contentStyle={{ fontFamily: 'Poppins, sans-serif' }} />
+          <Legend wrapperStyle={{ fontFamily: 'Poppins, sans-serif' }} />
         </PieChart>
       </ResponsiveContainer>
     </Card>

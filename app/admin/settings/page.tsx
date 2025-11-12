@@ -46,25 +46,25 @@ export default function SettingsPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-neutral-700 mb-2">
+                <label className="block text-sm font-body font-semibold text-neutral-700 mb-2">
                   Company Name
                 </label>
                 <input
                   type="text"
                   value={settings.companyName}
                   onChange={(e) => setSettings({ ...settings, companyName: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
+                  className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900 font-body"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-neutral-700 mb-2">
+                <label className="block text-sm font-body font-semibold text-neutral-700 mb-2">
                   Email
                 </label>
                 <input
                   type="email"
                   value={settings.email}
                   onChange={(e) => setSettings({ ...settings, email: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
+                  className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900 font-body"
                 />
               </div>
             </div>
@@ -76,25 +76,25 @@ export default function SettingsPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-semibold text-neutral-700 mb-2">
+                <label className="block text-sm font-body font-semibold text-neutral-700 mb-2">
                   Default Credit Limit
                 </label>
                 <input
                   type="number"
                   value={settings.defaultCreditLimit}
                   onChange={(e) => setSettings({ ...settings, defaultCreditLimit: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
+                  className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900 font-body"
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-neutral-700 mb-2">
+                <label className="block text-sm font-body font-semibold text-neutral-700 mb-2">
                   Low Stock Threshold
                 </label>
                 <input
                   type="number"
                   value={settings.lowStockThreshold}
                   onChange={(e) => setSettings({ ...settings, lowStockThreshold: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
+                  className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900 font-body"
                 />
               </div>
               <div className="flex items-center space-x-3">
@@ -105,7 +105,7 @@ export default function SettingsPage() {
                   onChange={(e) => setSettings({ ...settings, autoApproveOrders: e.target.checked })}
                   className="w-5 h-5 text-primary-500 border-2 border-neutral-300 rounded focus:ring-2 focus:ring-primary-500"
                 />
-                <label htmlFor="autoApprove" className="text-sm font-semibold text-neutral-700">
+                <label htmlFor="autoApprove" className="text-sm font-body font-semibold text-neutral-700">
                   Auto-approve orders
                 </label>
               </div>

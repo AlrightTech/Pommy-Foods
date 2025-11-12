@@ -1,5 +1,6 @@
 "use client";
 
+import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Card } from '@/components/ui/Card';
 
@@ -29,12 +30,13 @@ export const SalesChart: React.FC<SalesChartProps> = ({ data }) => {
             contentStyle={{ 
               backgroundColor: '#fff', 
               border: '1px solid #e5e5e5',
-              borderRadius: '8px'
+              borderRadius: '8px',
+              fontFamily: 'Poppins, sans-serif'
             }}
             formatter={(value: number) => `$${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
             labelFormatter={(label: string) => new Date(label).toLocaleDateString()}
           />
-          <Legend />
+          <Legend wrapperStyle={{ fontFamily: 'Poppins, sans-serif' }} />
           <Line 
             type="monotone" 
             dataKey="amount" 
