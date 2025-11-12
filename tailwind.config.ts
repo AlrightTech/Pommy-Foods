@@ -95,20 +95,6 @@ const config: Config = {
           light: "#FFFFFF",
           surface: "#FAF4EC",
         },
-        // Electric Brown for borders
-        "electric-brown": {
-          DEFAULT: "#8B4513",
-          50: "#F5E6D3",
-          100: "#E8D0B0",
-          200: "#D4A574",
-          300: "#C0854F",
-          400: "#A66B3A",
-          500: "#8B4513",
-          600: "#6B3410",
-          700: "#4A240B",
-          800: "#2A1506",
-          900: "#0A0502",
-        },
       },
       fontFamily: {
         display: ["'Press Start 2P'", "cursive"],
@@ -119,8 +105,6 @@ const config: Config = {
         "soft": "0 2px 8px rgba(210, 172, 106, 0.1)",
         "soft-lg": "0 4px 16px rgba(210, 172, 106, 0.15)",
         "card": "0 2px 12px rgba(0, 0, 0, 0.08)",
-        "electric-glow": "0 0 10px rgba(139, 69, 19, 0.5), 0 0 20px rgba(139, 69, 19, 0.3), 0 0 30px rgba(139, 69, 19, 0.2)",
-        "electric-glow-lg": "0 0 15px rgba(139, 69, 19, 0.6), 0 0 30px rgba(139, 69, 19, 0.4), 0 0 45px rgba(139, 69, 19, 0.3)",
       },
       keyframes: {
         "pulse-slow": {
