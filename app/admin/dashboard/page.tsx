@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { StatCard } from "@/components/admin/StatCard";
 import { Card } from "@/components/ui/Card";
+import { Loader } from "@/components/ui/Loader";
 import { SalesChart } from "@/components/admin/SalesChart";
 import { StatusChart } from "@/components/admin/StatusChart";
 import { 
@@ -125,11 +126,7 @@ export default function DashboardPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-neutral-600">Loading dashboard...</div>
-      </div>
-    );
+    return <Loader text="Loading dashboard..." fullScreen />;
   }
 
   if (error) {
@@ -148,23 +145,27 @@ export default function DashboardPage() {
   const currentTime = format(new Date(), 'h:mm a');
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-8">
       {/* Enhanced Page Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-1 h-8 bg-gradient-to-b from-primary-500 to-primary-600 rounded-full"></div>
-            <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
-              Dashboard
-            </h1>
+        <div className="flex-1">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-1.5 h-10 bg-gradient-to-b from-primary-500 to-primary-600 rounded-full shadow-sm"></div>
+            <div>
+              <h1 className="font-display text-3xl md:text-4xl text-neutral-900 mb-1">
+                Dashboard
+              </h1>
+              <p className="text-neutral-600 font-body text-sm">
+                Welcome back! Here&apos;s what&apos;s happening with your orders today.
+              </p>
+            </div>
           </div>
-          <p className="text-neutral-600 mt-2 font-body">
-            Welcome back! Here&apos;s what&apos;s happening with your orders today.
-          </p>
         </div>
-        <Card className="p-4 bg-gradient-to-br from-primary-50 to-primary-100/50 border-primary-200">
+        <Card className="p-4 bg-gradient-to-br from-primary-50 to-primary-100/50 border-primary-200 shadow-sm">
           <div className="flex items-center gap-3">
-            <Calendar className="w-5 h-5 text-primary-600" />
+            <div className="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center">
+              <Calendar className="w-5 h-5 text-primary-600" />
+            </div>
             <div>
               <p className="text-sm font-body font-semibold text-neutral-700">{currentDate}</p>
               <p className="text-xs font-body text-neutral-500">{currentTime}</p>
@@ -211,19 +212,51 @@ export default function DashboardPage() {
 
       {/* Charts Section with Better Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 mb-2">
-            <Activity className="w-5 h-5 text-primary-600" />
-            <h3 className="font-display text-lg text-neutral-900">Sales Performance</h3>
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-8 h-8 rounded-lg bg-primary-100 flex items-center justify-center">
+              <Activity className="w-4 h-4 text-primary-600" />
+            </div>
+            <div>
+              <h3 className="font-display text-lg text-neutral-900">Sales Performance</h3>
+              <p className="text-xs font-body text-neutral-500">Last 30 days revenue trend</p>
+            </div>
           </div>
-          <SalesChart data={data.salesTrend} />
+          {data.salesTrend && data.salesTrend.length > 0 ? (
+            <SalesChart data={data.salesTrend} />
+          ) : (
+            <Card>
+              <div className="flex items-center justify-center h-[300px]">
+                <div className="text-center">
+                  <Activity className="w-12 h-12 mx-auto mb-3 text-neutral-300" />
+                  <p className="text-sm font-body text-neutral-500">No sales data available</p>
+                </div>
+              </div>
+            </Card>
+          )}
         </div>
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 mb-2">
-            <TrendingUp className="w-5 h-5 text-primary-600" />
-            <h3 className="font-display text-lg text-neutral-900">Order Status</h3>
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-8 h-8 rounded-lg bg-primary-100 flex items-center justify-center">
+              <TrendingUp className="w-4 h-4 text-primary-600" />
+            </div>
+            <div>
+              <h3 className="font-display text-lg text-neutral-900">Order Status</h3>
+              <p className="text-xs font-body text-neutral-500">Distribution by status</p>
+            </div>
           </div>
-          <StatusChart data={data.statusDistribution} />
+          {data.statusDistribution && Object.keys(data.statusDistribution).length > 0 ? (
+            <StatusChart data={data.statusDistribution} />
+          ) : (
+            <Card>
+              <div className="flex items-center justify-center h-[300px]">
+                <div className="text-center">
+                  <TrendingUp className="w-12 h-12 mx-auto mb-3 text-neutral-300" />
+                  <p className="text-sm font-body text-neutral-500">No order data available</p>
+                </div>
+              </div>
+            </Card>
+          )}
         </div>
       </div>
 
@@ -256,43 +289,46 @@ export default function DashboardPage() {
             </div>
             
             <div className="overflow-x-auto">
-              {data.recentOrders.length === 0 ? (
-                <div className="text-center py-12 text-neutral-600">
-                  <ShoppingCart className="w-12 h-12 mx-auto mb-3 text-neutral-300" />
-                  <p className="font-body">No orders yet</p>
+              {!data.recentOrders || data.recentOrders.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-neutral-100 flex items-center justify-center">
+                    <ShoppingCart className="w-8 h-8 text-neutral-300" />
+                  </div>
+                  <p className="text-sm font-body font-semibold text-neutral-700 mb-1">No orders yet</p>
+                  <p className="text-xs font-body text-neutral-500">Orders will appear here once they are created</p>
                 </div>
               ) : (
-                <div className="space-y-2">
-                  {data.recentOrders.map((order, index) => (
+                <div className="space-y-3">
+                  {data.recentOrders.slice(0, 5).map((order, index) => (
                     <div
                       key={order.id}
-                      className="flex items-center justify-between p-4 rounded-lg hover:bg-neutral-50 transition-all duration-200 cursor-pointer border border-transparent hover:border-primary-200 group"
+                      className="flex items-center justify-between p-4 rounded-lg hover:bg-gradient-to-r hover:from-primary-50/50 hover:to-transparent transition-all duration-200 cursor-pointer border border-neutral-200 hover:border-primary-300 hover:shadow-sm group"
                       onClick={() => router.push(`/admin/orders/${order.id}`)}
                     >
-                      <div className="flex items-center gap-4 flex-1">
-                        <div className="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center group-hover:bg-primary-100 transition-colors">
-                          <span className="text-xs font-display text-primary-600">#{index + 1}</span>
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center group-hover:from-primary-200 group-hover:to-primary-300 transition-all shadow-sm">
+                          <span className="text-xs font-display text-primary-700 font-bold">#{index + 1}</span>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <p className="text-sm font-mono font-semibold text-primary-600 group-hover:text-primary-700">
+                          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                            <p className="text-sm font-mono font-bold text-primary-600 group-hover:text-primary-700">
                               {order.orderNumber}
                             </p>
                             {getStatusBadge(order.status)}
                           </div>
-                          <p className="text-sm font-body text-neutral-600 truncate">
+                          <p className="text-sm font-body font-medium text-neutral-700 truncate mb-0.5">
                             {order.store}
                           </p>
-                          <p className="text-xs font-body text-neutral-500 mt-0.5">
+                          <p className="text-xs font-body text-neutral-500">
                             {format(new Date(order.date), 'MMM dd, yyyy • h:mm a')}
                           </p>
                         </div>
                       </div>
-                      <div className="text-right ml-4">
-                        <p className="text-sm font-semibold font-body text-neutral-900">
+                      <div className="text-right ml-4 flex-shrink-0">
+                        <p className="text-base font-bold font-body text-neutral-900 mb-1">
                           {formatCurrency(order.amount)}
                         </p>
-                        <ArrowRight className="w-4 h-4 text-neutral-400 group-hover:text-primary-600 group-hover:translate-x-1 transition-all mt-1 ml-auto" />
+                        <ArrowRight className="w-4 h-4 text-neutral-400 group-hover:text-primary-600 group-hover:translate-x-1 transition-all ml-auto" />
                       </div>
                     </div>
                   ))}
