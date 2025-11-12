@@ -28,7 +28,7 @@ export default function DashboardPage() {
           Dashboard
         </h1>
         <p className="text-neutral-600 dark:text-neutral-400 mt-2">
-          Welcome back! Here's what's happening with your orders today.
+          Welcome back! Here&apos;s what&apos;s happening with your orders today.
         </p>
       </div>
 
