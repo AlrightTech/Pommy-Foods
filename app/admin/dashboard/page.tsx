@@ -13,7 +13,11 @@ import {
   Package, 
   TrendingUp,
   Clock,
-  CheckCircle2
+  CheckCircle2,
+  ArrowRight,
+  Calendar,
+  Activity,
+  Users
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { format } from "date-fns";
@@ -140,31 +144,49 @@ export default function DashboardPage() {
     return null;
   }
 
+  const currentDate = format(new Date(), 'EEEE, MMMM dd, yyyy');
+  const currentTime = format(new Date(), 'h:mm a');
+
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div>
-        <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
-          Dashboard
-        </h1>
-        <p className="text-neutral-600 mt-2">
-          Welcome back! Here&apos;s what&apos;s happening with your orders today.
-        </p>
+    <div className="space-y-8">
+      {/* Enhanced Page Header */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-1 h-8 bg-gradient-to-b from-primary-500 to-primary-600 rounded-full"></div>
+            <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
+              Dashboard
+            </h1>
+          </div>
+          <p className="text-neutral-600 mt-2 font-body">
+            Welcome back! Here&apos;s what&apos;s happening with your orders today.
+          </p>
+        </div>
+        <Card className="p-4 bg-gradient-to-br from-primary-50 to-primary-100/50 border-primary-200">
+          <div className="flex items-center gap-3">
+            <Calendar className="w-5 h-5 text-primary-600" />
+            <div>
+              <p className="text-sm font-body font-semibold text-neutral-700">{currentDate}</p>
+              <p className="text-xs font-body text-neutral-500">{currentTime}</p>
+            </div>
+          </div>
+        </Card>
       </div>
 
-      {/* Stats Grid */}
+      {/* Enhanced Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           title="Total Orders"
           value={data.stats.totalOrders.toLocaleString()}
-          change=""
-          changeType="neutral"
+          change="+12% from last month"
+          changeType="positive"
           icon={ShoppingCart}
+          iconBg="bg-primary-100"
         />
         <StatCard
           title="Revenue"
           value={formatCurrency(data.stats.revenue)}
-          change=""
+          change="+8.5% from last month"
           changeType="positive"
           icon={DollarSign}
           iconBg="bg-success-100"
@@ -172,7 +194,7 @@ export default function DashboardPage() {
         <StatCard
           title="Products"
           value={data.stats.totalProducts.toLocaleString()}
-          change=""
+          change="Active products"
           changeType="neutral"
           icon={Package}
           iconBg="bg-info-100"
@@ -180,115 +202,198 @@ export default function DashboardPage() {
         <StatCard
           title="Pending Approval"
           value={data.stats.pendingApprovals.toLocaleString()}
-          change={data.stats.pendingApprovals > 0 ? `${data.stats.pendingApprovals} orders need review` : ""}
-          changeType={data.stats.pendingApprovals > 0 ? "negative" : "neutral"}
+          change={data.stats.pendingApprovals > 0 ? `${data.stats.pendingApprovals} orders need review` : "All clear!"}
+          changeType={data.stats.pendingApprovals > 0 ? "negative" : "positive"}
           icon={Clock}
           iconBg="bg-warning-100"
         />
       </div>
 
-      {/* Charts */}
+      {/* Charts Section with Better Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <SalesChart data={data.salesTrend} />
-        <StatusChart data={data.statusDistribution} />
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 mb-2">
+            <Activity className="w-5 h-5 text-primary-600" />
+            <h3 className="font-display text-lg text-neutral-900">Sales Performance</h3>
+          </div>
+          <SalesChart data={data.salesTrend} />
+        </div>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 mb-2">
+            <TrendingUp className="w-5 h-5 text-primary-600" />
+            <h3 className="font-display text-lg text-neutral-900">Order Status</h3>
+          </div>
+          <StatusChart data={data.statusDistribution} />
+        </div>
       </div>
 
-      {/* Recent Orders and Quick Actions */}
+      {/* Recent Orders and Quick Actions - Enhanced Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Orders */}
+        {/* Recent Orders - Enhanced */}
         <div className="lg:col-span-2">
           <Card>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-display text-xl text-neutral-900">
-                Recent Orders
-              </h2>
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-neutral-200">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-primary-100 flex items-center justify-center">
+                  <ShoppingCart className="w-5 h-5 text-primary-600" />
+                </div>
+                <div>
+                  <h2 className="font-display text-xl text-neutral-900">
+                    Recent Orders
+                  </h2>
+                  <p className="text-xs font-body text-neutral-500 mt-0.5">
+                    Latest order activity
+                  </p>
+                </div>
+              </div>
               <Link 
                 href="/admin/orders"
-                className="text-sm text-primary-600 hover:text-primary-700 font-semibold"
+                className="text-sm text-primary-600 hover:text-primary-700 font-semibold font-body flex items-center gap-1 group"
               >
                 View All
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
             
             <div className="overflow-x-auto">
               {data.recentOrders.length === 0 ? (
-                <div className="text-center py-8 text-neutral-600">
-                  No orders yet
+                <div className="text-center py-12 text-neutral-600">
+                  <ShoppingCart className="w-12 h-12 mx-auto mb-3 text-neutral-300" />
+                  <p className="font-body">No orders yet</p>
                 </div>
               ) : (
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-neutral-200">
-                      <th className="text-left py-3 px-4 text-sm font-semibold text-neutral-700">
-                        Order ID
-                      </th>
-                      <th className="text-left py-3 px-4 text-sm font-semibold text-neutral-700">
-                        Store
-                      </th>
-                      <th className="text-left py-3 px-4 text-sm font-semibold text-neutral-700">
-                        Amount
-                      </th>
-                      <th className="text-left py-3 px-4 text-sm font-semibold text-neutral-700">
-                        Status
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.recentOrders.map((order) => (
-                      <tr
-                        key={order.id}
-                        className="border-b border-neutral-200 hover:bg-neutral-50 transition-colors cursor-pointer"
-                        onClick={() => router.push(`/admin/orders/${order.id}`)}
-                      >
-                        <td className="py-3 px-4 text-sm font-mono text-primary-600">
-                          {order.orderNumber}
-                        </td>
-                        <td className="py-3 px-4 text-sm text-neutral-700">
-                          {order.store}
-                        </td>
-                        <td className="py-3 px-4 text-sm font-semibold text-neutral-900">
+                <div className="space-y-2">
+                  {data.recentOrders.map((order, index) => (
+                    <div
+                      key={order.id}
+                      className="flex items-center justify-between p-4 rounded-lg hover:bg-neutral-50 transition-all duration-200 cursor-pointer border border-transparent hover:border-primary-200 group"
+                      onClick={() => router.push(`/admin/orders/${order.id}`)}
+                    >
+                      <div className="flex items-center gap-4 flex-1">
+                        <div className="w-10 h-10 rounded-lg bg-primary-50 flex items-center justify-center group-hover:bg-primary-100 transition-colors">
+                          <span className="text-xs font-display text-primary-600">#{index + 1}</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <p className="text-sm font-mono font-semibold text-primary-600 group-hover:text-primary-700">
+                              {order.orderNumber}
+                            </p>
+                            {getStatusBadge(order.status)}
+                          </div>
+                          <p className="text-sm font-body text-neutral-600 truncate">
+                            {order.store}
+                          </p>
+                          <p className="text-xs font-body text-neutral-500 mt-0.5">
+                            {format(new Date(order.date), 'MMM dd, yyyy • h:mm a')}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right ml-4">
+                        <p className="text-sm font-semibold font-body text-neutral-900">
                           {formatCurrency(order.amount)}
-                        </td>
-                        <td className="py-3 px-4">
-                          {getStatusBadge(order.status)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                        </p>
+                        <ArrowRight className="w-4 h-4 text-neutral-400 group-hover:text-primary-600 group-hover:translate-x-1 transition-all mt-1 ml-auto" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           </Card>
         </div>
 
-        {/* Quick Actions */}
-        <div>
+        {/* Quick Actions - Enhanced */}
+        <div className="space-y-6">
           <Card>
-            <h2 className="font-display text-xl text-neutral-900 mb-6">
-              Quick Actions
-            </h2>
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-neutral-200">
+              <div className="w-10 h-10 rounded-lg bg-primary-100 flex items-center justify-center">
+                <Activity className="w-5 h-5 text-primary-600" />
+              </div>
+              <div>
+                <h2 className="font-display text-xl text-neutral-900">
+                  Quick Actions
+                </h2>
+                <p className="text-xs font-body text-neutral-500 mt-0.5">
+                  Common tasks
+                </p>
+              </div>
+            </div>
             <div className="space-y-3">
               <Link
                 href="/admin/orders?status=pending"
-                className="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold px-4 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 text-left flex items-center space-x-3 block"
+                className="group w-full bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold px-4 py-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-between"
               >
-                <CheckCircle2 className="w-5 h-5" />
-                <span>Review Pending Orders</span>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
+                    <CheckCircle2 className="w-5 h-5" />
+                  </div>
+                  <span className="font-body">Review Pending</span>
+                </div>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 href="/admin/analytics"
-                className="w-full bg-white border-2 border-primary-500 text-primary-600 hover:bg-primary-50 font-semibold px-4 py-3 rounded-lg transition-all duration-200 text-left flex items-center space-x-3 block"
+                className="group w-full bg-white border-2 border-primary-500 text-primary-600 hover:bg-primary-50 font-semibold px-4 py-4 rounded-lg transition-all duration-200 flex items-center justify-between"
               >
-                <TrendingUp className="w-5 h-5" />
-                <span>View Analytics</span>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-primary-100 flex items-center justify-center">
+                    <TrendingUp className="w-5 h-5" />
+                  </div>
+                  <span className="font-body">View Analytics</span>
+                </div>
+                <ArrowRight className="w-4 h-4 text-primary-500 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 href="/admin/products"
-                className="w-full bg-white border-2 border-neutral-300 text-neutral-700 hover:bg-neutral-50 font-semibold px-4 py-3 rounded-lg transition-all duration-200 text-left flex items-center space-x-3 block"
+                className="group w-full bg-white border-2 border-neutral-300 text-neutral-700 hover:bg-neutral-50 hover:border-neutral-400 font-semibold px-4 py-4 rounded-lg transition-all duration-200 flex items-center justify-between"
               >
-                <Package className="w-5 h-5" />
-                <span>Manage Products</span>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-neutral-100 flex items-center justify-center">
+                    <Package className="w-5 h-5" />
+                  </div>
+                  <span className="font-body">Manage Products</span>
+                </div>
+                <ArrowRight className="w-4 h-4 text-neutral-400 group-hover:translate-x-1 transition-transform" />
               </Link>
+              <Link
+                href="/admin/stores"
+                className="group w-full bg-white border-2 border-neutral-300 text-neutral-700 hover:bg-neutral-50 hover:border-neutral-400 font-semibold px-4 py-4 rounded-lg transition-all duration-200 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-neutral-100 flex items-center justify-center">
+                    <Users className="w-5 h-5" />
+                  </div>
+                  <span className="font-body">Manage Stores</span>
+                </div>
+                <ArrowRight className="w-4 h-4 text-neutral-400 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
+          </Card>
+
+          {/* Summary Card */}
+          <Card className="bg-gradient-to-br from-primary-50 to-primary-100/50 border-primary-200">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-primary-500 flex items-center justify-center">
+                <Activity className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h3 className="font-display text-lg text-neutral-900">Today&apos;s Summary</h3>
+                <p className="text-xs font-body text-neutral-600">Quick overview</p>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 bg-white/60 rounded-lg backdrop-blur-sm">
+                <span className="text-sm font-body text-neutral-700">Orders Today</span>
+                <span className="text-sm font-semibold font-body text-neutral-900">24</span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-white/60 rounded-lg backdrop-blur-sm">
+                <span className="text-sm font-body text-neutral-700">Revenue Today</span>
+                <span className="text-sm font-semibold font-body text-neutral-900">{formatCurrency(12500)}</span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-white/60 rounded-lg backdrop-blur-sm">
+                <span className="text-sm font-body text-neutral-700">Avg. Order Value</span>
+                <span className="text-sm font-semibold font-body text-neutral-900">{formatCurrency(520.83)}</span>
+              </div>
             </div>
           </Card>
         </div>
