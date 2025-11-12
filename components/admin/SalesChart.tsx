@@ -19,11 +19,11 @@ export const SalesChart: React.FC<SalesChartProps> = ({ data }) => {
           <XAxis 
             dataKey="date" 
             tick={{ fill: '#737373' }}
-            tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+            tickFormatter={(value: string) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
           />
           <YAxis 
             tick={{ fill: '#737373' }}
-            tickFormatter={(value) => `$${value.toLocaleString()}`}
+            tickFormatter={(value: number) => `$${value.toLocaleString()}`}
           />
           <Tooltip 
             contentStyle={{ 
@@ -32,7 +32,7 @@ export const SalesChart: React.FC<SalesChartProps> = ({ data }) => {
               borderRadius: '8px'
             }}
             formatter={(value: number) => `$${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-            labelFormatter={(label) => new Date(label).toLocaleDateString()}
+            labelFormatter={(label: string) => new Date(label).toLocaleDateString()}
           />
           <Legend />
           <Line 

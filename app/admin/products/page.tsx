@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
@@ -34,11 +34,7 @@ export default function ProductsPage() {
     limit: 20,
   });
 
-  useEffect(() => {
-    fetchProducts();
-  }, [page, searchQuery]);
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -53,13 +49,22 @@ export default function ProductsPage() {
 
       const data = await response.json();
       setProducts(data.products || []);
-      setPagination(data.pagination || pagination);
+      setPagination(data.pagination || {
+        total: 0,
+        totalPages: 1,
+        page: 1,
+        limit: 20,
+      });
     } catch (error) {
       console.error('Error fetching products:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, searchQuery]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const handleDelete = async (productId: string) => {
     if (!confirm('Are you sure you want to delete this product?')) {

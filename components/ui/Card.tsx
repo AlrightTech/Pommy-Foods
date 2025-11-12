@@ -1,7 +1,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 
-interface CardProps {
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   variant?: "default" | "elevated" | "retro";
   className?: string;
@@ -11,6 +11,7 @@ export const Card: React.FC<CardProps> = ({
   children,
   variant = "default",
   className,
+  ...props
 }) => {
   const baseStyles = "rounded-lg p-6";
   
@@ -21,7 +22,7 @@ export const Card: React.FC<CardProps> = ({
   };
   
   return (
-    <div className={cn(baseStyles, variants[variant], className)}>
+    <div className={cn(baseStyles, variants[variant], className)} {...props}>
       {children}
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -54,13 +54,7 @@ export default function DeliveryDetailPage() {
   const [delivery, setDelivery] = useState<Delivery | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (params.id) {
-      fetchDelivery();
-    }
-  }, [params.id]);
-
-  const fetchDelivery = async () => {
+  const fetchDelivery = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/deliveries/${params.id}`);
@@ -75,7 +69,13 @@ export default function DeliveryDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [params.id]);
+
+  useEffect(() => {
+    if (params.id) {
+      fetchDelivery();
+    }
+  }, [params.id, fetchDelivery]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
@@ -33,11 +33,7 @@ export default function StoresPage() {
     limit: 20,
   });
 
-  useEffect(() => {
-    fetchStores();
-  }, [page, searchQuery]);
-
-  const fetchStores = async () => {
+  const fetchStores = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -52,13 +48,22 @@ export default function StoresPage() {
 
       const data = await response.json();
       setStores(data.stores || []);
-      setPagination(data.pagination || pagination);
+      setPagination(data.pagination || {
+        total: 0,
+        totalPages: 1,
+        page: 1,
+        limit: 20,
+      });
     } catch (error) {
       console.error('Error fetching stores:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, searchQuery]);
+
+  useEffect(() => {
+    fetchStores();
+  }, [fetchStores]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {

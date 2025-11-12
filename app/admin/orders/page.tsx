@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
@@ -30,7 +30,7 @@ interface StoresResponse {
   stores: Array<{ id: string; name: string }>;
 }
 
-export default function OrdersPage() {
+function OrdersPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [orders, setOrders] = useState<Order[]>([]);
@@ -49,15 +49,7 @@ export default function OrdersPage() {
     limit: 20,
   });
 
-  useEffect(() => {
-    fetchStores();
-  }, []);
-
-  useEffect(() => {
-    fetchOrders();
-  }, [statusFilter, storeFilter, page, searchQuery]);
-
-  const fetchStores = async () => {
+  const fetchStores = useCallback(async () => {
     try {
       const response = await fetch('/api/admin/stores');
       if (response.ok) {
@@ -67,9 +59,13 @@ export default function OrdersPage() {
     } catch (error) {
       console.error('Error fetching stores:', error);
     }
-  };
+  }, []);
 
-  const fetchOrders = async () => {
+  useEffect(() => {
+    fetchStores();
+  }, [fetchStores]);
+
+  const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -86,13 +82,22 @@ export default function OrdersPage() {
 
       const data = await response.json();
       setOrders(data.orders || []);
-      setPagination(data.pagination || pagination);
+      setPagination(data.pagination || {
+        total: 0,
+        totalPages: 1,
+        page: 1,
+        limit: 20,
+      });
     } catch (error) {
       console.error('Error fetching orders:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [statusFilter, storeFilter, page, searchQuery]);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {

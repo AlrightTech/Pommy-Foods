@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -28,13 +28,7 @@ export default function StoreDetailPage() {
   const [store, setStore] = useState<Store | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (params.id) {
-      fetchStore();
-    }
-  }, [params.id]);
-
-  const fetchStore = async () => {
+  const fetchStore = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/stores/${params.id}`);
@@ -49,7 +43,13 @@ export default function StoreDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [params.id]);
+
+  useEffect(() => {
+    if (params.id) {
+      fetchStore();
+    }
+  }, [params.id, fetchStore]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {

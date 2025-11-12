@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -51,13 +51,7 @@ export default function OrderDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [isApproving, setIsApproving] = useState(false);
 
-  useEffect(() => {
-    if (params.id) {
-      fetchOrder();
-    }
-  }, [params.id]);
-
-  const fetchOrder = async () => {
+  const fetchOrder = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/orders/${params.id}`);
@@ -71,7 +65,13 @@ export default function OrderDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [params.id]);
+
+  useEffect(() => {
+    if (params.id) {
+      fetchOrder();
+    }
+  }, [params.id, fetchOrder]);
 
   const handleApprove = async () => {
     if (!confirm('Are you sure you want to approve this order? This will generate a kitchen sheet and delivery note.')) {

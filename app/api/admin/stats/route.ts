@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const supabase = await createServerClient();
@@ -16,7 +18,7 @@ export async function GET() {
       .select('final_amount')
       .eq('status', 'completed');
 
-    const revenue = revenueData?.reduce((sum, order) => sum + Number(order.final_amount || 0), 0) || 0;
+    const revenue = revenueData?.reduce((sum: number, order: { final_amount: number | null }) => sum + Number(order.final_amount || 0), 0) || 0;
 
     // Get products count
     const { count: totalProducts } = await supabase
@@ -54,7 +56,7 @@ export async function GET() {
       .order('created_at', { ascending: false });
 
     // Calculate status distribution
-    const statusCounts = ordersByStatus?.reduce((acc: Record<string, number>, order) => {
+    const statusCounts = ordersByStatus?.reduce((acc: Record<string, number>, order: { status: string }) => {
       acc[order.status] = (acc[order.status] || 0) + 1;
       return acc;
     }, {}) || {};
@@ -71,7 +73,7 @@ export async function GET() {
       .order('created_at', { ascending: true });
 
     // Group by date
-    const dailySales = salesTrend?.reduce((acc: Record<string, number>, order) => {
+    const dailySales = salesTrend?.reduce((acc: Record<string, number>, order: { created_at: string; final_amount: number | null }) => {
       const date = new Date(order.created_at).toISOString().split('T')[0];
       acc[date] = (acc[date] || 0) + Number(order.final_amount || 0);
       return acc;
@@ -84,7 +86,7 @@ export async function GET() {
         totalProducts: totalProducts || 0,
         pendingApprovals: pendingApprovals || 0,
       },
-      recentOrders: recentOrders?.map(order => ({
+      recentOrders: recentOrders?.map((order: any) => ({
         id: order.id,
         orderNumber: order.order_number,
         store: order.stores?.name || 'Unknown',
