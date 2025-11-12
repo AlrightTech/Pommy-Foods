@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { Loader } from "@/components/ui/Loader";
 import { Plus, Search, Edit, Trash2 } from "lucide-react";
 
 interface Product {
@@ -161,8 +162,8 @@ export default function ProductsPage() {
       {/* Products Table */}
       <Card>
         {loading ? (
-          <div className="text-center py-8 text-neutral-600">
-            Loading products...
+          <div className="py-12">
+            <Loader text="Loading products..." />
           </div>
         ) : products.length === 0 ? (
           <div className="text-center py-8 text-neutral-600">

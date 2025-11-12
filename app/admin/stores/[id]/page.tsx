@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { Loader } from "@/components/ui/Loader";
 import { ArrowLeft, Edit } from "lucide-react";
 import Link from "next/link";
 
@@ -60,11 +61,7 @@ export default function StoreDetailPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-neutral-600">Loading store...</div>
-      </div>
-    );
+    return <Loader text="Loading store..." fullScreen />;
   }
 
   if (!store) {

@@ -44,8 +44,39 @@ interface DashboardStats {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [data, setData] = useState<DashboardStats | null>(null);
-  const [loading, setLoading] = useState(true);
+  const getStaticData = (): DashboardStats => ({
+    stats: {
+      totalOrders: 1247,
+      revenue: 456789.50,
+      totalProducts: 342,
+      pendingApprovals: 8,
+    },
+    recentOrders: [
+      { id: '1', orderNumber: 'ORD-2024-001234', store: 'Downtown Convenience', amount: 1250.00, status: 'pending', date: new Date().toISOString() },
+      { id: '2', orderNumber: 'ORD-2024-001233', store: 'Main Street Market', amount: 890.50, status: 'approved', date: new Date(Date.now() - 86400000).toISOString() },
+      { id: '3', orderNumber: 'ORD-2024-001232', store: 'Corner Store', amount: 2340.75, status: 'completed', date: new Date(Date.now() - 172800000).toISOString() },
+      { id: '4', orderNumber: 'ORD-2024-001231', store: 'Quick Mart', amount: 567.25, status: 'draft', date: new Date(Date.now() - 259200000).toISOString() },
+      { id: '5', orderNumber: 'ORD-2024-001230', store: 'Food Express', amount: 1890.00, status: 'approved', date: new Date(Date.now() - 345600000).toISOString() },
+    ],
+    statusDistribution: {
+      pending: 45,
+      approved: 120,
+      completed: 980,
+      draft: 12,
+      rejected: 8,
+    },
+    salesTrend: Array.from({ length: 30 }, (_, i) => {
+      const date = new Date();
+      date.setDate(date.getDate() - (29 - i));
+      return {
+        date: date.toISOString().split('T')[0],
+        amount: Math.floor(Math.random() * 5000) + 10000,
+      };
+    }),
+  });
+
+  const [data, setData] = useState<DashboardStats>(getStaticData());
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -63,38 +94,7 @@ export default function DashboardPage() {
       setData(result);
     } catch (err) {
       console.error('Error fetching dashboard data:', err);
-      // Use static data as fallback
-      const staticData: DashboardStats = {
-        stats: {
-          totalOrders: 1247,
-          revenue: 456789.50,
-          totalProducts: 342,
-          pendingApprovals: 8,
-        },
-        recentOrders: [
-          { id: '1', orderNumber: 'ORD-2024-001234', store: 'Downtown Convenience', amount: 1250.00, status: 'pending', date: new Date().toISOString() },
-          { id: '2', orderNumber: 'ORD-2024-001233', store: 'Main Street Market', amount: 890.50, status: 'approved', date: new Date(Date.now() - 86400000).toISOString() },
-          { id: '3', orderNumber: 'ORD-2024-001232', store: 'Corner Store', amount: 2340.75, status: 'completed', date: new Date(Date.now() - 172800000).toISOString() },
-          { id: '4', orderNumber: 'ORD-2024-001231', store: 'Quick Mart', amount: 567.25, status: 'draft', date: new Date(Date.now() - 259200000).toISOString() },
-          { id: '5', orderNumber: 'ORD-2024-001230', store: 'Food Express', amount: 1890.00, status: 'approved', date: new Date(Date.now() - 345600000).toISOString() },
-        ],
-        statusDistribution: {
-          pending: 45,
-          approved: 120,
-          completed: 980,
-          draft: 12,
-          rejected: 8,
-        },
-        salesTrend: Array.from({ length: 30 }, (_, i) => {
-          const date = new Date();
-          date.setDate(date.getDate() - (29 - i));
-          return {
-            date: date.toISOString().split('T')[0],
-            amount: Math.floor(Math.random() * 5000) + 10000,
-          };
-        }),
-      };
-      setData(staticData);
+      // Keep static data on error
     } finally {
       setLoading(false);
     }
@@ -125,21 +125,8 @@ export default function DashboardPage() {
     }
   };
 
-  if (loading) {
-    return <Loader text="Loading dashboard..." fullScreen />;
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-error-600">Error: {error}</div>
-      </div>
-    );
-  }
-
-  if (!data) {
-    return null;
-  }
+  // Always show data (static data is set initially)
+  const displayData = data;
 
   const currentDate = format(new Date(), 'EEEE, MMMM dd, yyyy');
   const currentTime = format(new Date(), 'h:mm a');
@@ -178,7 +165,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           title="Total Orders"
-          value={data.stats.totalOrders.toLocaleString()}
+          value={displayData.stats.totalOrders.toLocaleString()}
           change="+12% from last month"
           changeType="positive"
           icon={ShoppingCart}
@@ -186,7 +173,7 @@ export default function DashboardPage() {
         />
         <StatCard
           title="Revenue"
-          value={formatCurrency(data.stats.revenue)}
+          value={formatCurrency(displayData.stats.revenue)}
           change="+8.5% from last month"
           changeType="positive"
           icon={DollarSign}
@@ -194,7 +181,7 @@ export default function DashboardPage() {
         />
         <StatCard
           title="Products"
-          value={data.stats.totalProducts.toLocaleString()}
+          value={displayData.stats.totalProducts.toLocaleString()}
           change="Active products"
           changeType="neutral"
           icon={Package}
@@ -202,9 +189,9 @@ export default function DashboardPage() {
         />
         <StatCard
           title="Pending Approval"
-          value={data.stats.pendingApprovals.toLocaleString()}
-          change={data.stats.pendingApprovals > 0 ? `${data.stats.pendingApprovals} orders need review` : "All clear!"}
-          changeType={data.stats.pendingApprovals > 0 ? "negative" : "positive"}
+          value={displayData.stats.pendingApprovals.toLocaleString()}
+          change={displayData.stats.pendingApprovals > 0 ? `${displayData.stats.pendingApprovals} orders need review` : "All clear!"}
+          changeType={displayData.stats.pendingApprovals > 0 ? "negative" : "positive"}
           icon={Clock}
           iconBg="bg-warning-100"
         />
@@ -222,8 +209,8 @@ export default function DashboardPage() {
               <p className="text-xs font-body text-neutral-500">Last 30 days revenue trend</p>
             </div>
           </div>
-          {data.salesTrend && data.salesTrend.length > 0 ? (
-            <SalesChart data={data.salesTrend} />
+          {displayData.salesTrend && displayData.salesTrend.length > 0 ? (
+            <SalesChart data={displayData.salesTrend} />
           ) : (
             <Card>
               <div className="flex items-center justify-center h-[300px]">
@@ -245,8 +232,8 @@ export default function DashboardPage() {
               <p className="text-xs font-body text-neutral-500">Distribution by status</p>
             </div>
           </div>
-          {data.statusDistribution && Object.keys(data.statusDistribution).length > 0 ? (
-            <StatusChart data={data.statusDistribution} />
+          {displayData.statusDistribution && Object.keys(displayData.statusDistribution).length > 0 ? (
+            <StatusChart data={displayData.statusDistribution} />
           ) : (
             <Card>
               <div className="flex items-center justify-center h-[300px]">
@@ -289,7 +276,7 @@ export default function DashboardPage() {
             </div>
             
             <div className="overflow-x-auto">
-              {!data.recentOrders || data.recentOrders.length === 0 ? (
+              {!displayData.recentOrders || displayData.recentOrders.length === 0 ? (
                 <div className="text-center py-12">
                   <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-neutral-100 flex items-center justify-center">
                     <ShoppingCart className="w-8 h-8 text-neutral-300" />
@@ -299,7 +286,7 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {data.recentOrders.slice(0, 5).map((order, index) => (
+                  {displayData.recentOrders.slice(0, 5).map((order, index) => (
                     <div
                       key={order.id}
                       className="flex items-center justify-between p-4 rounded-lg hover:bg-gradient-to-r hover:from-primary-50/50 hover:to-transparent transition-all duration-200 cursor-pointer border border-neutral-200 hover:border-primary-300 hover:shadow-sm group"

@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { Loader } from "@/components/ui/Loader";
 import { ArrowLeft } from "lucide-react";
 
 interface Product {
@@ -102,11 +103,7 @@ export default function EditProductPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-neutral-600">Loading product...</div>
-      </div>
-    );
+    return <Loader text="Loading product..." fullScreen />;
   }
 
   return (

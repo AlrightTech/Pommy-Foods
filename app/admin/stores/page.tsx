@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { Loader } from "@/components/ui/Loader";
 import { Plus, Search, Edit, Eye } from "lucide-react";
 
 interface Store {
@@ -134,8 +135,8 @@ export default function StoresPage() {
       {/* Stores Table */}
       <Card>
         {loading ? (
-          <div className="text-center py-8 text-neutral-600">
-            Loading stores...
+          <div className="py-12">
+            <Loader text="Loading stores..." />
           </div>
         ) : stores.length === 0 ? (
           <div className="text-center py-8 text-neutral-600">

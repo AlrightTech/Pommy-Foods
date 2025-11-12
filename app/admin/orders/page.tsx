@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { Loader } from "@/components/ui/Loader";
 import { OrderFilters } from "@/components/admin/OrderFilters";
 import { OrderStatusBadge } from "@/components/admin/OrderStatusBadge";
 import { Search, Download } from "lucide-react";
@@ -217,8 +218,8 @@ function OrdersPageContent() {
       {/* Orders Table */}
       <Card>
         {loading ? (
-          <div className="text-center py-8 text-neutral-600">
-            Loading orders...
+          <div className="py-12">
+            <Loader text="Loading orders..." />
           </div>
         ) : orders.length === 0 ? (
           <div className="text-center py-8 text-neutral-600">
@@ -336,11 +337,7 @@ function OrdersPageContent() {
 
 export default function OrdersPage() {
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-neutral-600">Loading...</div>
-      </div>
-    }>
+    <Suspense fallback={<Loader text="Loading..." fullScreen />}>
       <OrdersPageContent />
     </Suspense>
   );

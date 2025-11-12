@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Card } from "@/components/ui/Card";
+import { Loader } from "@/components/ui/Loader";
 import { SalesChart } from "@/components/admin/SalesChart";
 import { StatCard } from "@/components/admin/StatCard";
 import { DollarSign, Package, TrendingUp, AlertTriangle } from "lucide-react";
@@ -84,11 +85,7 @@ export default function AnalyticsPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-neutral-600">Loading analytics...</div>
-      </div>
-    );
+    return <Loader text="Loading analytics..." fullScreen />;
   }
 
   if (!data) {

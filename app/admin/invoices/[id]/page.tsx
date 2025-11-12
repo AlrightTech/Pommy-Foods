@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { Loader } from "@/components/ui/Loader";
 import { ArrowLeft, Download } from "lucide-react";
 import { format } from "date-fns";
 
@@ -81,11 +82,7 @@ export default function InvoiceDetailPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-neutral-600">Loading invoice...</div>
-      </div>
-    );
+    return <Loader text="Loading invoice..." fullScreen />;
   }
 
   if (!invoice) {

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { Loader } from "@/components/ui/Loader";
 import { Search, Download, Eye } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -108,8 +109,8 @@ export default function InvoicesPage() {
       {/* Invoices Table */}
       <Card>
         {loading ? (
-          <div className="text-center py-8 text-neutral-600">
-            Loading invoices...
+          <div className="py-12">
+            <Loader text="Loading invoices..." />
           </div>
         ) : invoices.length === 0 ? (
           <div className="text-center py-8 text-neutral-600">

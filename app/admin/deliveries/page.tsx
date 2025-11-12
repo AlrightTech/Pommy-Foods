@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { Loader } from "@/components/ui/Loader";
 import { Search, Truck, MapPin } from "lucide-react";
 import { format } from "date-fns";
 
@@ -127,8 +128,8 @@ export default function DeliveriesPage() {
       {/* Deliveries List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
-          <div className="col-span-full text-center py-8 text-neutral-600">
-            Loading deliveries...
+          <div className="col-span-full py-12">
+            <Loader text="Loading deliveries..." />
           </div>
         ) : deliveries.length === 0 ? (
           <div className="col-span-full text-center py-8 text-neutral-600">

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
+import { Loader } from "@/components/ui/Loader";
 import { Search } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -117,8 +118,8 @@ export default function PaymentsPage() {
       {/* Payments Table */}
       <Card>
         {loading ? (
-          <div className="text-center py-8 text-neutral-600">
-            Loading payments...
+          <div className="py-12">
+            <Loader text="Loading payments..." />
           </div>
         ) : payments.length === 0 ? (
           <div className="text-center py-8 text-neutral-600">

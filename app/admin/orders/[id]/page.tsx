@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { Loader } from "@/components/ui/Loader";
 import { OrderStatusBadge } from "@/components/admin/OrderStatusBadge";
 import { ArrowLeft, CheckCircle2, XCircle, Edit } from "lucide-react";
 import { format } from "date-fns";
@@ -133,11 +134,7 @@ export default function OrderDetailPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-neutral-600">Loading order...</div>
-      </div>
-    );
+    return <Loader text="Loading order..." fullScreen />;
   }
 
   if (error || !order) {
