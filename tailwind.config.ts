@@ -6,50 +6,40 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  darkMode: "class",
   theme: {
     extend: {
       colors: {
-        // Primary Brand Colors
+        // Primary Brand Colors - Gold accent
         primary: {
-          50: "#FDF8F3",
-          100: "#FAF0E6",
-          200: "#F5E1D2",
-          300: "#E8C9A8",
-          400: "#D4A574",
-          500: "#C9A961",
+          50: "#FAF4EC",
+          100: "#F5EDE0",
+          200: "#E8D9C0",
+          300: "#DBC5A0",
+          400: "#D2AC6A",
+          500: "#D2AC6A",
           600: "#B8944F",
           700: "#9A7A3F",
           800: "#7C5F2F",
           900: "#5D4520",
-          950: "#3D2E15",
         },
-        // Secondary Colors
-        secondary: {
-          50: "#F5F5F0",
-          100: "#E8E8DD",
-          200: "#D1D1BB",
-          300: "#BABA99",
-          400: "#A3A377",
-          500: "#8C8C55",
-          600: "#6F6F44",
-          700: "#525233",
-          800: "#353522",
-          900: "#181811",
+        // Base background - soft beige
+        base: {
+          DEFAULT: "#FAF4EC",
+          light: "#FFFFFF",
+          soft: "#F5EDE0",
         },
-        // Neutral Colors
+        // Neutral Colors - warm tones
         neutral: {
-          50: "#FAFAFA",
-          100: "#F5F5F5",
-          200: "#E5E5E5",
-          300: "#D4D4D4",
+          50: "#FAF4EC",
+          100: "#F5EDE0",
+          200: "#E8D9C0",
+          300: "#D4C4A8",
           400: "#A3A3A3",
           500: "#737373",
           600: "#525252",
           700: "#404040",
-          800: "#262626",
-          900: "#171717",
-          950: "#0A0A0A",
+          800: "#2A2A2A",
+          900: "#1A1A1A",
         },
         // Semantic Colors
         success: {
@@ -101,10 +91,9 @@ const config: Config = {
           900: "#1E3A8A",
         },
         background: {
+          DEFAULT: "#FAF4EC",
           light: "#FFFFFF",
-          dark: "#000000",
-          surface: "#FAFAFA",
-          surfaceDark: "#0A0A0A",
+          surface: "#FAF4EC",
         },
       },
       fontFamily: {
@@ -113,9 +102,9 @@ const config: Config = {
         mono: ["'JetBrains Mono'", "monospace"],
       },
       boxShadow: {
-        "pixel": "4px 4px 0px 0px rgba(212,165,116,0.3)",
-        "pixel-hover": "6px 6px 0px 0px rgba(212,165,116,0.4)",
-        "pixel-active": "2px 2px 0px 0px rgba(212,165,116,0.3)",
+        "soft": "0 2px 8px rgba(210, 172, 106, 0.1)",
+        "soft-lg": "0 4px 16px rgba(210, 172, 106, 0.15)",
+        "card": "0 2px 12px rgba(0, 0, 0, 0.08)",
       },
       keyframes: {
         "pulse-slow": {

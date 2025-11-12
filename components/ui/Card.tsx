@@ -15,9 +15,9 @@ export const Card: React.FC<CardProps> = ({
   const baseStyles = "rounded-lg p-6";
   
   const variants = {
-    default: "bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm hover:shadow-md transition-shadow duration-200",
-    elevated: "bg-white dark:bg-neutral-900 shadow-md hover:shadow-lg transition-shadow duration-200 border border-neutral-100 dark:border-neutral-800",
-    retro: "bg-white dark:bg-neutral-900 rounded-lg border-2 border-primary-400 shadow-pixel hover:shadow-pixel-hover transition-all duration-200",
+    default: "bg-white border border-neutral-200 shadow-card hover:shadow-soft-lg transition-shadow duration-200",
+    elevated: "bg-white shadow-soft-lg hover:shadow-soft transition-shadow duration-200 border border-neutral-100",
+    retro: "bg-white rounded-lg border-2 border-primary-400 shadow-soft hover:shadow-soft-lg transition-all duration-200",
   };
   
   return (

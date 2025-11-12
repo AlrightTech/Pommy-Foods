@@ -29,10 +29,10 @@ export const Sidebar = () => {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-neutral-900 dark:bg-black border-r border-neutral-800 p-6 hidden md:block z-40">
+    <aside className="fixed left-0 top-0 h-screen w-64 bg-gradient-to-b from-primary-50 to-primary-100 border-r border-primary-200 p-6 hidden md:block z-40 shadow-soft">
       <div className="mb-8">
-        <h1 className="font-display text-xl text-primary-500">Pommy Foods</h1>
-        <p className="text-xs text-neutral-500 mt-1">Admin Panel</p>
+        <h1 className="font-display text-xl text-primary-600">Pommy Foods</h1>
+        <p className="text-xs text-neutral-600 mt-1">Admin Panel</p>
       </div>
       
       <nav className="space-y-2">
@@ -47,8 +47,8 @@ export const Sidebar = () => {
               className={cn(
                 "flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors",
                 isActive
-                  ? "bg-primary-500 text-white"
-                  : "text-neutral-400 hover:bg-neutral-800 hover:text-white"
+                  ? "bg-primary-500 text-white shadow-soft"
+                  : "text-neutral-700 hover:bg-primary-200 hover:text-primary-700"
               )}
             >
               <Icon className="w-5 h-5" />

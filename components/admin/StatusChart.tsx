@@ -10,7 +10,7 @@ interface StatusChartProps {
 const COLORS = {
   draft: '#94a3b8',
   pending: '#F59E0B',
-  approved: '#3B82F6',
+  approved: '#D2AC6A',
   rejected: '#EF4444',
   completed: '#22C55E',
   cancelled: '#737373',
@@ -34,7 +34,7 @@ export const StatusChart: React.FC<StatusChartProps> = ({ data }) => {
 
   return (
     <Card>
-      <h3 className="font-display text-lg text-neutral-900 dark:text-neutral-100 mb-4">
+      <h3 className="font-display text-lg text-neutral-900 mb-4">
         Orders by Status
       </h3>
       <ResponsiveContainer width="100%" height={300}>

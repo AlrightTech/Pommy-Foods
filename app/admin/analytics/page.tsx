@@ -51,7 +51,7 @@ export default function AnalyticsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-neutral-600 dark:text-neutral-400">Loading analytics...</div>
+        <div className="text-neutral-600">Loading analytics...</div>
       </div>
     );
   }
@@ -68,17 +68,17 @@ export default function AnalyticsPage() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl md:text-4xl text-neutral-900 dark:text-neutral-100">
+          <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
             Analytics
           </h1>
-          <p className="text-neutral-600 dark:text-neutral-400 mt-2">
+          <p className="text-neutral-600 mt-2">
             View sales reports and insights
           </p>
         </div>
         <select
           value={dateRange}
           onChange={(e) => setDateRange(e.target.value)}
-          className="px-4 py-2 border-2 border-neutral-300 dark:border-neutral-700 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100"
+          className="px-4 py-2 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
         >
           <option value="7">Last 7 days</option>
           <option value="30">Last 30 days</option>
@@ -94,7 +94,7 @@ export default function AnalyticsPage() {
           value={formatCurrency(data.totalRevenue)}
           changeType="positive"
           icon={DollarSign}
-          iconBg="bg-success-100 dark:bg-success-900"
+          iconBg="bg-success-100"
         />
         <StatCard
           title="Total Orders"
@@ -107,14 +107,14 @@ export default function AnalyticsPage() {
           value={formatCurrency(data.averageOrderValue)}
           changeType="positive"
           icon={TrendingUp}
-          iconBg="bg-info-100 dark:bg-info-900"
+          iconBg="bg-info-100"
         />
         <StatCard
           title="Active Products"
           value={data.topProducts.length.toLocaleString()}
           changeType="neutral"
           icon={AlertTriangle}
-          iconBg="bg-warning-100 dark:bg-warning-900"
+          iconBg="bg-warning-100"
         />
       </div>
 
@@ -124,16 +124,16 @@ export default function AnalyticsPage() {
       {/* Top Products & Stores */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
-          <h2 className="font-display text-xl text-neutral-900 dark:text-neutral-100 mb-4">
+          <h2 className="font-display text-xl text-neutral-900 mb-4">
             Top Products
           </h2>
           <div className="space-y-2">
             {data.topProducts.slice(0, 10).map((product, index) => (
-              <div key={index} className="flex justify-between items-center p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
-                <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+              <div key={index} className="flex justify-between items-center p-3 bg-neutral-50 rounded-lg">
+                <span className="text-sm font-semibold text-neutral-900">
                   {product.name}
                 </span>
-                <span className="text-sm text-neutral-700 dark:text-neutral-300">
+                <span className="text-sm text-neutral-700">
                   {product.quantity} units
                 </span>
               </div>
@@ -142,13 +142,13 @@ export default function AnalyticsPage() {
         </Card>
 
         <Card>
-          <h2 className="font-display text-xl text-neutral-900 dark:text-neutral-100 mb-4">
+          <h2 className="font-display text-xl text-neutral-900 mb-4">
             Sales by Store
           </h2>
           <div className="space-y-2">
             {data.salesByStore.map((store, index) => (
-              <div key={index} className="flex justify-between items-center p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
-                <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+              <div key={index} className="flex justify-between items-center p-3 bg-neutral-50 rounded-lg">
+                <span className="text-sm font-semibold text-neutral-900">
                   {store.store}
                 </span>
                 <span className="text-sm font-semibold text-primary-600">

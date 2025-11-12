@@ -61,7 +61,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
           />
           <Card className="absolute top-full mt-2 right-0 z-50 w-80 shadow-xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-display text-lg text-neutral-900 dark:text-neutral-100">
+              <h3 className="font-display text-lg text-neutral-900">
                 Filters
               </h3>
               <button
@@ -74,13 +74,13 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
+                <label className="block text-sm font-semibold text-neutral-700 mb-2">
                   Status
                 </label>
                 <select
                   value={status || ''}
                   onChange={(e) => onStatusChange(e.target.value || null)}
-                  className="w-full px-4 py-2 border-2 border-neutral-300 dark:border-neutral-700 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100"
+                  className="w-full px-4 py-2 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
                 >
                   <option value="">All Statuses</option>
                   {statusOptions.map((option) => (
@@ -92,13 +92,13 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
+                <label className="block text-sm font-semibold text-neutral-700 mb-2">
                   Store
                 </label>
                 <select
                   value={storeId || ''}
                   onChange={(e) => onStoreIdChange(e.target.value || null)}
-                  className="w-full px-4 py-2 border-2 border-neutral-300 dark:border-neutral-700 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100"
+                  className="w-full px-4 py-2 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
                 >
                   <option value="">All Stores</option>
                   {stores.map((store) => (

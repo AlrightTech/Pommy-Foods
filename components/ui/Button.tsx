@@ -17,9 +17,9 @@ export const Button: React.FC<ButtonProps> = ({
   const baseStyles = "font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
   
   const variants = {
-    primary: "bg-primary-500 hover:bg-primary-600 active:bg-primary-700 text-white shadow-md hover:shadow-lg",
-    secondary: "bg-white dark:bg-neutral-800 border-2 border-primary-500 text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-neutral-700",
-    retro: "bg-primary-500 hover:bg-primary-600 text-white font-display text-sm border-2 border-primary-700 shadow-pixel hover:shadow-pixel-hover active:shadow-pixel-active active:translate-x-[2px] active:translate-y-[2px]",
+    primary: "bg-primary-500 hover:bg-primary-600 active:bg-primary-700 text-white shadow-soft hover:shadow-soft-lg",
+    secondary: "bg-white border-2 border-primary-500 text-primary-600 hover:bg-primary-50",
+    retro: "bg-primary-500 hover:bg-primary-600 text-white font-display text-sm border-2 border-primary-700 shadow-soft hover:shadow-soft-lg",
   };
   
   const sizes = {

@@ -10,7 +10,7 @@ interface SalesChartProps {
 export const SalesChart: React.FC<SalesChartProps> = ({ data }) => {
   return (
     <Card>
-      <h3 className="font-display text-lg text-neutral-900 dark:text-neutral-100 mb-4">
+      <h3 className="font-display text-lg text-neutral-900 mb-4">
         Sales Trend (Last 30 Days)
       </h3>
       <ResponsiveContainer width="100%" height={300}>
@@ -38,10 +38,10 @@ export const SalesChart: React.FC<SalesChartProps> = ({ data }) => {
           <Line 
             type="monotone" 
             dataKey="amount" 
-            stroke="#C9A961" 
+            stroke="#D2AC6A" 
             strokeWidth={2}
             name="Revenue"
-            dot={{ fill: '#C9A961', r: 4 }}
+            dot={{ fill: '#D2AC6A', r: 4 }}
           />
         </LineChart>
       </ResponsiveContainer>

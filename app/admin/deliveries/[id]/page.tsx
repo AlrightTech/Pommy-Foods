@@ -88,7 +88,7 @@ export default function DeliveryDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-neutral-600 dark:text-neutral-400">Loading delivery...</div>
+        <div className="text-neutral-600">Loading delivery...</div>
       </div>
     );
   }
@@ -107,15 +107,15 @@ export default function DeliveryDetailPage() {
         <div className="flex items-center space-x-4">
           <button
             onClick={() => router.back()}
-            className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg"
+            className="p-2 hover:bg-neutral-100 rounded-lg"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="font-display text-3xl md:text-4xl text-neutral-900 dark:text-neutral-100">
+            <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
               Delivery Details
             </h1>
-            <p className="text-neutral-600 dark:text-neutral-400 mt-1">
+            <p className="text-neutral-600 mt-1">
               Order: {delivery.orders?.order_number || 'N/A'}
             </p>
           </div>
@@ -129,23 +129,23 @@ export default function DeliveryDetailPage() {
         <div className="lg:col-span-2 space-y-6">
           {/* Delivery Information */}
           <Card>
-            <h2 className="font-display text-xl text-neutral-900 dark:text-neutral-100 mb-4 flex items-center space-x-2">
+            <h2 className="font-display text-xl text-neutral-900 mb-4 flex items-center space-x-2">
               <Truck className="w-5 h-5" />
               <span>Delivery Information</span>
             </h2>
             <div className="space-y-3">
               {delivery.scheduled_date && (
                 <div>
-                  <span className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">Scheduled Date:</span>
-                  <p className="text-sm text-neutral-900 dark:text-neutral-100">
+                  <span className="text-sm font-semibold text-neutral-700">Scheduled Date:</span>
+                  <p className="text-sm text-neutral-900">
                     {format(new Date(delivery.scheduled_date), 'MMMM dd, yyyy')}
                   </p>
                 </div>
               )}
               {delivery.delivered_at && (
                 <div>
-                  <span className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">Delivered At:</span>
-                  <p className="text-sm text-neutral-900 dark:text-neutral-100">
+                  <span className="text-sm font-semibold text-neutral-700">Delivered At:</span>
+                  <p className="text-sm text-neutral-900">
                     {format(new Date(delivery.delivered_at), 'MMMM dd, yyyy HH:mm')}
                   </p>
                 </div>
@@ -154,8 +154,8 @@ export default function DeliveryDetailPage() {
                 <div className="flex items-center space-x-2">
                   <Thermometer className="w-4 h-4 text-neutral-500" />
                   <div>
-                    <span className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">Temperature:</span>
-                    <p className="text-sm text-neutral-900 dark:text-neutral-100">
+                    <span className="text-sm font-semibold text-neutral-700">Temperature:</span>
+                    <p className="text-sm text-neutral-900">
                       {delivery.temperature_reading}°C
                     </p>
                   </div>
@@ -163,7 +163,7 @@ export default function DeliveryDetailPage() {
               )}
               {delivery.proof_of_delivery_url && (
                 <div>
-                  <span className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">Proof of Delivery:</span>
+                  <span className="text-sm font-semibold text-neutral-700">Proof of Delivery:</span>
                   <a
                     href={delivery.proof_of_delivery_url}
                     target="_blank"
@@ -180,27 +180,27 @@ export default function DeliveryDetailPage() {
           {/* Store Information */}
           {delivery.orders?.stores && (
             <Card>
-              <h2 className="font-display text-xl text-neutral-900 dark:text-neutral-100 mb-4 flex items-center space-x-2">
+              <h2 className="font-display text-xl text-neutral-900 mb-4 flex items-center space-x-2">
                 <MapPin className="w-5 h-5" />
                 <span>Delivery Address</span>
               </h2>
               <div className="space-y-2">
-                <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+                <p className="text-sm font-semibold text-neutral-900">
                   {delivery.orders.stores.name}
                 </p>
                 {delivery.orders.stores.address && (
-                  <p className="text-sm text-neutral-700 dark:text-neutral-300">
+                  <p className="text-sm text-neutral-700">
                     {delivery.orders.stores.address}
                   </p>
                 )}
                 {(delivery.orders.stores.city || delivery.orders.stores.state) && (
-                  <p className="text-sm text-neutral-700 dark:text-neutral-300">
+                  <p className="text-sm text-neutral-700">
                     {delivery.orders.stores.city}{delivery.orders.stores.city && delivery.orders.stores.state && ', '}
                     {delivery.orders.stores.state}
                   </p>
                 )}
                 {delivery.orders.stores.phone && (
-                  <p className="text-sm text-neutral-700 dark:text-neutral-300">
+                  <p className="text-sm text-neutral-700">
                     Phone: {delivery.orders.stores.phone}
                   </p>
                 )}
@@ -211,25 +211,25 @@ export default function DeliveryDetailPage() {
           {/* Order Items */}
           {delivery.orders?.order_items && delivery.orders.order_items.length > 0 && (
             <Card>
-              <h2 className="font-display text-xl text-neutral-900 dark:text-neutral-100 mb-4 flex items-center space-x-2">
+              <h2 className="font-display text-xl text-neutral-900 mb-4 flex items-center space-x-2">
                 <Package className="w-5 h-5" />
                 <span>Order Items</span>
               </h2>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-neutral-200 dark:border-neutral-800">
-                      <th className="text-left py-2 text-sm font-semibold text-neutral-700 dark:text-neutral-300">Product</th>
-                      <th className="text-right py-2 text-sm font-semibold text-neutral-700 dark:text-neutral-300">Quantity</th>
+                    <tr className="border-b border-neutral-200">
+                      <th className="text-left py-2 text-sm font-semibold text-neutral-700">Product</th>
+                      <th className="text-right py-2 text-sm font-semibold text-neutral-700">Quantity</th>
                     </tr>
                   </thead>
                   <tbody>
                     {delivery.orders.order_items.map((item) => (
-                      <tr key={item.id} className="border-b border-neutral-200 dark:border-neutral-800">
-                        <td className="py-2 text-sm text-neutral-900 dark:text-neutral-100">
+                      <tr key={item.id} className="border-b border-neutral-200">
+                        <td className="py-2 text-sm text-neutral-900">
                           {item.products?.name || 'Unknown'}
                         </td>
-                        <td className="py-2 text-sm text-neutral-900 dark:text-neutral-100 text-right">
+                        <td className="py-2 text-sm text-neutral-900 text-right">
                           {item.quantity}
                         </td>
                       </tr>
@@ -243,17 +243,17 @@ export default function DeliveryDetailPage() {
           {/* Returns */}
           {delivery.returns && delivery.returns.length > 0 && (
             <Card>
-              <h2 className="font-display text-xl text-neutral-900 dark:text-neutral-100 mb-4">
+              <h2 className="font-display text-xl text-neutral-900 mb-4">
                 Returns
               </h2>
               <div className="space-y-2">
                 {delivery.returns.map((returnItem) => (
-                  <div key={returnItem.id} className="flex justify-between items-center p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
+                  <div key={returnItem.id} className="flex justify-between items-center p-3 bg-neutral-50 rounded-lg">
                     <div>
-                      <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+                      <p className="text-sm font-semibold text-neutral-900">
                         {returnItem.products?.name || 'Unknown'}
                       </p>
-                      <p className="text-xs text-neutral-600 dark:text-neutral-400">
+                      <p className="text-xs text-neutral-600">
                         Reason: {returnItem.reason}
                       </p>
                     </div>
@@ -270,21 +270,21 @@ export default function DeliveryDetailPage() {
         {/* Summary */}
         <div>
           <Card>
-            <h2 className="font-display text-xl text-neutral-900 dark:text-neutral-100 mb-4">
+            <h2 className="font-display text-xl text-neutral-900 mb-4">
               Summary
             </h2>
             {delivery.orders && (
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-neutral-600 dark:text-neutral-400">Order Amount:</span>
-                  <span className="font-semibold text-neutral-900 dark:text-neutral-100">
+                  <span className="text-neutral-600">Order Amount:</span>
+                  <span className="font-semibold text-neutral-900">
                     {formatCurrency(delivery.orders.final_amount)}
                   </span>
                 </div>
                 {delivery.notes && (
-                  <div className="pt-3 border-t border-neutral-200 dark:border-neutral-800">
-                    <p className="text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">Notes:</p>
-                    <p className="text-xs text-neutral-600 dark:text-neutral-400">{delivery.notes}</p>
+                  <div className="pt-3 border-t border-neutral-200">
+                    <p className="text-xs font-semibold text-neutral-700 mb-1">Notes:</p>
+                    <p className="text-xs text-neutral-600">{delivery.notes}</p>
                   </div>
                 )}
               </div>

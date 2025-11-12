@@ -80,10 +80,10 @@ export default function InvoicesPage() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl md:text-4xl text-neutral-900 dark:text-neutral-100">
+          <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
             Invoices
           </h1>
-          <p className="text-neutral-600 dark:text-neutral-400 mt-2">
+          <p className="text-neutral-600 mt-2">
             View and manage all invoices
           </p>
         </div>
@@ -95,7 +95,7 @@ export default function InvoicesPage() {
           <select
             value={statusFilter || ''}
             onChange={(e) => setStatusFilter(e.target.value || null)}
-            className="px-4 py-2 border-2 border-neutral-300 dark:border-neutral-700 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100"
+            className="px-4 py-2 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
           >
             <option value="">All Statuses</option>
             <option value="paid">Paid</option>
@@ -108,37 +108,37 @@ export default function InvoicesPage() {
       {/* Invoices Table */}
       <Card>
         {loading ? (
-          <div className="text-center py-8 text-neutral-600 dark:text-neutral-400">
+          <div className="text-center py-8 text-neutral-600">
             Loading invoices...
           </div>
         ) : invoices.length === 0 ? (
-          <div className="text-center py-8 text-neutral-600 dark:text-neutral-400">
+          <div className="text-center py-8 text-neutral-600">
             No invoices found
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-neutral-100 dark:bg-neutral-800 border-b-2 border-neutral-200 dark:border-neutral-700">
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                <tr className="bg-neutral-100 border-b-2 border-neutral-200">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
                     Invoice #
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
                     Store
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
                     Order
                   </th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                  <th className="px-6 py-4 text-right text-sm font-semibold text-neutral-700">
                     Amount
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
                     Status
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
                     Due Date
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
                     Actions
                   </th>
                 </tr>
@@ -147,24 +147,24 @@ export default function InvoicesPage() {
                 {invoices.map((invoice) => (
                   <tr
                     key={invoice.id}
-                    className="border-b border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
+                    className="border-b border-neutral-200 hover:bg-neutral-50 transition-colors"
                   >
-                    <td className="px-6 py-4 text-sm font-mono text-primary-600 dark:text-primary-400">
+                    <td className="px-6 py-4 text-sm font-mono text-primary-600">
                       {invoice.invoice_number}
                     </td>
-                    <td className="px-6 py-4 text-sm text-neutral-700 dark:text-neutral-300">
+                    <td className="px-6 py-4 text-sm text-neutral-700">
                       {invoice.stores?.name || 'Unknown'}
                     </td>
-                    <td className="px-6 py-4 text-sm font-mono text-neutral-600 dark:text-neutral-400">
+                    <td className="px-6 py-4 text-sm font-mono text-neutral-600">
                       {invoice.orders?.order_number || 'N/A'}
                     </td>
-                    <td className="px-6 py-4 text-sm font-semibold text-neutral-900 dark:text-neutral-100 text-right">
+                    <td className="px-6 py-4 text-sm font-semibold text-neutral-900 text-right">
                       {formatCurrency(invoice.total_amount)}
                     </td>
                     <td className="px-6 py-4">
                       {getStatusBadge(invoice.payment_status)}
                     </td>
-                    <td className="px-6 py-4 text-sm text-neutral-600 dark:text-neutral-400">
+                    <td className="px-6 py-4 text-sm text-neutral-600">
                       {invoice.due_date
                         ? format(new Date(invoice.due_date), 'MMM dd, yyyy')
                         : 'N/A'}

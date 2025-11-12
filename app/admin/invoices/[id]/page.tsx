@@ -82,7 +82,7 @@ export default function InvoiceDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-neutral-600 dark:text-neutral-400">Loading invoice...</div>
+        <div className="text-neutral-600">Loading invoice...</div>
       </div>
     );
   }
@@ -101,15 +101,15 @@ export default function InvoiceDetailPage() {
         <div className="flex items-center space-x-4">
           <button
             onClick={() => router.back()}
-            className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg"
+            className="p-2 hover:bg-neutral-100 rounded-lg"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="font-display text-3xl md:text-4xl text-neutral-900 dark:text-neutral-100">
+            <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
               {invoice.invoice_number}
             </h1>
-            <p className="text-neutral-600 dark:text-neutral-400 mt-1">
+            <p className="text-neutral-600 mt-1">
               Invoice Details
             </p>
           </div>
@@ -130,25 +130,25 @@ export default function InvoiceDetailPage() {
           {/* Store Information */}
           {invoice.stores && (
             <Card>
-              <h2 className="font-display text-xl text-neutral-900 dark:text-neutral-100 mb-4">
+              <h2 className="font-display text-xl text-neutral-900 mb-4">
                 Bill To
               </h2>
               <div className="space-y-2">
-                <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+                <p className="text-sm font-semibold text-neutral-900">
                   {invoice.stores.name}
                 </p>
                 {invoice.stores.address && (
-                  <p className="text-sm text-neutral-700 dark:text-neutral-300">
+                  <p className="text-sm text-neutral-700">
                     {invoice.stores.address}
                   </p>
                 )}
                 {(invoice.stores.city || invoice.stores.state) && (
-                  <p className="text-sm text-neutral-700 dark:text-neutral-300">
+                  <p className="text-sm text-neutral-700">
                     {invoice.stores.city}{invoice.stores.city && invoice.stores.state && ', '}
                     {invoice.stores.state} {invoice.stores.zip_code}
                   </p>
                 )}
-                <p className="text-sm text-neutral-700 dark:text-neutral-300">
+                <p className="text-sm text-neutral-700">
                   {invoice.stores.email}
                 </p>
               </div>
@@ -158,40 +158,40 @@ export default function InvoiceDetailPage() {
           {/* Invoice Items */}
           {invoice.orders?.order_items && invoice.orders.order_items.length > 0 && (
             <Card>
-              <h2 className="font-display text-xl text-neutral-900 dark:text-neutral-100 mb-4">
+              <h2 className="font-display text-xl text-neutral-900 mb-4">
                 Invoice Items
               </h2>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-neutral-200 dark:border-neutral-800">
-                      <th className="text-left py-3 px-4 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                    <tr className="border-b border-neutral-200">
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-neutral-700">
                         Product
                       </th>
-                      <th className="text-right py-3 px-4 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                      <th className="text-right py-3 px-4 text-sm font-semibold text-neutral-700">
                         Quantity
                       </th>
-                      <th className="text-right py-3 px-4 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                      <th className="text-right py-3 px-4 text-sm font-semibold text-neutral-700">
                         Unit Price
                       </th>
-                      <th className="text-right py-3 px-4 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                      <th className="text-right py-3 px-4 text-sm font-semibold text-neutral-700">
                         Total
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     {invoice.orders.order_items.map((item) => (
-                      <tr key={item.id} className="border-b border-neutral-200 dark:border-neutral-800">
-                        <td className="py-3 px-4 text-sm text-neutral-900 dark:text-neutral-100">
+                      <tr key={item.id} className="border-b border-neutral-200">
+                        <td className="py-3 px-4 text-sm text-neutral-900">
                           {item.products?.name || 'Unknown'}
                         </td>
-                        <td className="py-3 px-4 text-sm text-neutral-900 dark:text-neutral-100 text-right">
+                        <td className="py-3 px-4 text-sm text-neutral-900 text-right">
                           {item.quantity}
                         </td>
-                        <td className="py-3 px-4 text-sm text-neutral-900 dark:text-neutral-100 text-right">
+                        <td className="py-3 px-4 text-sm text-neutral-900 text-right">
                           {formatCurrency(item.unit_price)}
                         </td>
-                        <td className="py-3 px-4 text-sm font-semibold text-neutral-900 dark:text-neutral-100 text-right">
+                        <td className="py-3 px-4 text-sm font-semibold text-neutral-900 text-right">
                           {formatCurrency(item.total_price)}
                         </td>
                       </tr>
@@ -206,19 +206,19 @@ export default function InvoiceDetailPage() {
         {/* Invoice Summary */}
         <div>
           <Card>
-            <h2 className="font-display text-xl text-neutral-900 dark:text-neutral-100 mb-4">
+            <h2 className="font-display text-xl text-neutral-900 mb-4">
               Invoice Summary
             </h2>
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-neutral-600 dark:text-neutral-400">Subtotal:</span>
-                <span className="font-semibold text-neutral-900 dark:text-neutral-100">
+                <span className="text-neutral-600">Subtotal:</span>
+                <span className="font-semibold text-neutral-900">
                   {formatCurrency(invoice.subtotal)}
                 </span>
               </div>
               {invoice.discount_amount > 0 && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-neutral-600 dark:text-neutral-400">Discount:</span>
+                  <span className="text-neutral-600">Discount:</span>
                   <span className="font-semibold text-success-600">
                     -{formatCurrency(invoice.discount_amount)}
                   </span>
@@ -226,21 +226,21 @@ export default function InvoiceDetailPage() {
               )}
               {invoice.return_amount > 0 && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-neutral-600 dark:text-neutral-400">Returns:</span>
+                  <span className="text-neutral-600">Returns:</span>
                   <span className="font-semibold text-error-600">
                     -{formatCurrency(invoice.return_amount)}
                   </span>
                 </div>
               )}
-              <div className="border-t border-neutral-200 dark:border-neutral-800 pt-3 flex justify-between">
-                <span className="font-semibold text-neutral-900 dark:text-neutral-100">Total:</span>
+              <div className="border-t border-neutral-200 pt-3 flex justify-between">
+                <span className="font-semibold text-neutral-900">Total:</span>
                 <span className="font-bold text-lg text-primary-600">
                   {formatCurrency(invoice.total_amount)}
                 </span>
               </div>
               {invoice.due_date && (
-                <div className="pt-3 border-t border-neutral-200 dark:border-neutral-800">
-                  <p className="text-xs text-neutral-600 dark:text-neutral-400">
+                <div className="pt-3 border-t border-neutral-200">
+                  <p className="text-xs text-neutral-600">
                     Due Date: {format(new Date(invoice.due_date), 'MMMM dd, yyyy')}
                   </p>
                 </div>

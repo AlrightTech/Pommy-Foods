@@ -92,7 +92,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-neutral-600 dark:text-neutral-400">Loading dashboard...</div>
+        <div className="text-neutral-600">Loading dashboard...</div>
       </div>
     );
   }
@@ -113,10 +113,10 @@ export default function DashboardPage() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="font-display text-3xl md:text-4xl text-neutral-900 dark:text-neutral-100">
+        <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
           Dashboard
         </h1>
-        <p className="text-neutral-600 dark:text-neutral-400 mt-2">
+        <p className="text-neutral-600 mt-2">
           Welcome back! Here&apos;s what&apos;s happening with your orders today.
         </p>
       </div>
@@ -136,7 +136,7 @@ export default function DashboardPage() {
           change=""
           changeType="positive"
           icon={DollarSign}
-          iconBg="bg-success-100 dark:bg-success-900"
+          iconBg="bg-success-100"
         />
         <StatCard
           title="Products"
@@ -144,7 +144,7 @@ export default function DashboardPage() {
           change=""
           changeType="neutral"
           icon={Package}
-          iconBg="bg-info-100 dark:bg-info-900"
+          iconBg="bg-info-100"
         />
         <StatCard
           title="Pending Approval"
@@ -152,7 +152,7 @@ export default function DashboardPage() {
           change={data.stats.pendingApprovals > 0 ? `${data.stats.pendingApprovals} orders need review` : ""}
           changeType={data.stats.pendingApprovals > 0 ? "negative" : "neutral"}
           icon={Clock}
-          iconBg="bg-warning-100 dark:bg-warning-900"
+          iconBg="bg-warning-100"
         />
       </div>
 
@@ -168,7 +168,7 @@ export default function DashboardPage() {
         <div className="lg:col-span-2">
           <Card>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="font-display text-xl text-neutral-900 dark:text-neutral-100">
+              <h2 className="font-display text-xl text-neutral-900">
                 Recent Orders
               </h2>
               <Link 
@@ -181,23 +181,23 @@ export default function DashboardPage() {
             
             <div className="overflow-x-auto">
               {data.recentOrders.length === 0 ? (
-                <div className="text-center py-8 text-neutral-600 dark:text-neutral-400">
+                <div className="text-center py-8 text-neutral-600">
                   No orders yet
                 </div>
               ) : (
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-neutral-200 dark:border-neutral-800">
-                      <th className="text-left py-3 px-4 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                    <tr className="border-b border-neutral-200">
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-neutral-700">
                         Order ID
                       </th>
-                      <th className="text-left py-3 px-4 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-neutral-700">
                         Store
                       </th>
-                      <th className="text-left py-3 px-4 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-neutral-700">
                         Amount
                       </th>
-                      <th className="text-left py-3 px-4 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-neutral-700">
                         Status
                       </th>
                     </tr>
@@ -206,16 +206,16 @@ export default function DashboardPage() {
                     {data.recentOrders.map((order) => (
                       <tr
                         key={order.id}
-                        className="border-b border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors cursor-pointer"
+                        className="border-b border-neutral-200 hover:bg-neutral-50 transition-colors cursor-pointer"
                         onClick={() => router.push(`/admin/orders/${order.id}`)}
                       >
-                        <td className="py-3 px-4 text-sm font-mono text-primary-600 dark:text-primary-400">
+                        <td className="py-3 px-4 text-sm font-mono text-primary-600">
                           {order.orderNumber}
                         </td>
-                        <td className="py-3 px-4 text-sm text-neutral-700 dark:text-neutral-300">
+                        <td className="py-3 px-4 text-sm text-neutral-700">
                           {order.store}
                         </td>
-                        <td className="py-3 px-4 text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+                        <td className="py-3 px-4 text-sm font-semibold text-neutral-900">
                           {formatCurrency(order.amount)}
                         </td>
                         <td className="py-3 px-4">
@@ -233,7 +233,7 @@ export default function DashboardPage() {
         {/* Quick Actions */}
         <div>
           <Card>
-            <h2 className="font-display text-xl text-neutral-900 dark:text-neutral-100 mb-6">
+            <h2 className="font-display text-xl text-neutral-900 mb-6">
               Quick Actions
             </h2>
             <div className="space-y-3">
@@ -246,14 +246,14 @@ export default function DashboardPage() {
               </Link>
               <Link
                 href="/admin/analytics"
-                className="w-full bg-white dark:bg-neutral-800 border-2 border-primary-500 text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-neutral-700 font-semibold px-4 py-3 rounded-lg transition-all duration-200 text-left flex items-center space-x-3 block"
+                className="w-full bg-white border-2 border-primary-500 text-primary-600 hover:bg-primary-50 font-semibold px-4 py-3 rounded-lg transition-all duration-200 text-left flex items-center space-x-3 block"
               >
                 <TrendingUp className="w-5 h-5" />
                 <span>View Analytics</span>
               </Link>
               <Link
                 href="/admin/products"
-                className="w-full bg-white dark:bg-neutral-800 border-2 border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 font-semibold px-4 py-3 rounded-lg transition-all duration-200 text-left flex items-center space-x-3 block"
+                className="w-full bg-white border-2 border-neutral-300 text-neutral-700 hover:bg-neutral-50 font-semibold px-4 py-3 rounded-lg transition-all duration-200 text-left flex items-center space-x-3 block"
               >
                 <Package className="w-5 h-5" />
                 <span>Manage Products</span>

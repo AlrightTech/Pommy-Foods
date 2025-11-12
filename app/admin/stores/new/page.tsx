@@ -53,15 +53,15 @@ export default function NewStorePage() {
       <div className="flex items-center space-x-4">
         <button
           onClick={() => router.back()}
-          className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg"
+          className="p-2 hover:bg-neutral-100 rounded-lg"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div>
-          <h1 className="font-display text-3xl md:text-4xl text-neutral-900 dark:text-neutral-100">
+          <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
             Add New Store
           </h1>
-          <p className="text-neutral-600 dark:text-neutral-400 mt-2">
+          <p className="text-neutral-600 mt-2">
             Register a new convenience store or restaurant
           </p>
         </div>
@@ -71,7 +71,7 @@ export default function NewStorePage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 mb-2">
                 Store Name *
               </label>
               <input
@@ -79,12 +79,12 @@ export default function NewStorePage() {
                 required
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-neutral-300 dark:border-neutral-700 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100"
+                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 mb-2">
                 Email *
               </label>
               <input
@@ -92,24 +92,24 @@ export default function NewStorePage() {
                 required
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-neutral-300 dark:border-neutral-700 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100"
+                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 mb-2">
                 Phone
               </label>
               <input
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-neutral-300 dark:border-neutral-700 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100"
+                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 mb-2">
                 Credit Limit
               </label>
               <input
@@ -117,55 +117,55 @@ export default function NewStorePage() {
                 step="0.01"
                 value={formData.credit_limit}
                 onChange={(e) => setFormData({ ...formData, credit_limit: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-neutral-300 dark:border-neutral-700 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100"
+                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 mb-2">
                 Address
               </label>
               <input
                 type="text"
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-neutral-300 dark:border-neutral-700 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100"
+                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 mb-2">
                 City
               </label>
               <input
                 type="text"
                 value={formData.city}
                 onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-neutral-300 dark:border-neutral-700 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100"
+                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 mb-2">
                 State
               </label>
               <input
                 type="text"
                 value={formData.state}
                 onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-neutral-300 dark:border-neutral-700 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100"
+                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
+              <label className="block text-sm font-semibold text-neutral-700 mb-2">
                 Zip Code
               </label>
               <input
                 type="text"
                 value={formData.zip_code}
                 onChange={(e) => setFormData({ ...formData, zip_code: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-neutral-300 dark:border-neutral-700 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100"
+                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
               />
             </div>
           </div>

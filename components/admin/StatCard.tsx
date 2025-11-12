@@ -18,7 +18,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   change,
   changeType = "neutral",
   icon: Icon,
-  iconBg = "bg-primary-100 dark:bg-primary-900",
+  iconBg = "bg-primary-100",
 }) => {
   const changeColors = {
     positive: "text-success-600",
@@ -30,8 +30,8 @@ export const StatCard: React.FC<StatCardProps> = ({
     <Card>
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-neutral-600 dark:text-neutral-400">{title}</p>
-          <p className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mt-2">
+          <p className="text-sm text-neutral-600">{title}</p>
+          <p className="text-3xl font-bold text-neutral-900 mt-2">
             {value}
           </p>
           {change && (
@@ -41,7 +41,7 @@ export const StatCard: React.FC<StatCardProps> = ({
           )}
         </div>
         <div className={cn("w-12 h-12 rounded-lg flex items-center justify-center", iconBg)}>
-          <Icon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+          <Icon className="w-6 h-6 text-primary-600" />
         </div>
       </div>
     </Card>

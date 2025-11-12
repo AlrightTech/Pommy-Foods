@@ -95,10 +95,10 @@ export default function ProductsPage() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl md:text-4xl text-neutral-900 dark:text-neutral-100">
+          <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
             Products
           </h1>
-          <p className="text-neutral-600 dark:text-neutral-400 mt-2">
+          <p className="text-neutral-600 mt-2">
             Manage your product catalog
           </p>
         </div>
@@ -112,7 +112,7 @@ export default function ProductsPage() {
 
       {/* Search */}
       <Card>
-        <div className="flex items-center space-x-2 bg-neutral-100 dark:bg-neutral-800 rounded-lg px-4 py-2">
+        <div className="flex items-center space-x-2 bg-neutral-100 rounded-lg px-4 py-2">
           <Search className="w-4 h-4 text-neutral-500" />
           <input
             type="text"
@@ -122,7 +122,7 @@ export default function ProductsPage() {
               setSearchQuery(e.target.value);
               setPage(1);
             }}
-            className="flex-1 bg-transparent border-none outline-none text-sm text-neutral-900 dark:text-neutral-100 placeholder-neutral-500"
+            className="flex-1 bg-transparent border-none outline-none text-sm text-neutral-900 placeholder-neutral-500"
           />
         </div>
       </Card>
@@ -130,11 +130,11 @@ export default function ProductsPage() {
       {/* Products Table */}
       <Card>
         {loading ? (
-          <div className="text-center py-8 text-neutral-600 dark:text-neutral-400">
+          <div className="text-center py-8 text-neutral-600">
             Loading products...
           </div>
         ) : products.length === 0 ? (
-          <div className="text-center py-8 text-neutral-600 dark:text-neutral-400">
+          <div className="text-center py-8 text-neutral-600">
             No products found
           </div>
         ) : (
@@ -142,26 +142,26 @@ export default function ProductsPage() {
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-neutral-100 dark:bg-neutral-800 border-b-2 border-neutral-200 dark:border-neutral-700">
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                  <tr className="bg-neutral-100 border-b-2 border-neutral-200">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
                       Name
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
                       SKU
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
                       Category
                     </th>
-                    <th className="px-6 py-4 text-right text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                    <th className="px-6 py-4 text-right text-sm font-semibold text-neutral-700">
                       Price
                     </th>
-                    <th className="px-6 py-4 text-right text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                    <th className="px-6 py-4 text-right text-sm font-semibold text-neutral-700">
                       Min Stock
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
                       Status
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
                       Actions
                     </th>
                   </tr>
@@ -170,21 +170,21 @@ export default function ProductsPage() {
                   {products.map((product) => (
                     <tr
                       key={product.id}
-                      className="border-b border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors"
+                      className="border-b border-neutral-200 hover:bg-neutral-50 transition-colors"
                     >
-                      <td className="px-6 py-4 text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+                      <td className="px-6 py-4 text-sm font-semibold text-neutral-900">
                         {product.name}
                       </td>
-                      <td className="px-6 py-4 text-sm font-mono text-primary-600 dark:text-primary-400">
+                      <td className="px-6 py-4 text-sm font-mono text-primary-600">
                         {product.sku}
                       </td>
-                      <td className="px-6 py-4 text-sm text-neutral-700 dark:text-neutral-300">
+                      <td className="px-6 py-4 text-sm text-neutral-700">
                         {product.category || 'Uncategorized'}
                       </td>
-                      <td className="px-6 py-4 text-sm font-semibold text-neutral-900 dark:text-neutral-100 text-right">
+                      <td className="px-6 py-4 text-sm font-semibold text-neutral-900 text-right">
                         {formatCurrency(product.price)}
                       </td>
-                      <td className="px-6 py-4 text-sm text-neutral-700 dark:text-neutral-300 text-right">
+                      <td className="px-6 py-4 text-sm text-neutral-700 text-right">
                         {product.min_stock_level}
                       </td>
                       <td className="px-6 py-4">
@@ -217,8 +217,8 @@ export default function ProductsPage() {
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-between mt-6 pt-6 border-t border-neutral-200 dark:border-neutral-800">
-              <p className="text-sm text-neutral-600 dark:text-neutral-400">
+            <div className="flex items-center justify-between mt-6 pt-6 border-t border-neutral-200">
+              <p className="text-sm text-neutral-600">
                 Showing {(page - 1) * pagination.limit + 1}-
                 {Math.min(page * pagination.limit, pagination.total)} of {pagination.total} products
               </p>
@@ -226,14 +226,14 @@ export default function ProductsPage() {
                 <button
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="px-4 py-2 border-2 border-neutral-300 dark:border-neutral-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-800 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 border-2 border-neutral-300 rounded-lg hover:bg-neutral-50 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Previous
                 </button>
                 <button
                   onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
                   disabled={page >= pagination.totalPages}
-                  className="px-4 py-2 border-2 border-neutral-300 dark:border-neutral-700 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-800 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 border-2 border-neutral-300 rounded-lg hover:bg-neutral-50 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Next
                 </button>

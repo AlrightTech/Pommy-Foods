@@ -86,10 +86,10 @@ export default function DeliveriesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-3xl md:text-4xl text-neutral-900 dark:text-neutral-100">
+        <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
           Deliveries
         </h1>
-        <p className="text-neutral-600 dark:text-neutral-400 mt-2">
+        <p className="text-neutral-600 mt-2">
           Track and manage deliveries
         </p>
       </div>
@@ -100,7 +100,7 @@ export default function DeliveriesPage() {
           <select
             value={statusFilter || ''}
             onChange={(e) => setStatusFilter(e.target.value || null)}
-            className="px-4 py-2 border-2 border-neutral-300 dark:border-neutral-700 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100"
+            className="px-4 py-2 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
           >
             <option value="">All Statuses</option>
             <option value="pending">Pending</option>
@@ -115,11 +115,11 @@ export default function DeliveriesPage() {
       {/* Deliveries List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
-          <div className="col-span-full text-center py-8 text-neutral-600 dark:text-neutral-400">
+          <div className="col-span-full text-center py-8 text-neutral-600">
             Loading deliveries...
           </div>
         ) : deliveries.length === 0 ? (
-          <div className="col-span-full text-center py-8 text-neutral-600 dark:text-neutral-400">
+          <div className="col-span-full text-center py-8 text-neutral-600">
             No deliveries found
           </div>
         ) : (
@@ -139,11 +139,11 @@ export default function DeliveriesPage() {
                 <div className="flex items-start space-x-2">
                   <MapPin className="w-4 h-4 text-neutral-500 mt-0.5" />
                   <div>
-                    <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+                    <p className="text-sm font-semibold text-neutral-900">
                       {delivery.orders?.stores?.name || 'Unknown Store'}
                     </p>
                     {delivery.orders?.stores?.address && (
-                      <p className="text-xs text-neutral-600 dark:text-neutral-400">
+                      <p className="text-xs text-neutral-600">
                         {delivery.orders.stores.address}
                         {delivery.orders.stores.city && `, ${delivery.orders.stores.city}`}
                       </p>
@@ -152,13 +152,13 @@ export default function DeliveriesPage() {
                 </div>
 
                 {delivery.orders && (
-                  <p className="text-sm text-neutral-700 dark:text-neutral-300">
+                  <p className="text-sm text-neutral-700">
                     Amount: <span className="font-semibold">{formatCurrency(delivery.orders.final_amount)}</span>
                   </p>
                 )}
 
                 {delivery.scheduled_date && (
-                  <p className="text-xs text-neutral-600 dark:text-neutral-400">
+                  <p className="text-xs text-neutral-600">
                     Scheduled: {format(new Date(delivery.scheduled_date), 'MMM dd, yyyy')}
                   </p>
                 )}
@@ -170,7 +170,7 @@ export default function DeliveriesPage() {
                 )}
 
                 {delivery.temperature_reading && (
-                  <p className="text-xs text-neutral-600 dark:text-neutral-400">
+                  <p className="text-xs text-neutral-600">
                     Temperature: {delivery.temperature_reading}°C
                   </p>
                 )}
