@@ -5,6 +5,8 @@ import { useParams, useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Loader } from "@/components/ui/Loader";
+import { ConfirmationDialog } from "@/components/ui/ConfirmationDialog";
+import { useToast } from "@/components/ui/ToastProvider";
 import { ArrowLeft, Save, Trash2 } from "lucide-react";
 
 interface Store {
@@ -24,10 +26,12 @@ interface Store {
 export default function EditStorePage() {
   const params = useParams();
   const router = useRouter();
+  const { showSuccess, showError } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [store, setStore] = useState<Store | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -64,12 +68,12 @@ export default function EditStorePage() {
       });
     } catch (error: any) {
       console.error('Error fetching store:', error);
-      alert(error.message || 'Failed to load store');
+      showError(error.message || 'Failed to load store');
       router.push('/admin/stores');
     } finally {
       setLoading(false);
     }
-  }, [params.id, router]);
+  }, [params.id, router, showError]);
 
   useEffect(() => {
     if (params.id) {
@@ -92,25 +96,25 @@ export default function EditStorePage() {
       });
 
       if (response.ok) {
+        showSuccess('Store updated successfully!');
         router.push(`/admin/stores/${params.id}`);
-        alert('Store updated successfully!');
       } else {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || 'Failed to update store');
       }
     } catch (error: any) {
       console.error('Error updating store:', error);
-      alert(error.message || 'Failed to update store. Please check all fields.');
+      showError(error.message || 'Failed to update store. Please check all fields.');
     } finally {
       setSaving(false);
     }
   };
 
-  const handleDelete = async () => {
-    if (!confirm('Are you sure you want to deactivate this store? This will prevent new orders from being placed. You can reactivate it later.')) {
-      return;
-    }
+  const handleDeleteClick = () => {
+    setDeleteDialogOpen(true);
+  };
 
+  const handleDeleteConfirm = async () => {
     setDeleting(true);
     try {
       const response = await fetch(`/api/admin/stores/${params.id}`, {
@@ -118,18 +122,23 @@ export default function EditStorePage() {
       });
 
       if (response.ok) {
+        showSuccess('Store deactivated successfully!');
+        setDeleteDialogOpen(false);
         router.push('/admin/stores');
-        alert('Store deactivated successfully!');
       } else {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || 'Failed to deactivate store');
       }
     } catch (error: any) {
       console.error('Error deleting store:', error);
-      alert(error.message || 'Failed to deactivate store');
+      showError(error.message || 'Failed to deactivate store');
     } finally {
       setDeleting(false);
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
   };
 
   if (loading) {
@@ -165,12 +174,12 @@ export default function EditStorePage() {
         </div>
         <Button
           variant="danger"
-          onClick={handleDelete}
+          onClick={handleDeleteClick}
           disabled={deleting}
           className="flex items-center gap-2"
         >
           <Trash2 className="w-4 h-4" />
-          <span>{deleting ? 'Deactivating...' : 'Deactivate Store'}</span>
+          <span>Deactivate Store</span>
         </Button>
       </div>
 
@@ -307,6 +316,19 @@ export default function EditStorePage() {
           </div>
         </form>
       </Card>
+
+      {/* Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={deleteDialogOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        title="Deactivate Store"
+        message={`Are you sure you want to deactivate "${store?.name}"? This will prevent new orders from being placed. You can reactivate it later.`}
+        confirmText="Deactivate"
+        cancelText="Cancel"
+        variant="warning"
+        isLoading={deleting}
+      />
     </div>
   );
 }

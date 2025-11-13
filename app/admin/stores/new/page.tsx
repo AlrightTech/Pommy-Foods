@@ -4,10 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { useToast } from "@/components/ui/ToastProvider";
 import { ArrowLeft } from "lucide-react";
 
 export default function NewStorePage() {
   const router = useRouter();
+  const { showSuccess, showError } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -35,16 +37,15 @@ export default function NewStorePage() {
       });
 
       if (response.ok) {
+        showSuccess('Store created successfully!');
         router.push('/admin/stores');
-        // Show success message
-        alert('Store created successfully!');
       } else {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || 'Failed to create store');
       }
     } catch (error: any) {
       console.error('Error creating store:', error);
-      alert(error.message || 'Failed to create store. Please check all required fields.');
+      showError(error.message || 'Failed to create store. Please check all required fields.');
     } finally {
       setLoading(false);
     }

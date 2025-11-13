@@ -7,6 +7,8 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Loader } from "@/components/ui/Loader";
+import { ConfirmationDialog } from "@/components/ui/ConfirmationDialog";
+import { useToast } from "@/components/ui/ToastProvider";
 import { Plus, Search, Edit, Eye, Trash2 } from "lucide-react";
 
 interface Store {
@@ -23,6 +25,7 @@ interface Store {
 
 export default function StoresPage() {
   const router = useRouter();
+  const { showSuccess, showError } = useToast();
   const [stores, setStores] = useState<Store[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -33,6 +36,16 @@ export default function StoresPage() {
     page: 1,
     limit: 20,
   });
+  const [deleteDialog, setDeleteDialog] = useState<{
+    isOpen: boolean;
+    storeId: string | null;
+    storeName: string;
+  }>({
+    isOpen: false,
+    storeId: null,
+    storeName: "",
+  });
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchStores = useCallback(async () => {
     try {
@@ -96,27 +109,41 @@ export default function StoresPage() {
     }).format(amount);
   };
 
-  const handleDelete = async (storeId: string, storeName: string) => {
-    if (!confirm(`Are you sure you want to deactivate "${storeName}"? This will prevent new orders from being placed. You can reactivate it later.`)) {
-      return;
-    }
+  const handleDeleteClick = (storeId: string, storeName: string) => {
+    setDeleteDialog({
+      isOpen: true,
+      storeId,
+      storeName,
+    });
+  };
 
+  const handleDeleteConfirm = async () => {
+    if (!deleteDialog.storeId) return;
+
+    setIsDeleting(true);
     try {
-      const response = await fetch(`/api/admin/stores/${storeId}`, {
+      const response = await fetch(`/api/admin/stores/${deleteDialog.storeId}`, {
         method: 'DELETE',
       });
 
       if (response.ok) {
-        alert('Store deactivated successfully!');
+        showSuccess('Store deactivated successfully!');
+        setDeleteDialog({ isOpen: false, storeId: null, storeName: "" });
         fetchStores(); // Refresh the list
       } else {
         const errorData = await response.json().catch(() => ({}));
-        alert(errorData.error || 'Failed to deactivate store');
+        showError(errorData.error || 'Failed to deactivate store');
       }
     } catch (error) {
       console.error('Error deleting store:', error);
-      alert('Failed to deactivate store. Please try again.');
+      showError('Failed to deactivate store. Please try again.');
+    } finally {
+      setIsDeleting(false);
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialog({ isOpen: false, storeId: null, storeName: "" });
   };
 
   return (
@@ -239,7 +266,7 @@ export default function StoresPage() {
                             <Edit className="w-4 h-4" />
                           </Link>
                           <button
-                            onClick={() => handleDelete(store.id, store.name)}
+                            onClick={() => handleDeleteClick(store.id, store.name)}
                             className="px-3 py-1.5 glass rounded-premium text-error-600 hover:text-error-700 hover:bg-white/35 text-sm font-semibold font-body transition-all"
                             title="Deactivate store"
                           >
@@ -281,6 +308,19 @@ export default function StoresPage() {
           </>
         )}
       </Card>
+
+      {/* Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        title="Deactivate Store"
+        message={`Are you sure you want to deactivate "${deleteDialog.storeName}"? This will prevent new orders from being placed. You can reactivate it later.`}
+        confirmText="Deactivate"
+        cancelText="Cancel"
+        variant="warning"
+        isLoading={isDeleting}
+      />
     </div>
   );
 }

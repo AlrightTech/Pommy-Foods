@@ -2,7 +2,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "neu" | "glass";
+  variant?: "primary" | "secondary" | "neu" | "glass" | "danger";
   size?: "sm" | "md" | "lg";
   children: React.ReactNode;
 }
@@ -25,6 +25,8 @@ export const Button: React.FC<ButtonProps> = ({
     neu: "neu text-primary-500 hover:text-primary-600 hover:shadow-neu-lg active:text-primary-700 active:neu-inset disabled:text-primary-500/50",
     // Glass: Glassmorphic, primary text color
     glass: "glass text-primary-500 hover:text-primary-600 hover:bg-white/35 active:text-primary-700 disabled:text-primary-500/50",
+    // Danger: Error background, white text
+    danger: "bg-error-600 text-white shadow-premium hover:bg-error-700 hover:shadow-premium-lg hover:-translate-y-0.5 active:translate-y-0 active:bg-error-800 disabled:text-white/70",
   };
   
   const sizes = {

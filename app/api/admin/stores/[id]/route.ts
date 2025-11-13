@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/lib/supabase/server';
+import { getSupabaseAdmin } from '@/lib/supabase/admin';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,7 +12,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const supabase = await createServerClient();
+    const supabase = getSupabaseAdmin();
 
     const { data: store, error } = await supabase
       .from('stores')
@@ -59,7 +59,7 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const supabase = await createServerClient();
+    const supabase = getSupabaseAdmin();
     const body = await request.json();
 
     // Check if store exists
@@ -175,7 +175,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const supabase = await createServerClient();
+    const supabase = getSupabaseAdmin();
     const searchParams = request.nextUrl.searchParams;
     const hardDelete = searchParams.get('hard') === 'true';
 
