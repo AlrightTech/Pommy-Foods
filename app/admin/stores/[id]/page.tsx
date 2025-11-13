@@ -32,15 +32,15 @@ export default function StoreDetailPage() {
   const fetchStore = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/stores/${params.id}`);
+      const response = await fetch(`/api/admin/stores/${params.id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch store');
       }
       const data = await response.json();
       setStore(data.store);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching store:', error);
-      alert('Failed to load store');
+      alert(error.message || 'Failed to load store');
     } finally {
       setLoading(false);
     }
@@ -78,23 +78,25 @@ export default function StoreDetailPage() {
         <div className="flex items-center space-x-4">
           <button
             onClick={() => router.back()}
-            className="p-2 hover:bg-neutral-100 rounded-lg"
+            className="p-2 glass rounded-premium hover:bg-white/35 transition-all"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-5 h-5 text-primary-600" />
           </button>
           <div>
-            <h1 className="font-semibold text-3xl md:text-4xl font-body text-neutral-900 mb-2">
+            <h1 className="font-bold text-3xl md:text-4xl font-body text-neutral-900 mb-2">
               {store.name}
             </h1>
-            <p className="text-neutral-600 mt-1">
+            <p className="text-neutral-600 font-body text-base">
               Store Details
             </p>
           </div>
         </div>
-        <div className="flex items-center space-x-3">
-          <OrderStatusBadge status={store.is_active ? 'active' : 'inactive'} />
+        <div className="flex items-center gap-3">
+          <Badge variant={store.is_active ? "success" : "error"}>
+            {store.is_active ? "Active" : "Inactive"}
+          </Badge>
           <Link href={`/admin/stores/${store.id}/edit`}>
-            <Button variant="secondary" className="flex items-center space-x-2">
+            <Button variant="glass" className="flex items-center gap-2">
               <Edit className="w-4 h-4" />
               <span>Edit</span>
             </Button>
@@ -104,8 +106,8 @@ export default function StoreDetailPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4">
+          <Card variant="glass-strong">
+            <h2 className="font-bold text-xl font-body text-neutral-900 mb-4">
               Contact Information
             </h2>
             <div className="space-y-3">
@@ -134,8 +136,8 @@ export default function StoreDetailPage() {
         </div>
 
         <div>
-          <Card>
-            <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4">
+          <Card variant="glass-strong">
+            <h2 className="font-bold text-xl font-body text-neutral-900 mb-4">
               Financial Summary
             </h2>
             <div className="space-y-3">
@@ -165,11 +167,4 @@ export default function StoreDetailPage() {
   );
 }
 
-function OrderStatusBadge({ status }: { status: string }) {
-  return status === 'active' ? (
-    <Badge variant="success">Active</Badge>
-  ) : (
-    <Badge variant="error">Inactive</Badge>
-  );
-}
 

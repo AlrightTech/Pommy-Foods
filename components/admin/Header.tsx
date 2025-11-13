@@ -2,11 +2,24 @@
 
 import { Bell, Search, User, Menu, ChevronDown, Package } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase/client";
 import { Sidebar } from "./Sidebar";
 
 export const Header = () => {
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      router.push("/");
+      router.refresh();
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
 
   return (
     <>
@@ -65,11 +78,11 @@ export const Header = () => {
                   <button className="w-full text-left px-4 py-2.5 text-sm font-body text-neutral-700 hover:bg-white/30 transition-colors rounded-lg mx-2">
                     Profile Settings
                   </button>
-                  <button className="w-full text-left px-4 py-2.5 text-sm font-body text-neutral-700 hover:bg-white/30 transition-colors rounded-lg mx-2">
-                    Preferences
-                  </button>
                   <div className="border-t border-white/30 my-2"></div>
-                  <button className="w-full text-left px-4 py-2.5 text-sm font-body text-error-600 hover:bg-error-50/30 transition-colors rounded-lg mx-2">
+                  <button 
+                    onClick={handleSignOut}
+                    className="w-full text-left px-4 py-2.5 text-sm font-body text-error-600 hover:bg-error-50/30 transition-colors rounded-lg mx-2"
+                  >
                     Sign Out
                   </button>
                 </div>

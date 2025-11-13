@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Loader } from "@/components/ui/Loader";
-import { Plus, Search, Edit, Eye } from "lucide-react";
+import { Plus, Search, Edit, Eye, Trash2 } from "lucide-react";
 
 interface Store {
   id: string;
@@ -42,7 +42,7 @@ export default function StoresPage() {
       params.append('page', page.toString());
       params.append('limit', '20');
 
-      const response = await fetch(`/api/stores?${params.toString()}`);
+      const response = await fetch(`/api/admin/stores?${params.toString()}`);
       if (!response.ok) {
         throw new Error('Failed to fetch stores');
       }
@@ -96,11 +96,34 @@ export default function StoresPage() {
     }).format(amount);
   };
 
+  const handleDelete = async (storeId: string, storeName: string) => {
+    if (!confirm(`Are you sure you want to deactivate "${storeName}"? This will prevent new orders from being placed. You can reactivate it later.`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/stores/${storeId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        alert('Store deactivated successfully!');
+        fetchStores(); // Refresh the list
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        alert(errorData.error || 'Failed to deactivate store');
+      }
+    } catch (error) {
+      console.error('Error deleting store:', error);
+      alert('Failed to deactivate store. Please try again.');
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="font-semibold text-3xl md:text-4xl font-body text-neutral-900 mb-2">
+          <h1 className="font-bold text-3xl md:text-4xl font-body text-neutral-900 mb-2">
             Stores
           </h1>
           <p className="text-neutral-600 font-body text-base">
@@ -108,17 +131,17 @@ export default function StoresPage() {
           </p>
         </div>
         <Link href="/admin/stores/new">
-          <Button>
-            <Plus className="w-4 h-4 mr-2" />
-            Add Store
+          <Button variant="primary" className="flex items-center gap-2">
+            <Plus className="w-4 h-4" />
+            <span>Add Store</span>
           </Button>
         </Link>
       </div>
 
       {/* Search */}
-      <Card>
-        <div className="flex items-center space-x-2 bg-neutral-100 rounded-lg px-4 py-2">
-          <Search className="w-4 h-4 text-neutral-500" />
+      <Card variant="glass">
+        <div className="flex items-center gap-3 glass rounded-premium px-4 py-2.5 h-11 focus-within:shadow-glass-lg focus-within:bg-white/35 transition-all">
+          <Search className="w-4 h-4 text-primary-600 flex-shrink-0" />
           <input
             type="text"
             placeholder="Search stores by name or email..."
@@ -127,27 +150,27 @@ export default function StoresPage() {
               setSearchQuery(e.target.value);
               setPage(1);
             }}
-            className="flex-1 bg-transparent border-none outline-none text-sm text-neutral-900 placeholder-neutral-500"
+            className="flex-1 bg-transparent border-none outline-none text-sm font-body text-neutral-900 placeholder-neutral-500 h-full"
           />
         </div>
       </Card>
 
       {/* Stores Table */}
-      <Card>
+      <Card variant="glass-strong">
         {loading ? (
           <div className="py-12">
             <Loader text="Loading stores..." />
           </div>
         ) : stores.length === 0 ? (
-          <div className="text-center py-8 text-neutral-600">
-            No stores found
+          <div className="text-center py-16">
+            <p className="text-lg font-body text-neutral-600 font-medium">No stores found</p>
           </div>
         ) : (
           <>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-neutral-50 border-b border-neutral-200">
+                  <tr className="bg-white/20 backdrop-blur-sm border-b border-white/30">
                     <th className="px-6 py-4 text-left text-xs font-semibold font-body text-neutral-600 uppercase tracking-wider">
                       Store Name
                     </th>
@@ -175,7 +198,7 @@ export default function StoresPage() {
                   {stores.map((store) => (
                     <tr
                       key={store.id}
-                      className="border-b border-neutral-100 hover:bg-primary-50/50 transition-colors"
+                      className="border-b border-white/20 hover:bg-white/10 transition-colors"
                     >
                       <td className="px-6 py-4 text-sm font-semibold text-neutral-900">
                         {store.name}
@@ -200,19 +223,28 @@ export default function StoresPage() {
                         )}
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center gap-2">
                           <Link
                             href={`/admin/stores/${store.id}`}
-                            className="text-primary-500 hover:text-primary-600 active:text-primary-700 transition-colors"
+                            className="px-3 py-1.5 glass rounded-premium text-primary-500 hover:text-primary-600 active:text-primary-700 hover:bg-white/35 text-sm font-semibold font-body transition-all"
+                            title="View store"
                           >
                             <Eye className="w-4 h-4" />
                           </Link>
                           <Link
                             href={`/admin/stores/${store.id}/edit`}
-                            className="text-primary-500 hover:text-primary-600 active:text-primary-700 transition-colors"
+                            className="px-3 py-1.5 glass rounded-premium text-primary-500 hover:text-primary-600 active:text-primary-700 hover:bg-white/35 text-sm font-semibold font-body transition-all"
+                            title="Edit store"
                           >
                             <Edit className="w-4 h-4" />
                           </Link>
+                          <button
+                            onClick={() => handleDelete(store.id, store.name)}
+                            className="px-3 py-1.5 glass rounded-premium text-error-600 hover:text-error-700 hover:bg-white/35 text-sm font-semibold font-body transition-all"
+                            title="Deactivate store"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -222,26 +254,28 @@ export default function StoresPage() {
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-between mt-6 pt-6 border-t border-neutral-200">
-              <p className="text-sm text-neutral-600">
+            <div className="flex items-center justify-between mt-6 pt-6 border-t border-white/30">
+              <p className="text-sm font-body text-neutral-600">
                 Showing {(page - 1) * pagination.limit + 1}-
                 {Math.min(page * pagination.limit, pagination.total)} of {pagination.total} stores
               </p>
-              <div className="flex items-center space-x-2">
-                <button
+              <div className="flex items-center gap-2">
+                <Button
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="px-4 py-2 border-2 border-neutral-300 rounded-lg hover:bg-neutral-50 text-sm font-semibold text-primary-500 hover:text-primary-600 active:text-primary-700 disabled:text-primary-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  variant="glass"
+                  size="sm"
                 >
                   Previous
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
                   disabled={page >= pagination.totalPages}
-                  className="px-4 py-2 border-2 border-neutral-300 rounded-lg hover:bg-neutral-50 text-sm font-semibold text-primary-500 hover:text-primary-600 active:text-primary-700 disabled:text-primary-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  variant="glass"
+                  size="sm"
                 >
                   Next
-                </button>
+                </Button>
               </div>
             </div>
           </>
