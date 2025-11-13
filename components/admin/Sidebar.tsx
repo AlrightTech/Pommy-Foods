@@ -10,14 +10,19 @@ import {
   DollarSign, 
   BarChart3,
   Settings,
-  Users
+  Users,
+  FileText
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navigation = [
-  { name: "Home", href: "/admin/dashboard", icon: LayoutDashboard },
+  { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
   { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
-  { name: "Menu", href: "/admin/products", icon: Package },
+  { name: "Products", href: "/admin/products", icon: Package },
+  { name: "Stores", href: "/admin/stores", icon: Users },
+  { name: "Kitchen Sheets", href: "/admin/kitchen-sheets", icon: FileText },
+  { name: "Deliveries", href: "/admin/deliveries", icon: Truck },
+  { name: "Payments", href: "/admin/payments", icon: DollarSign },
   { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
@@ -26,7 +31,7 @@ export const Sidebar = () => {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-80 neu rounded-r-premium-lg p-6 hidden md:block z-40 border-r border-white/30">
+    <aside className="fixed left-0 top-0 h-screen w-80 neu rounded-r-premium-lg p-6 hidden md:block z-40 border-r border-white/30 overflow-y-auto">
       {/* Logo */}
       <div className="mb-10 pb-6 border-b border-white/30">
         <div className="flex items-center gap-3">
@@ -44,7 +49,7 @@ export const Sidebar = () => {
       <nav className="space-y-2">
         {navigation.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href;
+          const isActive = pathname === item.href || pathname?.startsWith(item.href + "/");
           
           return (
             <Link
