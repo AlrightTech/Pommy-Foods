@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Primary Brand Colors - Gold accent
+        // Primary Brand Colors - Gold accent (maintained)
         primary: {
           50: "#FAF4EC",
           100: "#F5EDE0",
@@ -21,6 +21,19 @@ const config: Config = {
           700: "#9A7A3F",
           800: "#7C5F2F",
           900: "#5D4520",
+        },
+        // Warm food-inspired accent colors
+        accent: {
+          50: "#FFF7ED",
+          100: "#FFEDD5",
+          200: "#FED7AA",
+          300: "#FDBA74",
+          400: "#FB923C",
+          500: "#F97316",
+          600: "#EA580C",
+          700: "#C2410C",
+          800: "#9A3412",
+          900: "#7C2D12",
         },
         // Base background - soft beige
         base: {
@@ -105,6 +118,13 @@ const config: Config = {
         "soft": "0 2px 8px rgba(210, 172, 106, 0.1)",
         "soft-lg": "0 4px 16px rgba(210, 172, 106, 0.15)",
         "card": "0 2px 12px rgba(0, 0, 0, 0.08)",
+        "food": "0 4px 20px rgba(249, 115, 22, 0.12), 0 2px 8px rgba(210, 172, 106, 0.08)",
+        "food-lg": "0 8px 32px rgba(249, 115, 22, 0.15), 0 4px 12px rgba(210, 172, 106, 0.1)",
+        "elevated": "0 10px 40px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)",
+      },
+      borderRadius: {
+        "food": "16px",
+        "food-lg": "24px",
       },
       keyframes: {
         "pulse-slow": {
@@ -119,11 +139,21 @@ const config: Config = {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
+        "float": {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        "scale-in": {
+          "0%": { transform: "scale(0.95)", opacity: "0" },
+          "100%": { transform: "scale(1)", opacity: "1" },
+        },
       },
       animation: {
         "pulse-slow": "pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "slide-in": "slide-in 0.3s ease-out",
         "fade-in": "fade-in 0.3s ease-out",
+        "float": "float 3s ease-in-out infinite",
+        "scale-in": "scale-in 0.2s ease-out",
       },
     },
   },

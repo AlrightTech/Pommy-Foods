@@ -83,7 +83,7 @@ export default function StoreDetailPage() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
+            <h1 className="font-semibold text-3xl md:text-4xl font-body text-neutral-900 mb-2">
               {store.name}
             </h1>
             <p className="text-neutral-600 mt-1">
@@ -105,7 +105,7 @@ export default function StoreDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <Card>
-            <h2 className="font-display text-xl text-neutral-900 mb-4">
+            <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4">
               Contact Information
             </h2>
             <div className="space-y-3">
@@ -135,7 +135,7 @@ export default function StoreDetailPage() {
 
         <div>
           <Card>
-            <h2 className="font-display text-xl text-neutral-900 mb-4">
+            <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4">
               Financial Summary
             </h2>
             <div className="space-y-3">

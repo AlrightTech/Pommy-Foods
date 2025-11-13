@@ -138,7 +138,7 @@ export default function EditProductPage() {
           <ArrowLeft className="w-5 h-5 text-neutral-700" />
         </button>
         <div>
-          <h1 className="font-display text-3xl md:text-4xl text-neutral-900 mb-1">
+          <h1 className="font-semibold text-3xl md:text-4xl font-body text-neutral-900 mb-2">
             Edit Product
           </h1>
           <p className="text-neutral-600 text-sm font-body">
@@ -289,7 +289,7 @@ export default function EditProductPage() {
       {/* Product Statistics */}
       {product?.statistics && (
         <Card>
-          <h2 className="font-display text-2xl font-bold text-neutral-900 mb-6 pb-4 border-b border-neutral-200">
+          <h2 className="font-semibold text-2xl font-body text-neutral-900 mb-6 pb-4 border-b border-neutral-200">
             Product Statistics
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
@@ -333,7 +333,7 @@ export default function EditProductPage() {
       {/* Stock by Store */}
       {product?.stock_by_store && product.stock_by_store.length > 0 && (
         <Card>
-          <h2 className="font-display text-2xl font-bold text-neutral-900 mb-6 pb-4 border-b border-neutral-200">
+          <h2 className="font-semibold text-2xl font-body text-neutral-900 mb-6 pb-4 border-b border-neutral-200">
             Stock by Store
           </h2>
           <div className="overflow-x-auto">

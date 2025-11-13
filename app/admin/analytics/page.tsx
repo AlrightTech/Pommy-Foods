@@ -100,10 +100,10 @@ export default function AnalyticsPage() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
+          <h1 className="font-semibold text-3xl md:text-4xl font-body text-neutral-900 mb-2">
             Analytics
           </h1>
-          <p className="text-neutral-600 mt-2">
+          <p className="text-neutral-600 font-body text-base">
             View sales reports and insights
           </p>
         </div>
@@ -156,7 +156,7 @@ export default function AnalyticsPage() {
       {/* Top Products & Stores */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
-          <h2 className="font-display text-xl text-neutral-900 mb-4">
+          <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4">
             Top Products
           </h2>
           <div className="space-y-2">
@@ -174,7 +174,7 @@ export default function AnalyticsPage() {
         </Card>
 
         <Card>
-          <h2 className="font-display text-xl text-neutral-900 mb-4">
+          <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4">
             Sales by Store
           </h2>
           <div className="space-y-2">

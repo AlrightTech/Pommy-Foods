@@ -73,7 +73,7 @@ export default function NewProductPage() {
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div>
-          <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
+          <h1 className="font-semibold text-3xl md:text-4xl font-body text-neutral-900 mb-2">
             Add New Product
           </h1>
           <p className="text-neutral-600 mt-2">

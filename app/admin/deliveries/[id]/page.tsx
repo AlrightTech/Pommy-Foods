@@ -109,7 +109,7 @@ export default function DeliveryDetailPage() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
+            <h1 className="font-semibold text-3xl md:text-4xl font-body text-neutral-900 mb-2">
               Delivery Details
             </h1>
             <p className="text-neutral-600 mt-1">
@@ -126,7 +126,7 @@ export default function DeliveryDetailPage() {
         <div className="lg:col-span-2 space-y-6">
           {/* Delivery Information */}
           <Card>
-            <h2 className="font-display text-xl text-neutral-900 mb-4 flex items-center space-x-2">
+            <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4 flex items-center space-x-2">
               <Truck className="w-5 h-5" />
               <span>Delivery Information</span>
             </h2>
@@ -177,7 +177,7 @@ export default function DeliveryDetailPage() {
           {/* Store Information */}
           {delivery.orders?.stores && (
             <Card>
-              <h2 className="font-display text-xl text-neutral-900 mb-4 flex items-center space-x-2">
+              <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4 flex items-center space-x-2">
                 <MapPin className="w-5 h-5" />
                 <span>Delivery Address</span>
               </h2>
@@ -208,7 +208,7 @@ export default function DeliveryDetailPage() {
           {/* Order Items */}
           {delivery.orders?.order_items && delivery.orders.order_items.length > 0 && (
             <Card>
-              <h2 className="font-display text-xl text-neutral-900 mb-4 flex items-center space-x-2">
+              <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4 flex items-center space-x-2">
                 <Package className="w-5 h-5" />
                 <span>Order Items</span>
               </h2>
@@ -240,7 +240,7 @@ export default function DeliveryDetailPage() {
           {/* Returns */}
           {delivery.returns && delivery.returns.length > 0 && (
             <Card>
-              <h2 className="font-display text-xl text-neutral-900 mb-4">
+              <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4">
                 Returns
               </h2>
               <div className="space-y-2">
@@ -267,7 +267,7 @@ export default function DeliveryDetailPage() {
         {/* Summary */}
         <div>
           <Card>
-            <h2 className="font-display text-xl text-neutral-900 mb-4">
+            <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4">
               Summary
             </h2>
             {delivery.orders && (

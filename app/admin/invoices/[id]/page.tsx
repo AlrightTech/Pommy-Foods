@@ -104,7 +104,7 @@ export default function InvoiceDetailPage() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
+            <h1 className="font-semibold text-3xl md:text-4xl font-body text-neutral-900 mb-2">
               {invoice.invoice_number}
             </h1>
             <p className="text-neutral-600 mt-1">
@@ -128,7 +128,7 @@ export default function InvoiceDetailPage() {
           {/* Store Information */}
           {invoice.stores && (
             <Card>
-              <h2 className="font-display text-xl text-neutral-900 mb-4">
+              <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4">
                 Bill To
               </h2>
               <div className="space-y-2">
@@ -156,7 +156,7 @@ export default function InvoiceDetailPage() {
           {/* Invoice Items */}
           {invoice.orders?.order_items && invoice.orders.order_items.length > 0 && (
             <Card>
-              <h2 className="font-display text-xl text-neutral-900 mb-4">
+              <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4">
                 Invoice Items
               </h2>
               <div className="overflow-x-auto">

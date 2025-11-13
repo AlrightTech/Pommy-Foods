@@ -207,10 +207,10 @@ function OrdersPageContent() {
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
+          <h1 className="font-semibold text-3xl md:text-4xl font-body text-neutral-900 mb-2">
             Orders
           </h1>
-          <p className="text-neutral-600 mt-2">
+          <p className="text-neutral-600 font-body text-base">
             Manage and review all orders from stores
           </p>
         </div>

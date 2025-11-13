@@ -99,10 +99,10 @@ export default function DeliveriesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
+        <h1 className="font-semibold text-3xl md:text-4xl font-body text-neutral-900 mb-2">
           Deliveries
         </h1>
-        <p className="text-neutral-600 mt-2">
+        <p className="text-neutral-600 font-body text-base">
           Track and manage deliveries
         </p>
       </div>

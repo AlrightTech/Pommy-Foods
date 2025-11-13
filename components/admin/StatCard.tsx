@@ -27,21 +27,23 @@ export const StatCard: React.FC<StatCardProps> = ({
   };
 
   return (
-    <Card>
+    <Card variant="elevated" className="hover:scale-[1.02] transition-all duration-300 animate-scale-in">
       <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm text-neutral-600">{title}</p>
-          <p className="text-3xl font-bold text-neutral-900 mt-2">
+        <div className="flex-1">
+          <p className="text-sm font-body text-neutral-600 mb-2">{title}</p>
+          <p className="text-3xl font-bold font-display text-neutral-900 mb-1.5">
             {value}
           </p>
           {change && (
-            <p className={cn("text-sm mt-2", changeColors[changeType])}>
+            <p className={cn("text-xs font-body font-medium flex items-center gap-1", changeColors[changeType])}>
+              {changeType === "positive" && "↑"}
+              {changeType === "negative" && "↓"}
               {change}
             </p>
           )}
         </div>
-        <div className={cn("w-12 h-12 rounded-lg flex items-center justify-center", iconBg)}>
-          <Icon className="w-6 h-6 text-primary-600" />
+        <div className={cn("w-14 h-14 rounded-food flex items-center justify-center shadow-food transition-all duration-300 hover:scale-110", iconBg)}>
+          <Icon className="w-7 h-7 text-primary-600" />
         </div>
       </div>
     </Card>

@@ -204,7 +204,7 @@ export default function OrderDetailPage() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
+            <h1 className="font-semibold text-3xl md:text-4xl font-body text-neutral-900 mb-2">
               {order.order_number}
             </h1>
             <p className="text-neutral-600 mt-1">
@@ -250,7 +250,7 @@ export default function OrderDetailPage() {
         <div className="lg:col-span-2 space-y-6">
           {/* Store Information */}
           <Card>
-            <h2 className="font-display text-xl text-neutral-900 mb-4">
+            <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4">
               Store Information
             </h2>
             <div className="space-y-2">
@@ -279,7 +279,7 @@ export default function OrderDetailPage() {
 
           {/* Order Items */}
           <Card>
-            <h2 className="font-display text-xl text-neutral-900 mb-4">
+            <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4">
               Order Items
             </h2>
             <div className="overflow-x-auto">
@@ -333,7 +333,7 @@ export default function OrderDetailPage() {
 
           {order.notes && (
             <Card>
-              <h2 className="font-display text-xl text-neutral-900 mb-4">
+              <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4">
                 Notes
               </h2>
               <p className="text-sm text-neutral-700">{order.notes}</p>
@@ -414,7 +414,7 @@ export default function OrderDetailPage() {
         {/* Order Summary */}
         <div>
           <Card>
-            <h2 className="font-display text-xl text-neutral-900 mb-4">
+            <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4">
               Order Summary
             </h2>
             <div className="space-y-3">

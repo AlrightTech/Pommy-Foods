@@ -30,10 +30,10 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
+        <h1 className="font-semibold text-3xl md:text-4xl font-body text-neutral-900 mb-2">
           Settings
         </h1>
-        <p className="text-neutral-600 mt-2">
+        <p className="text-neutral-600 font-body text-base">
           Configure system settings
         </p>
       </div>
@@ -41,7 +41,7 @@ export default function SettingsPage() {
       <Card>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <h2 className="font-display text-xl text-neutral-900 mb-4">
+            <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4">
               Company Information
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -71,7 +71,7 @@ export default function SettingsPage() {
           </div>
 
           <div>
-            <h2 className="font-display text-xl text-neutral-900 mb-4">
+            <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4">
               Order Settings
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

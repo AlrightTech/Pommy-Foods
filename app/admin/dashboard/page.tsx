@@ -134,27 +134,22 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8 pb-8">
       {/* Enhanced Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div className="flex-1">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-1.5 h-10 bg-gradient-to-b from-primary-500 to-primary-600 rounded-full shadow-sm"></div>
-            <div>
-              <h1 className="font-display text-3xl md:text-4xl text-neutral-900 mb-1">
-                Dashboard
-              </h1>
-              <p className="text-neutral-600 font-body text-sm">
-                Welcome back! Here&apos;s what&apos;s happening with your orders today.
-              </p>
-            </div>
-          </div>
+          <h1 className="font-semibold text-3xl md:text-4xl font-body text-neutral-900 mb-2">
+            Dashboard
+          </h1>
+          <p className="text-neutral-600 font-body text-base">
+            Welcome back! Here&apos;s what&apos;s happening with your orders today.
+          </p>
         </div>
-        <Card className="p-4 bg-gradient-to-br from-primary-50 to-primary-100/50 border-primary-200 shadow-sm">
+        <Card className="p-4 bg-gradient-to-br from-primary-50 to-primary-100 border-primary-200">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-primary-600" />
+            <div className="w-12 h-12 rounded-xl bg-primary-500/10 flex items-center justify-center">
+              <Calendar className="w-6 h-6 text-primary-600" />
             </div>
             <div>
-              <p className="text-sm font-body font-semibold text-neutral-700">{currentDate}</p>
+              <p className="text-sm font-body font-semibold text-neutral-900">{currentDate}</p>
               <p className="text-xs font-body text-neutral-500">{currentTime}</p>
             </div>
           </div>
@@ -205,7 +200,7 @@ export default function DashboardPage() {
               <Activity className="w-4 h-4 text-primary-600" />
             </div>
             <div>
-              <h3 className="font-display text-lg text-neutral-900">Sales Performance</h3>
+              <h3 className="font-semibold text-lg font-body text-neutral-900">Sales Performance</h3>
               <p className="text-xs font-body text-neutral-500">Last 30 days revenue trend</p>
             </div>
           </div>
@@ -228,7 +223,7 @@ export default function DashboardPage() {
               <TrendingUp className="w-4 h-4 text-primary-600" />
             </div>
             <div>
-              <h3 className="font-display text-lg text-neutral-900">Order Status</h3>
+              <h3 className="font-semibold text-lg font-body text-neutral-900">Order Status</h3>
               <p className="text-xs font-body text-neutral-500">Distribution by status</p>
             </div>
           </div>
@@ -258,7 +253,7 @@ export default function DashboardPage() {
                   <ShoppingCart className="w-5 h-5 text-primary-600" />
                 </div>
                 <div>
-                  <h2 className="font-display text-xl text-neutral-900">
+                  <h2 className="font-semibold text-xl font-body text-neutral-900">
                     Recent Orders
                   </h2>
                   <p className="text-xs font-body text-neutral-500 mt-0.5">
@@ -289,11 +284,11 @@ export default function DashboardPage() {
                   {displayData.recentOrders.slice(0, 5).map((order, index) => (
                     <div
                       key={order.id}
-                      className="flex items-center justify-between p-4 rounded-lg hover:bg-gradient-to-r hover:from-primary-50/50 hover:to-transparent transition-all duration-200 cursor-pointer border border-neutral-200 hover:border-primary-300 hover:shadow-sm group"
+                      className="flex items-center justify-between p-4 rounded-food hover:bg-gradient-to-r hover:from-primary-50/60 hover:to-accent-50/30 transition-all duration-300 cursor-pointer border border-primary-200/40 hover:border-primary-400/60 hover:shadow-food group animate-scale-in"
                       onClick={() => router.push(`/admin/orders/${order.id}`)}
                     >
                       <div className="flex items-center gap-4 flex-1 min-w-0">
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center group-hover:from-primary-200 group-hover:to-primary-300 transition-all shadow-sm">
+                        <div className="w-12 h-12 rounded-food bg-gradient-to-br from-primary-100 to-accent-100 flex items-center justify-center group-hover:from-primary-200 group-hover:to-accent-200 transition-all shadow-food group-hover:scale-110">
                           <span className="text-xs font-display text-primary-700 font-bold">#{index + 1}</span>
                         </div>
                         <div className="flex-1 min-w-0">
@@ -344,7 +339,7 @@ export default function DashboardPage() {
             <div className="space-y-3">
               <Link
                 href="/admin/orders?status=pending"
-                className="group w-full bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold px-4 py-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-between"
+                className="group w-full bg-gradient-to-r from-primary-500 via-primary-500 to-accent-500 hover:from-primary-600 hover:via-primary-600 hover:to-accent-600 text-white font-semibold px-4 py-4 rounded-food shadow-food hover:shadow-food-lg transition-all duration-300 flex items-center justify-between hover:-translate-y-0.5"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
@@ -356,7 +351,7 @@ export default function DashboardPage() {
               </Link>
               <Link
                 href="/admin/analytics"
-                className="group w-full bg-white border-2 border-primary-500 text-primary-600 hover:bg-primary-50 font-semibold px-4 py-4 rounded-lg transition-all duration-200 flex items-center justify-between"
+                className="group w-full bg-white/95 backdrop-blur-sm border-2 border-primary-400/60 text-primary-700 hover:bg-primary-50/80 hover:border-primary-500/80 font-semibold px-4 py-4 rounded-food shadow-soft hover:shadow-food transition-all duration-300 flex items-center justify-between"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-primary-100 flex items-center justify-center">
@@ -400,7 +395,7 @@ export default function DashboardPage() {
                 <Activity className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="font-display text-lg text-neutral-900">Today&apos;s Summary</h3>
+                <h3 className="font-semibold text-lg font-body text-neutral-900">Today&apos;s Summary</h3>
                 <p className="text-xs font-body text-neutral-600">Quick overview</p>
               </div>
             </div>
