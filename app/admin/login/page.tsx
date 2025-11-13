@@ -117,6 +117,7 @@ function AdminLoginForm() {
 
           <Button
             type="submit"
+            variant="glass"
             disabled={loading}
             className="w-full"
           >
