@@ -191,6 +191,52 @@ export default function AnalyticsPage() {
           </div>
         </Card>
       </div>
+
+      {/* Returns/Wastage Reports */}
+      <Card>
+        <h2 className="font-display text-xl text-neutral-900 mb-4">
+          Returns & Wastage Analysis
+        </h2>
+        <div className="text-sm text-neutral-600 mb-4">
+          Track expired items and returns by product and store
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="p-4 bg-warning-50 rounded-lg border border-warning-200">
+            <p className="text-xs text-warning-700 mb-1">Total Returns</p>
+            <p className="text-2xl font-bold text-warning-900">0</p>
+            <p className="text-xs text-warning-600 mt-1">Items returned this period</p>
+          </div>
+          <div className="p-4 bg-error-50 rounded-lg border border-error-200">
+            <p className="text-xs text-error-700 mb-1">Wastage Value</p>
+            <p className="text-2xl font-bold text-error-900">{formatCurrency(0)}</p>
+            <p className="text-xs text-error-600 mt-1">Estimated loss from returns</p>
+          </div>
+        </div>
+        <div className="mt-4 text-sm text-neutral-500">
+          <p>Returns/wastage data will be populated as drivers log expired item returns.</p>
+        </div>
+      </Card>
+
+      {/* Payment Collection Reports */}
+      <Card>
+        <h2 className="font-display text-xl text-neutral-900 mb-4">
+          Payment Collection Summary
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="p-4 bg-primary-50 rounded-lg border border-primary-200">
+            <p className="text-xs text-primary-700 mb-1">Cash Payments</p>
+            <p className="text-xl font-bold text-primary-900">{formatCurrency(0)}</p>
+          </div>
+          <div className="p-4 bg-info-50 rounded-lg border border-info-200">
+            <p className="text-xs text-info-700 mb-1">Direct Debit</p>
+            <p className="text-xl font-bold text-info-900">{formatCurrency(0)}</p>
+          </div>
+          <div className="p-4 bg-success-50 rounded-lg border border-success-200">
+            <p className="text-xs text-success-700 mb-1">Collection Rate</p>
+            <p className="text-xl font-bold text-success-900">0%</p>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }

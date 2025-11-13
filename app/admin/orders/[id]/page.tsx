@@ -68,8 +68,6 @@ export default function OrderDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isApproving, setIsApproving] = useState(false);
-  const [isModifying, setIsModifying] = useState(false);
-  const [showModifyForm, setShowModifyForm] = useState(false);
 
   const fetchOrder = useCallback(async () => {
     try {
@@ -171,14 +169,7 @@ export default function OrderDetailPage() {
 
   const handleModify = async () => {
     if (!order) return;
-    
-    // For now, show a simple prompt. In a real app, this would open a modal with a form
-    const confirmModify = confirm('This will allow you to modify order items. Would you like to continue?');
-    if (!confirmModify) return;
-    
-    setShowModifyForm(true);
-    // TODO: Implement full modification UI with form
-    alert('Order modification UI coming soon. For now, you can modify items via the API.');
+    router.push(`/admin/orders/${order.id}/modify`);
   };
 
   const formatCurrency = (amount: number) => {
@@ -227,7 +218,6 @@ export default function OrderDetailPage() {
             <>
               <Button
                 onClick={handleModify}
-                disabled={isModifying}
                 variant="secondary"
                 className="flex items-center space-x-2"
               >

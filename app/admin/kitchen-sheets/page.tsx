@@ -1,0 +1,194 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Card } from "@/components/ui/Card";
+import { Loader } from "@/components/ui/Loader";
+import { Badge } from "@/components/ui/Badge";
+import { Search, Package } from "lucide-react";
+import { format } from "date-fns";
+
+interface KitchenSheet {
+  id: string;
+  order_id: string;
+  prepared_at: string | null;
+  completed_at: string | null;
+  notes: string | null;
+  created_at: string;
+  orders: {
+    id: string;
+    order_number: string;
+    stores: {
+      id: string;
+      name: string;
+    } | null;
+  } | null;
+}
+
+export default function KitchenSheetsPage() {
+  const router = useRouter();
+  const [sheets, setSheets] = useState<KitchenSheet[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const fetchSheets = useCallback(async () => {
+    try {
+      setLoading(true);
+      // Using a placeholder API endpoint - should be created
+      const response = await fetch("/api/admin/kitchen-sheets");
+      if (!response.ok) {
+        // Fallback to empty array if endpoint doesn't exist yet
+        setSheets([]);
+        return;
+      }
+
+      const data = await response.json();
+      setSheets(data.kitchen_sheets || []);
+    } catch (error) {
+      console.error("Error fetching kitchen sheets:", error);
+      setSheets([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchSheets();
+  }, [fetchSheets]);
+
+  const getSheetStatus = (sheet: KitchenSheet) => {
+    if (sheet.completed_at) return "completed";
+    if (sheet.prepared_at) return "in_progress";
+    return "pending";
+  };
+
+  const filteredSheets = sheets.filter((sheet) => {
+    const status = getSheetStatus(sheet);
+    const matchesStatus = statusFilter === "all" || status === statusFilter;
+    const matchesSearch =
+      !searchQuery ||
+      sheet.orders?.order_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      sheet.orders?.stores?.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesStatus && matchesSearch;
+  });
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
+          Kitchen Sheets
+        </h1>
+        <p className="text-neutral-600 mt-2">
+          Monitor kitchen preparation progress
+        </p>
+      </div>
+
+      {/* Filters */}
+      <Card>
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex-1 flex items-center space-x-2 bg-neutral-100 rounded-lg px-4 py-2">
+            <Search className="w-4 h-4 text-neutral-500" />
+            <input
+              type="text"
+              placeholder="Search by Order # or Store..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="flex-1 bg-transparent border-none outline-none text-sm text-neutral-900 placeholder-neutral-500"
+            />
+          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-4 py-2 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
+          >
+            <option value="all">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+      </Card>
+
+      {/* Kitchen Sheets Table */}
+      <Card>
+        {loading ? (
+          <div className="py-12">
+            <Loader text="Loading kitchen sheets..." />
+          </div>
+        ) : filteredSheets.length === 0 ? (
+          <div className="text-center py-8 text-neutral-600">
+            <Package className="w-12 h-12 text-neutral-300 mx-auto mb-4" />
+            <p>No kitchen sheets found</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-neutral-100 border-b-2 border-neutral-200">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
+                    Order #
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
+                    Store
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
+                    Created
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
+                    Status
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredSheets.map((sheet) => {
+                  const status = getSheetStatus(sheet);
+                  const statusConfig = {
+                    pending: { variant: "warning" as const, label: "Pending" },
+                    in_progress: { variant: "info" as const, label: "In Progress" },
+                    completed: { variant: "success" as const, label: "Completed" },
+                  }[status];
+
+                  return (
+                    <tr
+                      key={sheet.id}
+                      className="border-b border-neutral-200 hover:bg-neutral-50 transition-colors"
+                    >
+                      <td className="px-6 py-4 text-sm font-mono text-primary-600">
+                        {sheet.orders?.order_number || "N/A"}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-neutral-700">
+                        {sheet.orders?.stores?.name || "Unknown"}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-neutral-600">
+                        {format(new Date(sheet.created_at), "MMM dd, yyyy HH:mm")}
+                      </td>
+                      <td className="px-6 py-4">
+                        <Badge variant={statusConfig.variant}>
+                          {statusConfig.label}
+                        </Badge>
+                      </td>
+                      <td className="px-6 py-4">
+                        <Link
+                          href={`/admin/kitchen-sheets/${sheet.id}`}
+                          className="text-primary-600 hover:text-primary-700 text-sm font-semibold"
+                        >
+                          View
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Card>
+    </div>
+  );
+}
+

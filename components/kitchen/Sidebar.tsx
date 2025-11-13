@@ -2,28 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-  LayoutDashboard, 
-  ShoppingCart, 
-  Package, 
-  Truck, 
-  DollarSign, 
-  BarChart3,
-  Settings,
-  Users
-} from "lucide-react";
+import { LayoutDashboard, Package, CheckSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navigation = [
-  { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
-  { name: "Products", href: "/admin/products", icon: Package },
-  { name: "Stores", href: "/admin/stores", icon: Users },
-  { name: "Kitchen Sheets", href: "/admin/kitchen-sheets", icon: Package },
-  { name: "Deliveries", href: "/admin/deliveries", icon: Truck },
-  { name: "Payments", href: "/admin/payments", icon: DollarSign },
-  { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
-  { name: "Settings", href: "/admin/settings", icon: Settings },
+  { name: "Dashboard", href: "/kitchen/dashboard", icon: LayoutDashboard },
+  { name: "Kitchen Sheets", href: "/kitchen/sheets", icon: Package },
 ];
 
 export const Sidebar = () => {
@@ -33,14 +17,14 @@ export const Sidebar = () => {
     <aside className="fixed left-0 top-0 h-screen w-64 bg-gradient-to-b from-primary-50 to-primary-100 border-r border-primary-200 p-6 hidden md:block z-40 shadow-soft">
       <div className="mb-8">
         <h1 className="font-display text-xl text-primary-600">Pommy Foods</h1>
-        <p className="text-xs text-neutral-600 mt-1">Admin Panel</p>
+        <p className="text-xs text-neutral-600 mt-1">Kitchen Module</p>
       </div>
-      
+
       <nav className="space-y-2">
         {navigation.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href;
-          
+          const isActive = pathname === item.href || pathname?.startsWith(item.href + "/");
+
           return (
             <Link
               key={item.name}

@@ -18,6 +18,21 @@ interface Product {
   category: string | null;
   is_active: boolean;
   min_stock_level: number;
+  statistics?: {
+    total_ordered: number;
+    total_revenue: number;
+    order_count: number;
+    stores_with_stock: number;
+    total_stock: number;
+  };
+  stock_by_store?: Array<{
+    store_id: string;
+    current_stock: number;
+    stores: {
+      id: string;
+      name: string;
+    };
+  }>;
 }
 
 export default function EditProductPage() {
@@ -41,9 +56,10 @@ export default function EditProductPage() {
   const fetchProduct = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/products/${params.id}`);
+      const response = await fetch(`/api/admin/products/${params.id}`);
       if (!response.ok) {
-        throw new Error('Failed to fetch product');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to fetch product');
       }
       const data = await response.json();
       setProduct(data.product);
@@ -77,7 +93,7 @@ export default function EditProductPage() {
     setSaving(true);
 
     try {
-      const response = await fetch(`/api/products/${params.id}`, {
+      const response = await fetch(`/api/admin/products/${params.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -92,7 +108,13 @@ export default function EditProductPage() {
         router.push('/admin/products');
         alert('Product updated successfully!');
       } else {
-        throw new Error('Failed to update product');
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.details 
+          ? Array.isArray(errorData.details) 
+            ? errorData.details.join(', ') 
+            : errorData.details
+          : errorData.error || 'Failed to update product';
+        alert(`Failed to update product: ${errorMessage}`);
       }
     } catch (error) {
       console.error('Error updating product:', error);
@@ -258,6 +280,97 @@ export default function EditProductPage() {
           </div>
         </form>
       </Card>
+
+      {/* Product Statistics */}
+      {product?.statistics && (
+        <Card>
+          <h2 className="font-display text-xl text-neutral-900 mb-4">
+            Product Statistics
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div>
+              <p className="text-sm text-neutral-600">Total Ordered</p>
+              <p className="text-lg font-semibold text-neutral-900">
+                {product.statistics.total_ordered}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-neutral-600">Total Revenue</p>
+              <p className="text-lg font-semibold text-neutral-900">
+                {new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                }).format(product.statistics.total_revenue)}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-neutral-600">Order Count</p>
+              <p className="text-lg font-semibold text-neutral-900">
+                {product.statistics.order_count}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-neutral-600">Stores with Stock</p>
+              <p className="text-lg font-semibold text-neutral-900">
+                {product.statistics.stores_with_stock}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-neutral-600">Total Stock</p>
+              <p className="text-lg font-semibold text-neutral-900">
+                {product.statistics.total_stock}
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* Stock by Store */}
+      {product?.stock_by_store && product.stock_by_store.length > 0 && (
+        <Card>
+          <h2 className="font-display text-xl text-neutral-900 mb-4">
+            Stock by Store
+          </h2>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-neutral-200">
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-neutral-700">
+                    Store
+                  </th>
+                  <th className="text-right py-3 px-4 text-sm font-semibold text-neutral-700">
+                    Current Stock
+                  </th>
+                  <th className="text-right py-3 px-4 text-sm font-semibold text-neutral-700">
+                    Status
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {product.stock_by_store.map((stock) => (
+                  <tr key={stock.store_id} className="border-b border-neutral-200">
+                    <td className="py-3 px-4 text-sm text-neutral-900">
+                      {stock.stores?.name || 'Unknown Store'}
+                    </td>
+                    <td className="py-3 px-4 text-sm text-neutral-900 text-right">
+                      {stock.current_stock}
+                    </td>
+                    <td className="py-3 px-4 text-right">
+                      {stock.current_stock < (product.min_stock_level || 0) ? (
+                        <span className="text-xs font-semibold text-error-600">Low Stock</span>
+                      ) : stock.current_stock === 0 ? (
+                        <span className="text-xs font-semibold text-error-600">Out of Stock</span>
+                      ) : (
+                        <span className="text-xs font-semibold text-success-600">In Stock</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      )}
     </div>
   );
 }

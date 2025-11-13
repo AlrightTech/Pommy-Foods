@@ -43,9 +43,10 @@ export default function ProductsPage() {
       params.append('page', page.toString());
       params.append('limit', '20');
 
-      const response = await fetch(`/api/products?${params.toString()}`);
+      const response = await fetch(`/api/admin/products?${params.toString()}`);
       if (!response.ok) {
-        throw new Error('Failed to fetch products');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to fetch products');
       }
 
       const data = await response.json();
@@ -94,24 +95,27 @@ export default function ProductsPage() {
   }, [fetchProducts]);
 
   const handleDelete = async (productId: string) => {
-    if (!confirm('Are you sure you want to delete this product?')) {
+    if (!confirm('Are you sure you want to delete this product? If the product is used in orders, it will be deactivated instead.')) {
       return;
     }
 
     try {
-      const response = await fetch(`/api/products/${productId}`, {
+      const response = await fetch(`/api/admin/products/${productId}`, {
         method: 'DELETE',
       });
 
       if (response.ok) {
+        const data = await response.json();
         fetchProducts();
-        alert('Product deleted successfully');
+        alert(data.message || 'Product deleted successfully');
       } else {
-        throw new Error('Failed to delete product');
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.error || 'Failed to delete product';
+        alert(`Failed to delete product: ${errorMessage}`);
       }
     } catch (error) {
       console.error('Error deleting product:', error);
-      alert('Failed to delete product');
+      alert('Failed to delete product. Please try again.');
     }
   };
 

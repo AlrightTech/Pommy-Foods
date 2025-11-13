@@ -26,7 +26,7 @@ export default function NewProductPage() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/products', {
+      const response = await fetch('/api/admin/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -41,7 +41,13 @@ export default function NewProductPage() {
         router.push('/admin/products');
         alert('Product created successfully!');
       } else {
-        throw new Error('Failed to create product');
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.details 
+          ? Array.isArray(errorData.details) 
+            ? errorData.details.join(', ') 
+            : errorData.details
+          : errorData.error || 'Failed to create product';
+        alert(`Failed to create product: ${errorMessage}`);
       }
     } catch (error) {
       console.error('Error creating product:', error);
