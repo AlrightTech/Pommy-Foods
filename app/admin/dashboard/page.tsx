@@ -220,13 +220,13 @@ export default function DashboardPage() {
               Latest order activity
             </p>
           </div>
-          <Link 
-            href="/admin/orders"
-            className="text-sm text-primary-600 hover:text-primary-700 font-semibold font-body flex items-center gap-1 group"
-          >
-            View All
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
+              <Link 
+                href="/admin/orders"
+                className="text-sm text-primary-500 hover:text-primary-600 active:text-primary-700 font-semibold font-body flex items-center gap-1 group transition-colors"
+              >
+                View All
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
         </div>
         
         <div className="overflow-x-auto">
@@ -264,7 +264,7 @@ export default function DashboardPage() {
                     {getStatusBadge(order.status)}
                   </td>
                   <td className="py-4 px-4">
-                    <button className="text-primary-600 hover:text-primary-700 text-sm font-semibold font-body">
+                    <button className="text-primary-500 hover:text-primary-600 active:text-primary-700 text-sm font-semibold font-body transition-colors">
                       View
                     </button>
                   </td>
@@ -277,7 +277,7 @@ export default function DashboardPage() {
 
       {/* Floating "Add New Menu" Button - Neumorphic */}
       <Link href="/admin/products/new">
-        <button className="fixed bottom-8 right-8 w-16 h-16 neu-lg rounded-full flex items-center justify-center text-primary-600 hover:shadow-neu-lg hover:scale-110 transition-all duration-300 z-50 gold-glow group">
+        <button className="fixed bottom-8 right-8 w-16 h-16 neu-lg rounded-full flex items-center justify-center text-primary-500 hover:text-primary-600 active:text-primary-700 hover:shadow-neu-lg hover:scale-110 transition-all duration-300 z-50 gold-glow group">
           <Plus className="w-8 h-8 group-hover:rotate-90 transition-transform duration-300" />
         </button>
       </Link>

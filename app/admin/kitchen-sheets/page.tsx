@@ -174,7 +174,7 @@ export default function KitchenSheetsPage() {
                       <td className="px-6 py-4">
                         <Link
                           href={`/admin/kitchen-sheets/${sheet.id}`}
-                          className="text-primary-600 hover:text-primary-700 text-sm font-semibold"
+                          className="text-primary-500 hover:text-primary-600 active:text-primary-700 text-sm font-semibold transition-colors"
                         >
                           View
                         </Link>

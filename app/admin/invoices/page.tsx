@@ -173,7 +173,7 @@ export default function InvoicesPage() {
                     <td className="px-6 py-4">
                       <Link
                         href={`/admin/invoices/${invoice.id}`}
-                        className="text-primary-600 hover:text-primary-700"
+                        className="text-primary-500 hover:text-primary-600 active:text-primary-700 transition-colors"
                       >
                         <Eye className="w-4 h-4" />
                       </Link>

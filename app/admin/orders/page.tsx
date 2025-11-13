@@ -214,28 +214,29 @@ function OrdersPageContent() {
             Manage and review all orders from stores
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Button
             onClick={handleGenerateReplenishment}
             disabled={isGeneratingReplenishment}
-            variant="secondary"
-            className="flex items-center space-x-2"
+            variant="glass"
+            size="md"
+            className="flex items-center gap-2"
           >
             <RefreshCw className={`w-4 h-4 ${isGeneratingReplenishment ? 'animate-spin' : ''}`} />
             <span>{isGeneratingReplenishment ? 'Generating...' : 'Generate Replenishment'}</span>
           </Button>
-          <Button>
-            <Download className="w-4 h-4 mr-2" />
-            Export
+          <Button variant="primary" size="md" className="flex items-center gap-2">
+            <Download className="w-4 h-4" />
+            <span>Export</span>
           </Button>
         </div>
       </div>
 
       {/* Filters and Search */}
-      <Card>
+      <Card variant="glass">
         <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1 flex items-center space-x-2 bg-neutral-100 rounded-lg px-4 py-2">
-            <Search className="w-4 h-4 text-neutral-500" />
+          <div className="flex-1 flex items-center gap-3 glass rounded-premium px-4 py-2.5 h-11 focus-within:shadow-glass-lg focus-within:bg-white/35 transition-all">
+            <Search className="w-4 h-4 text-primary-600 flex-shrink-0" />
             <input
               type="text"
               placeholder="Search by Order ID or Store..."
@@ -244,7 +245,7 @@ function OrdersPageContent() {
                 setSearchQuery(e.target.value);
                 setPage(1);
               }}
-              className="flex-1 bg-transparent border-none outline-none text-sm text-neutral-900 placeholder-neutral-500"
+              className="flex-1 bg-transparent border-none outline-none text-sm font-body text-neutral-900 placeholder-neutral-500 h-full"
             />
           </div>
           <OrderFilters
@@ -264,21 +265,21 @@ function OrdersPageContent() {
       </Card>
 
       {/* Orders Table */}
-      <Card>
+      <Card variant="glass-strong">
         {loading ? (
           <div className="py-12">
             <Loader text="Loading orders..." />
           </div>
         ) : orders.length === 0 ? (
-          <div className="text-center py-8 text-neutral-600">
-            No orders found
+          <div className="text-center py-16">
+            <p className="text-lg font-body text-neutral-600 font-medium">No orders found</p>
           </div>
         ) : (
           <>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-neutral-50 border-b border-neutral-200">
+                  <tr className="bg-white/20 backdrop-blur-sm border-b border-white/30">
                     <th className="px-6 py-4 text-left text-xs font-semibold font-body text-neutral-600 uppercase tracking-wider">
                       Order ID
                     </th>
@@ -306,7 +307,7 @@ function OrdersPageContent() {
                   {orders.map((order) => (
                     <tr
                       key={order.id}
-                      className="border-b border-neutral-100 hover:bg-primary-50/50 transition-colors"
+                      className="border-b border-white/20 hover:bg-white/10 transition-colors"
                     >
                       <td className="px-6 py-4 text-sm font-mono text-primary-600">
                         {order.order_number}
@@ -327,23 +328,20 @@ function OrdersPageContent() {
                         <OrderStatusBadge status={order.status} />
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center gap-2">
                           <Link
                             href={`/admin/orders/${order.id}`}
-                            className="text-primary-600 hover:text-primary-700 text-sm font-semibold"
+                            className="px-3 py-1.5 glass rounded-premium text-primary-500 hover:text-primary-600 active:text-primary-700 hover:bg-white/35 text-sm font-semibold font-body transition-all"
                           >
                             View
                           </Link>
                           {(order.status === 'pending' || order.status === 'draft') && (
-                            <>
-                              <span className="text-neutral-300">|</span>
-                              <button
-                                onClick={() => handleApprove(order.id)}
-                                className="text-success-600 hover:text-success-700 text-sm font-semibold"
-                              >
-                                Approve
-                              </button>
-                            </>
+                            <button
+                              onClick={() => handleApprove(order.id)}
+                              className="px-3 py-1.5 glass rounded-premium text-success-600 hover:text-success-700 hover:bg-white/35 text-sm font-semibold font-body transition-all"
+                            >
+                              Approve
+                            </button>
                           )}
                         </div>
                       </td>
@@ -354,26 +352,28 @@ function OrdersPageContent() {
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-between mt-6 pt-6 border-t border-neutral-200">
-              <p className="text-sm text-neutral-600">
+            <div className="flex items-center justify-between mt-6 pt-6 border-t border-white/30">
+              <p className="text-sm font-body text-neutral-600">
                 Showing {(page - 1) * pagination.limit + 1}-
                 {Math.min(page * pagination.limit, pagination.total)} of {pagination.total} orders
               </p>
-              <div className="flex items-center space-x-2">
-                <button
+              <div className="flex items-center gap-2">
+                <Button
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="px-4 py-2 border-2 border-neutral-300 rounded-lg hover:bg-neutral-50 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  variant="glass"
+                  size="sm"
                 >
                   Previous
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
                   disabled={page >= pagination.totalPages}
-                  className="px-4 py-2 border-2 border-neutral-300 rounded-lg hover:bg-neutral-50 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  variant="glass"
+                  size="sm"
                 >
                   Next
-                </button>
+                </Button>
               </div>
             </div>
           </>

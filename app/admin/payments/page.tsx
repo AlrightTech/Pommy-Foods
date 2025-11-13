@@ -186,7 +186,7 @@ export default function PaymentsPage() {
 
       <div className="flex justify-end">
         <Link href="/admin/invoices">
-          <button className="text-primary-600 hover:text-primary-700 font-semibold">
+          <button className="text-primary-500 hover:text-primary-600 active:text-primary-700 font-semibold transition-colors">
             View All Invoices →
           </button>
         </Link>

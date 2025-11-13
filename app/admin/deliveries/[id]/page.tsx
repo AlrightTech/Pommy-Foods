@@ -165,7 +165,7 @@ export default function DeliveryDetailPage() {
                     href={delivery.proof_of_delivery_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-primary-600 hover:text-primary-700 block mt-1"
+                    className="text-sm text-primary-500 hover:text-primary-600 active:text-primary-700 block mt-1 transition-colors"
                   >
                     View Proof
                   </a>

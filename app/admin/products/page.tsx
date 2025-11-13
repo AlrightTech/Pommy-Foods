@@ -425,7 +425,7 @@ export default function ProductsPage() {
                         <div className="flex items-center space-x-2">
                           <Link
                             href={`/admin/products/${product.id}`}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold font-body text-primary-600 bg-primary-50 hover:bg-primary-100 rounded-lg transition-colors"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold font-body text-primary-500 hover:text-primary-600 active:text-primary-700 bg-primary-50 hover:bg-primary-100 rounded-lg transition-colors disabled:text-primary-500/50"
                             title="Edit product"
                           >
                             <Edit className="w-3.5 h-3.5" />

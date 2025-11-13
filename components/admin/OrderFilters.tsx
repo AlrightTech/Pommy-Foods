@@ -41,13 +41,14 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
   return (
     <div className="relative">
       <Button
-        variant="secondary"
+        variant="glass"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2"
+        size="md"
+        className="flex items-center gap-2 h-11"
       >
         <span>Filter</span>
         {hasActiveFilters && (
-          <span className="bg-primary-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+          <span className="bg-primary-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-semibold">
             {[status, storeId].filter(Boolean).length}
           </span>
         )}
@@ -59,7 +60,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
             className="fixed inset-0 z-40"
             onClick={() => setIsOpen(false)}
           />
-          <Card className="absolute top-full mt-2 right-0 z-50 w-80 shadow-xl">
+          <Card variant="glass-strong" className="absolute top-full mt-2 right-0 z-50 w-80 shadow-glass-lg">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-display text-lg text-neutral-900">
                 Filters
@@ -80,7 +81,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
                 <select
                   value={status || ''}
                   onChange={(e) => onStatusChange(e.target.value || null)}
-                  className="w-full px-4 py-2 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
+                  className="w-full px-4 py-2.5 glass rounded-premium focus:shadow-glass-lg focus:bg-white/35 border border-white/50 text-sm font-body text-neutral-900 transition-all"
                 >
                   <option value="">All Statuses</option>
                   {statusOptions.map((option) => (
@@ -98,7 +99,7 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
                 <select
                   value={storeId || ''}
                   onChange={(e) => onStoreIdChange(e.target.value || null)}
-                  className="w-full px-4 py-2 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
+                  className="w-full px-4 py-2.5 glass rounded-premium focus:shadow-glass-lg focus:bg-white/35 border border-white/50 text-sm font-body text-neutral-900 transition-all"
                 >
                   <option value="">All Stores</option>
                   {stores.map((store) => (
@@ -111,9 +112,10 @@ export const OrderFilters: React.FC<OrderFiltersProps> = ({
 
               {hasActiveFilters && (
                 <Button
-                  variant="secondary"
+                  variant="glass"
                   onClick={clearFilters}
                   className="w-full"
+                  size="md"
                 >
                   Clear Filters
                 </Button>
