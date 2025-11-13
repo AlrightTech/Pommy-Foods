@@ -60,6 +60,7 @@ export default function KitchenSheetDetailPage() {
       setSheet(data.kitchen_sheet);
     } catch (error) {
       console.error("Error fetching kitchen sheet:", error);
+      setSheet(null);
     } finally {
       setLoading(false);
     }

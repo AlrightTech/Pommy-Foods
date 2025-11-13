@@ -36,12 +36,17 @@ export default function KitchenSheetsPage() {
     try {
       setLoading(true);
       const response = await fetch("/api/admin/kitchen-sheets");
-      if (!response.ok) throw new Error("Failed to fetch kitchen sheets");
+      if (!response.ok) {
+        // API endpoint may not exist yet
+        setSheets([]);
+        return;
+      }
 
       const data = await response.json();
       setSheets(data.kitchen_sheets || []);
     } catch (error) {
       console.error("Error fetching kitchen sheets:", error);
+      setSheets([]);
     } finally {
       setLoading(false);
     }

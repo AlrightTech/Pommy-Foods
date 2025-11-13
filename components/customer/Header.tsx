@@ -18,12 +18,20 @@ export const Header = () => {
 
         const { data: profile } = await supabase
           .from("user_profiles")
-          .select("store_id, stores(name)")
+          .select("store_id")
           .eq("id", session.user.id)
           .single();
 
-        if (profile && profile.stores) {
-          setStoreName((profile.stores as any).name || "");
+        if (profile?.store_id) {
+          const { data: store } = await supabase
+            .from("stores")
+            .select("name")
+            .eq("id", profile.store_id)
+            .single();
+
+          if (store) {
+            setStoreName(store.name || "");
+          }
         }
       } catch (error) {
         console.error("Error fetching store info:", error);

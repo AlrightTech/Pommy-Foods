@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Loader } from "@/components/ui/Loader";
 import { DeliveryCard } from "@/components/driver/DeliveryCard";
@@ -26,6 +27,7 @@ interface Delivery {
 }
 
 export default function DriverDashboardPage() {
+  const router = useRouter();
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [loading, setLoading] = useState(true);
   const [driverId, setDriverId] = useState<string | null>(null);
@@ -116,7 +118,7 @@ export default function DriverDashboardPage() {
             <DeliveryCard
               key={delivery.id}
               delivery={delivery}
-              onClick={() => window.location.href = `/driver/deliveries/${delivery.id}`}
+              onClick={() => router.push(`/driver/deliveries/${delivery.id}`)}
             />
           ))}
         </div>

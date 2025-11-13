@@ -36,10 +36,9 @@ export default function KitchenSheetsPage() {
   const fetchSheets = useCallback(async () => {
     try {
       setLoading(true);
-      // Using a placeholder API endpoint - should be created
       const response = await fetch("/api/admin/kitchen-sheets");
       if (!response.ok) {
-        // Fallback to empty array if endpoint doesn't exist yet
+        // API endpoint may not exist yet
         setSheets([]);
         return;
       }

@@ -53,12 +53,16 @@ export default function KitchenSheetDetailPage() {
     try {
       setLoading(true);
       const response = await fetch(`/api/admin/kitchen-sheets/${params.id}`);
-      if (!response.ok) throw new Error("Failed to fetch kitchen sheet");
+      if (!response.ok) {
+        setSheet(null);
+        return;
+      }
 
       const data = await response.json();
       setSheet(data.kitchen_sheet);
     } catch (error) {
       console.error("Error fetching kitchen sheet:", error);
+      setSheet(null);
     } finally {
       setLoading(false);
     }

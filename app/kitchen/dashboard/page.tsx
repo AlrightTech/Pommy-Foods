@@ -25,7 +25,17 @@ export default function KitchenDashboardPage() {
 
       // Fetch kitchen sheets
       const response = await fetch("/api/admin/kitchen-sheets");
-      if (!response.ok) throw new Error("Failed to fetch kitchen sheets");
+      if (!response.ok) {
+        // API endpoint may not exist yet, use empty array
+        setStats({
+          activeSheets: 0,
+          pendingItems: 0,
+          completedToday: 0,
+          inProgress: 0,
+        });
+        setRecentSheets([]);
+        return;
+      }
 
       const data = await response.json();
       const sheets = data.kitchen_sheets || [];
@@ -48,20 +58,14 @@ export default function KitchenDashboardPage() {
         (s: any) => s.prepared_at && !s.completed_at
       ).length;
 
-      // Count pending items
+      // Count pending items - use kitchen_sheet_items if available, otherwise estimate
       let pendingItems = 0;
       for (const sheet of sheets) {
-        if (!sheet.completed_at) {
-          const itemsRes = await fetch(
-            `/api/admin/kitchen-sheets/${sheet.id}/items`
-          );
-          if (itemsRes.ok) {
-            const itemsData = await itemsRes.json();
-            const unprepared = itemsData.items?.filter(
-              (i: any) => !i.prepared
-            ).length || 0;
-            pendingItems += unprepared;
-          }
+        if (!sheet.completed_at && sheet.kitchen_sheet_items) {
+          const unprepared = sheet.kitchen_sheet_items.filter(
+            (i: any) => !i.prepared
+          ).length;
+          pendingItems += unprepared;
         }
       }
 
