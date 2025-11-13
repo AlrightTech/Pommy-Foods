@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/Card";
 
 interface ModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   title?: string;
   children: React.ReactNode;
   size?: "sm" | "md" | "lg" | "xl";
@@ -36,12 +36,12 @@ export function Modal({ isOpen, onClose, title, children, size = "md" }: ModalPr
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <Card className={`w-full ${sizeClasses[size]} max-h-[90vh] overflow-y-auto`}>
-        {(title || onClose) && (
+        {(title || onClose !== undefined) && (
           <div className="flex items-center justify-between mb-6">
             {title && (
               <h2 className="font-display text-xl text-neutral-900">{title}</h2>
             )}
-            {onClose && (
+            {onClose !== undefined && (
               <button
                 onClick={onClose}
                 className="text-neutral-500 hover:text-neutral-700"
