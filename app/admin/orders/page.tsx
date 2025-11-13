@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Loader } from "@/components/ui/Loader";
 import { OrderFilters } from "@/components/admin/OrderFilters";
 import { OrderStatusBadge } from "@/components/admin/OrderStatusBadge";
-import { Search, Download } from "lucide-react";
+import { Search, Download, RefreshCw } from "lucide-react";
 import { format } from "date-fns";
 
 interface Order {
@@ -49,6 +49,7 @@ function OrdersPageContent() {
     page: 1,
     limit: 20,
   });
+  const [isGeneratingReplenishment, setIsGeneratingReplenishment] = useState(false);
 
   const fetchStores = useCallback(async () => {
     try {
@@ -76,9 +77,10 @@ function OrdersPageContent() {
       params.append('page', page.toString());
       params.append('limit', '20');
 
-      const response = await fetch(`/api/orders?${params.toString()}`);
+      const response = await fetch(`/api/admin/orders?${params.toString()}`);
       if (!response.ok) {
-        throw new Error('Failed to fetch orders');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to fetch orders');
       }
 
       const data = await response.json();
@@ -141,27 +143,62 @@ function OrdersPageContent() {
     }).format(amount);
   };
 
-  const handleApprove = async (orderId: string) => {
-    if (!confirm('Are you sure you want to approve this order?')) {
+  const handleGenerateReplenishment = async () => {
+    if (!confirm('This will generate replenishment orders for all stores with low stock. Continue?')) {
       return;
     }
 
     try {
-      const response = await fetch(`/api/orders/${orderId}/approve`, {
+      setIsGeneratingReplenishment(true);
+      const response = await fetch('/api/admin/orders/generate-replenishment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(data.message || `Generated ${data.count || 0} replenishment order(s)`);
+        fetchOrders(); // Refresh the orders list
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        alert(`Failed to generate replenishment orders: ${errorData.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error generating replenishment orders:', error);
+      alert('Failed to generate replenishment orders. Please try again.');
+    } finally {
+      setIsGeneratingReplenishment(false);
+    }
+  };
+
+  const handleApprove = async (orderId: string) => {
+    if (!confirm('Are you sure you want to approve this order? This will generate a kitchen sheet and delivery note.')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/orders/${orderId}/approve`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ approved_by: 'current-user-id' }), // TODO: Get from auth
       });
 
       if (response.ok) {
+        const data = await response.json();
         fetchOrders();
-        alert('Order approved successfully!');
+        alert(data.message || 'Order approved successfully! Kitchen sheet and delivery note have been generated.');
       } else {
-        throw new Error('Failed to approve order');
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.details 
+          ? Array.isArray(errorData.details) 
+            ? errorData.details.join(', ') 
+            : errorData.details
+          : errorData.error || 'Failed to approve order';
+        alert(`Failed to approve order: ${errorMessage}`);
       }
     } catch (error) {
       console.error('Error approving order:', error);
-      alert('Failed to approve order');
+      alert('Failed to approve order. Please try again.');
     }
   };
 
@@ -177,10 +214,21 @@ function OrdersPageContent() {
             Manage and review all orders from stores
           </p>
         </div>
-        <Button>
-          <Download className="w-4 h-4 mr-2" />
-          Export
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={handleGenerateReplenishment}
+            disabled={isGeneratingReplenishment}
+            variant="secondary"
+            className="flex items-center space-x-2"
+          >
+            <RefreshCw className={`w-4 h-4 ${isGeneratingReplenishment ? 'animate-spin' : ''}`} />
+            <span>{isGeneratingReplenishment ? 'Generating...' : 'Generate Replenishment'}</span>
+          </Button>
+          <Button>
+            <Download className="w-4 h-4 mr-2" />
+            Export
+          </Button>
+        </div>
       </div>
 
       {/* Filters and Search */}

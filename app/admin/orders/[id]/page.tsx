@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Loader } from "@/components/ui/Loader";
 import { OrderStatusBadge } from "@/components/admin/OrderStatusBadge";
-import { ArrowLeft, CheckCircle2, XCircle, Edit } from "lucide-react";
+import { ArrowLeft, CheckCircle2, XCircle, Edit, RefreshCw, Package } from "lucide-react";
 import { format } from "date-fns";
 
 interface OrderItem {
@@ -22,6 +22,21 @@ interface OrderItem {
     price: number;
     unit: string;
   } | null;
+}
+
+interface KitchenSheet {
+  id: string;
+  prepared_at: string | null;
+  completed_at: string | null;
+  notes: string | null;
+}
+
+interface Delivery {
+  id: string;
+  status: string;
+  scheduled_date: string | null;
+  delivered_at: string | null;
+  driver_id: string | null;
 }
 
 interface Order {
@@ -42,6 +57,8 @@ interface Order {
     address: string | null;
   } | null;
   order_items: OrderItem[];
+  kitchen_sheets?: KitchenSheet[];
+  deliveries?: Delivery[];
 }
 
 export default function OrderDetailPage() {
@@ -51,13 +68,17 @@ export default function OrderDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isApproving, setIsApproving] = useState(false);
+  const [isModifying, setIsModifying] = useState(false);
+  const [showModifyForm, setShowModifyForm] = useState(false);
 
   const fetchOrder = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/orders/${params.id}`);
+      setError(null);
+      const response = await fetch(`/api/admin/orders/${params.id}`);
       if (!response.ok) {
-        throw new Error('Failed to fetch order');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to fetch order');
       }
       const data = await response.json();
       setOrder(data.order);
@@ -75,54 +96,89 @@ export default function OrderDetailPage() {
   }, [params.id, fetchOrder]);
 
   const handleApprove = async () => {
-    if (!confirm('Are you sure you want to approve this order? This will generate a kitchen sheet and delivery note.')) {
+    if (!confirm('Are you sure you want to approve this order? This will generate a kitchen sheet and delivery note, and update the store balance.')) {
       return;
     }
 
     try {
       setIsApproving(true);
-      const response = await fetch(`/api/orders/${params.id}/approve`, {
+      const response = await fetch(`/api/admin/orders/${params.id}/approve`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ approved_by: 'current-user-id' }), // TODO: Get from auth
       });
 
       if (response.ok) {
-        alert('Order approved successfully! Kitchen sheet and delivery note have been generated.');
+        const data = await response.json();
+        alert(data.message || 'Order approved successfully! Kitchen sheet and delivery note have been generated.');
         fetchOrder();
       } else {
-        throw new Error('Failed to approve order');
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.details 
+          ? Array.isArray(errorData.details) 
+            ? errorData.details.join('\n') 
+            : errorData.details
+          : errorData.error || 'Failed to approve order';
+        alert(`Failed to approve order:\n${errorMessage}`);
       }
     } catch (err) {
       console.error('Error approving order:', err);
-      alert('Failed to approve order');
+      alert('Failed to approve order. Please try again.');
     } finally {
       setIsApproving(false);
     }
   };
 
   const handleReject = async () => {
+    const reason = prompt('Please provide a reason for rejecting this order:');
+    if (reason === null) {
+      return; // User cancelled
+    }
+
+    if (!reason.trim()) {
+      alert('Please provide a reason for rejection.');
+      return;
+    }
+
     if (!confirm('Are you sure you want to reject this order?')) {
       return;
     }
 
     try {
-      const response = await fetch(`/api/orders/${params.id}`, {
-        method: 'PATCH',
+      const response = await fetch(`/api/admin/orders/${params.id}/reject`, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'rejected' }),
+        body: JSON.stringify({ 
+          reason: reason.trim(),
+          rejected_by: 'current-user-id' // TODO: Get from auth
+        }),
       });
 
       if (response.ok) {
-        alert('Order rejected');
+        const data = await response.json();
+        alert(data.message || 'Order rejected successfully');
         fetchOrder();
       } else {
-        throw new Error('Failed to reject order');
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.error || 'Failed to reject order';
+        alert(`Failed to reject order: ${errorMessage}`);
       }
     } catch (err) {
       console.error('Error rejecting order:', err);
-      alert('Failed to reject order');
+      alert('Failed to reject order. Please try again.');
     }
+  };
+
+  const handleModify = async () => {
+    if (!order) return;
+    
+    // For now, show a simple prompt. In a real app, this would open a modal with a form
+    const confirmModify = confirm('This will allow you to modify order items. Would you like to continue?');
+    if (!confirmModify) return;
+    
+    setShowModifyForm(true);
+    // TODO: Implement full modification UI with form
+    alert('Order modification UI coming soon. For now, you can modify items via the API.');
   };
 
   const formatCurrency = (amount: number) => {
@@ -169,6 +225,15 @@ export default function OrderDetailPage() {
           <OrderStatusBadge status={order.status} />
           {(order.status === 'pending' || order.status === 'draft') && (
             <>
+              <Button
+                onClick={handleModify}
+                disabled={isModifying}
+                variant="secondary"
+                className="flex items-center space-x-2"
+              >
+                <Edit className="w-4 h-4" />
+                <span>Modify</span>
+              </Button>
               <Button
                 onClick={handleApprove}
                 disabled={isApproving}
@@ -282,6 +347,76 @@ export default function OrderDetailPage() {
                 Notes
               </h2>
               <p className="text-sm text-neutral-700">{order.notes}</p>
+            </Card>
+          )}
+
+          {/* Kitchen Sheet */}
+          {order.kitchen_sheets && order.kitchen_sheets.length > 0 && (
+            <Card>
+              <div className="flex items-center gap-2 mb-4">
+                <Package className="w-5 h-5 text-primary-600" />
+                <h2 className="font-display text-xl text-neutral-900">
+                  Kitchen Sheet
+                </h2>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm">
+                  <span className="font-semibold text-neutral-700">Status:</span>{' '}
+                  <span className="text-neutral-900">
+                    {order.kitchen_sheets[0].completed_at ? 'Completed' : order.kitchen_sheets[0].prepared_at ? 'In Progress' : 'Pending'}
+                  </span>
+                </p>
+                {order.kitchen_sheets[0].prepared_at && (
+                  <p className="text-sm">
+                    <span className="font-semibold text-neutral-700">Prepared:</span>{' '}
+                    <span className="text-neutral-900">
+                      {format(new Date(order.kitchen_sheets[0].prepared_at), 'MMM dd, yyyy HH:mm')}
+                    </span>
+                  </p>
+                )}
+                {order.kitchen_sheets[0].completed_at && (
+                  <p className="text-sm">
+                    <span className="font-semibold text-neutral-700">Completed:</span>{' '}
+                    <span className="text-neutral-900">
+                      {format(new Date(order.kitchen_sheets[0].completed_at), 'MMM dd, yyyy HH:mm')}
+                    </span>
+                  </p>
+                )}
+              </div>
+            </Card>
+          )}
+
+          {/* Delivery Note */}
+          {order.deliveries && order.deliveries.length > 0 && (
+            <Card>
+              <div className="flex items-center gap-2 mb-4">
+                <Package className="w-5 h-5 text-primary-600" />
+                <h2 className="font-display text-xl text-neutral-900">
+                  Delivery
+                </h2>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm">
+                  <span className="font-semibold text-neutral-700">Status:</span>{' '}
+                  <span className="text-neutral-900 capitalize">{order.deliveries[0].status.replace('_', ' ')}</span>
+                </p>
+                {order.deliveries[0].scheduled_date && (
+                  <p className="text-sm">
+                    <span className="font-semibold text-neutral-700">Scheduled:</span>{' '}
+                    <span className="text-neutral-900">
+                      {format(new Date(order.deliveries[0].scheduled_date), 'MMM dd, yyyy')}
+                    </span>
+                  </p>
+                )}
+                {order.deliveries[0].delivered_at && (
+                  <p className="text-sm">
+                    <span className="font-semibold text-neutral-700">Delivered:</span>{' '}
+                    <span className="text-neutral-900">
+                      {format(new Date(order.deliveries[0].delivered_at), 'MMM dd, yyyy HH:mm')}
+                    </span>
+                  </p>
+                )}
+              </div>
             </Card>
           )}
         </div>
