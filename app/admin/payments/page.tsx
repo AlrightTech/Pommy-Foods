@@ -129,23 +129,23 @@ export default function PaymentsPage() {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-neutral-100 border-b-2 border-neutral-200">
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
+                <tr className="bg-neutral-50 border-b border-neutral-200">
+                  <th className="px-6 py-4 text-left text-xs font-semibold font-body text-neutral-600 uppercase tracking-wider">
                     Order
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
+                  <th className="px-6 py-4 text-left text-xs font-semibold font-body text-neutral-600 uppercase tracking-wider">
                     Store
                   </th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-neutral-700">
+                  <th className="px-6 py-4 text-right text-xs font-semibold font-body text-neutral-600 uppercase tracking-wider">
                     Amount
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
+                  <th className="px-6 py-4 text-left text-xs font-semibold font-body text-neutral-600 uppercase tracking-wider">
                     Method
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
+                  <th className="px-6 py-4 text-left text-xs font-semibold font-body text-neutral-600 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
+                  <th className="px-6 py-4 text-left text-xs font-semibold font-body text-neutral-600 uppercase tracking-wider">
                     Date
                   </th>
                 </tr>
@@ -154,7 +154,7 @@ export default function PaymentsPage() {
                 {payments.map((payment) => (
                   <tr
                     key={payment.id}
-                    className="border-b border-neutral-200 hover:bg-neutral-50 transition-colors"
+                    className="border-b border-neutral-100 hover:bg-primary-50/50 transition-colors"
                   >
                     <td className="px-6 py-4 text-sm font-mono text-primary-600">
                       {payment.orders?.order_number || 'N/A'}

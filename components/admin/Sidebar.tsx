@@ -15,13 +15,9 @@ import {
 import { cn } from "@/lib/utils";
 
 const navigation = [
-  { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+  { name: "Home", href: "/admin/dashboard", icon: LayoutDashboard },
   { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
-  { name: "Products", href: "/admin/products", icon: Package },
-  { name: "Stores", href: "/admin/stores", icon: Users },
-  { name: "Kitchen Sheets", href: "/admin/kitchen-sheets", icon: Package },
-  { name: "Deliveries", href: "/admin/deliveries", icon: Truck },
-  { name: "Payments", href: "/admin/payments", icon: DollarSign },
+  { name: "Menu", href: "/admin/products", icon: Package },
   { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
@@ -30,20 +26,22 @@ export const Sidebar = () => {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-72 bg-gradient-to-br from-white via-primary-50/80 to-accent-50/40 backdrop-blur-md border-r border-primary-200/60 p-6 hidden md:block z-40 shadow-food">
-      <div className="mb-8 pb-6 border-b border-primary-200/40">
+    <aside className="fixed left-0 top-0 h-screen w-80 neu rounded-r-premium-lg p-6 hidden md:block z-40 border-r border-white/30">
+      {/* Logo */}
+      <div className="mb-10 pb-6 border-b border-white/30">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-food bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center shadow-food">
-            <span className="font-display text-xs text-white">PF</span>
+          <div className="w-12 h-12 rounded-premium bg-gradient-gold flex items-center justify-center shadow-premium gold-glow">
+            <span className="font-bold font-body text-white text-lg">PF</span>
           </div>
           <div>
-            <h1 className="font-display text-lg text-primary-700">Pommy Foods</h1>
-            <p className="text-xs font-body text-neutral-600 mt-0.5">Admin Panel</p>
+            <h1 className="font-bold font-body text-xl text-neutral-800">Pommy Foods</h1>
+            <p className="text-xs font-body text-neutral-600 mt-0.5">Admin Dashboard</p>
           </div>
         </div>
       </div>
       
-      <nav className="space-y-1.5">
+      {/* Navigation */}
+      <nav className="space-y-2">
         {navigation.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href;
@@ -53,14 +51,27 @@ export const Sidebar = () => {
               key={item.name}
               href={item.href}
               className={cn(
-                "flex items-center space-x-3 px-4 py-3 rounded-food transition-all duration-300 group",
+                "flex items-center gap-4 px-4 py-3.5 rounded-premium transition-all duration-300 group relative",
                 isActive
-                  ? "bg-gradient-to-r from-primary-500 to-accent-500 text-white shadow-food-lg scale-[1.02]"
-                  : "text-neutral-700 hover:bg-primary-100/60 hover:text-primary-700 hover:translate-x-1"
+                  ? "neu-inset bg-white/20 text-primary-600 shadow-neu-lg"
+                  : "text-neutral-700 hover:bg-white/10 hover:text-primary-600"
               )}
             >
-              <Icon className={cn("w-5 h-5 transition-transform", isActive ? "" : "group-hover:scale-110")} />
-              <span className="font-medium font-body">{item.name}</span>
+              <div className={cn(
+                "w-10 h-10 rounded-premium flex items-center justify-center transition-all",
+                isActive 
+                  ? "neu-inset bg-white/30 shadow-neu" 
+                  : "neu group-hover:shadow-neu-lg"
+              )}>
+                <Icon className={cn(
+                  "w-5 h-5 transition-colors",
+                  isActive ? "text-primary-600" : "text-neutral-600 group-hover:text-primary-600"
+                )} />
+              </div>
+              <span className="font-semibold font-body">{item.name}</span>
+              {isActive && (
+                <div className="absolute right-4 w-1.5 h-8 bg-primary-500 rounded-full shadow-premium"></div>
+              )}
             </Link>
           );
         })}

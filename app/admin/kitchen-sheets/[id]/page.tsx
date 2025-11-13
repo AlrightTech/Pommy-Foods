@@ -167,7 +167,7 @@ export default function KitchenSheetDetailPage() {
 
         <div>
           <Card>
-            <h2 className="font-display text-xl text-neutral-900 mb-4">
+            <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4">
               Sheet Information
             </h2>
             <div className="space-y-3">

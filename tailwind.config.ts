@@ -9,39 +9,26 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Primary Brand Colors - Gold accent (maintained)
+        // Premium Color Palette
         primary: {
           50: "#FAF4EC",
           100: "#F5EDE0",
           200: "#E8D9C0",
           300: "#DBC5A0",
           400: "#D2AC6A",
-          500: "#D2AC6A",
+          500: "#D2AC6A", // Golden beige
           600: "#B8944F",
           700: "#9A7A3F",
           800: "#7C5F2F",
           900: "#5D4520",
         },
-        // Warm food-inspired accent colors
-        accent: {
-          50: "#FFF7ED",
-          100: "#FFEDD5",
-          200: "#FED7AA",
-          300: "#FDBA74",
-          400: "#FB923C",
-          500: "#F97316",
-          600: "#EA580C",
-          700: "#C2410C",
-          800: "#9A3412",
-          900: "#7C2D12",
-        },
-        // Base background - soft beige
+        // Base background - light cream
         base: {
           DEFAULT: "#FAF4EC",
           light: "#FFFFFF",
           soft: "#F5EDE0",
         },
-        // Neutral Colors - warm tones
+        // Neutral Colors - warm cream tones
         neutral: {
           50: "#FAF4EC",
           100: "#F5EDE0",
@@ -54,7 +41,7 @@ const config: Config = {
           800: "#2A2A2A",
           900: "#1A1A1A",
         },
-        // Semantic Colors
+        // Semantic Colors (softened for premium feel)
         success: {
           50: "#F0FDF4",
           100: "#DCFCE7",
@@ -110,50 +97,49 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ["'Press Start 2P'", "cursive"],
+        display: ["'Poppins'", "sans-serif"],
         body: ["'Poppins'", "sans-serif"],
         mono: ["'JetBrains Mono'", "monospace"],
       },
       boxShadow: {
-        "soft": "0 2px 8px rgba(210, 172, 106, 0.1)",
-        "soft-lg": "0 4px 16px rgba(210, 172, 106, 0.15)",
-        "card": "0 2px 12px rgba(0, 0, 0, 0.08)",
-        "food": "0 4px 20px rgba(249, 115, 22, 0.12), 0 2px 8px rgba(210, 172, 106, 0.08)",
-        "food-lg": "0 8px 32px rgba(249, 115, 22, 0.15), 0 4px 12px rgba(210, 172, 106, 0.1)",
-        "elevated": "0 10px 40px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)",
+        // Glassmorphism shadows
+        "glass": "0 8px 32px 0 rgba(31, 38, 135, 0.15), inset 0 1px 0 0 rgba(255, 255, 255, 0.5)",
+        "glass-lg": "0 12px 48px 0 rgba(31, 38, 135, 0.2), inset 0 1px 0 0 rgba(255, 255, 255, 0.6)",
+        // Neumorphism shadows (soft, inset/outset)
+        "neu": "8px 8px 16px rgba(210, 172, 106, 0.15), -8px -8px 16px rgba(255, 255, 255, 0.8)",
+        "neu-inset": "inset 4px 4px 8px rgba(210, 172, 106, 0.15), inset -4px -4px 8px rgba(255, 255, 255, 0.8)",
+        "neu-lg": "12px 12px 24px rgba(210, 172, 106, 0.15), -12px -12px 24px rgba(255, 255, 255, 0.8)",
+        // Premium soft shadows
+        "premium": "0 4px 20px rgba(210, 172, 106, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04)",
+        "premium-lg": "0 8px 32px rgba(210, 172, 106, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06)",
       },
       borderRadius: {
-        "food": "16px",
-        "food-lg": "24px",
+        "premium": "24px",
+        "premium-lg": "32px",
+        "neu": "20px",
+      },
+      backdropBlur: {
+        "glass": "25px",
+        "glass-lg": "40px",
       },
       keyframes: {
-        "pulse-slow": {
-          "0%, 100%": { opacity: "1" },
-          "50%": { opacity: "0.5" },
-        },
-        "slide-in": {
-          "0%": { transform: "translateX(-100%)" },
-          "100%": { transform: "translateX(0)" },
-        },
         "fade-in": {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
-        },
-        "float": {
-          "0%, 100%": { transform: "translateY(0px)" },
-          "50%": { transform: "translateY(-10px)" },
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
         "scale-in": {
           "0%": { transform: "scale(0.95)", opacity: "0" },
           "100%": { transform: "scale(1)", opacity: "1" },
         },
+        "float": {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-8px)" },
+        },
       },
       animation: {
-        "pulse-slow": "pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "slide-in": "slide-in 0.3s ease-out",
-        "fade-in": "fade-in 0.3s ease-out",
-        "float": "float 3s ease-in-out infinite",
-        "scale-in": "scale-in 0.2s ease-out",
+        "fade-in": "fade-in 0.4s ease-out",
+        "scale-in": "scale-in 0.3s ease-out",
+        "float": "float 4s ease-in-out infinite",
       },
     },
   },
@@ -161,4 +147,3 @@ const config: Config = {
 };
 
 export default config;
-

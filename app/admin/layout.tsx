@@ -10,10 +10,9 @@ export default function AdminLayout({
     <div className="min-h-screen bg-base">
       <Sidebar />
       <Header />
-      <main className="md:ml-72 pt-20 p-4 md:p-8 min-h-screen bg-gradient-to-br from-base via-primary-50/30 to-accent-50/20">
+      <main className="md:ml-80 pt-20 p-6 md:p-8 min-h-screen">
         {children}
       </main>
     </div>
   );
 }
-

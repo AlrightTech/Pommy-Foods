@@ -18,7 +18,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   change,
   changeType = "neutral",
   icon: Icon,
-  iconBg = "bg-primary-100",
+  iconBg = "bg-primary-100/30",
 }) => {
   const changeColors = {
     positive: "text-success-600",
@@ -27,11 +27,11 @@ export const StatCard: React.FC<StatCardProps> = ({
   };
 
   return (
-    <Card variant="elevated" className="hover:scale-[1.02] transition-all duration-300 animate-scale-in">
+    <Card variant="glass" className="hover:shadow-glass-lg hover:-translate-y-1 transition-all duration-300 animate-fade-in">
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <p className="text-sm font-body text-neutral-600 mb-2">{title}</p>
-          <p className="text-3xl font-bold font-display text-neutral-900 mb-1.5">
+          <p className="text-sm font-body text-neutral-600 mb-2 font-medium">{title}</p>
+          <p className="text-3xl font-bold font-body text-neutral-900 mb-1.5">
             {value}
           </p>
           {change && (
@@ -42,11 +42,13 @@ export const StatCard: React.FC<StatCardProps> = ({
             </p>
           )}
         </div>
-        <div className={cn("w-14 h-14 rounded-food flex items-center justify-center shadow-food transition-all duration-300 hover:scale-110", iconBg)}>
-          <Icon className="w-7 h-7 text-primary-600" />
+        <div className={cn(
+          "w-16 h-16 rounded-premium flex items-center justify-center shadow-premium transition-all duration-300 hover:scale-110",
+          iconBg
+        )}>
+          <Icon className="w-8 h-8 text-primary-600" />
         </div>
       </div>
     </Card>
   );
 };
-
