@@ -129,27 +129,27 @@ export default function ProductsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <div>
-          <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
+          <h1 className="font-display text-3xl md:text-4xl text-neutral-900 mb-1">
             Products
           </h1>
-          <p className="text-neutral-600 mt-2">
+          <p className="text-neutral-600 text-sm font-body">
             Manage your product catalog
           </p>
         </div>
         <Link href="/admin/products/new">
-          <Button>
-            <Plus className="w-4 h-4 mr-2" />
-            Add Product
-          </Button>
+          <button className="group bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold font-body px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 min-w-[160px]">
+            <Plus className="w-5 h-5" />
+            <span>Add Product</span>
+          </button>
         </Link>
       </div>
 
       {/* Search */}
-      <Card>
-        <div className="flex items-center space-x-2 bg-neutral-100 rounded-lg px-4 py-2">
-          <Search className="w-4 h-4 text-neutral-500" />
+      <Card className="mb-6">
+        <div className="flex items-center space-x-3 bg-neutral-50 rounded-lg px-4 py-3 border border-neutral-200 focus-within:border-primary-300 focus-within:ring-2 focus-within:ring-primary-100 transition-all">
+          <Search className="w-5 h-5 text-neutral-400 flex-shrink-0" />
           <input
             type="text"
             placeholder="Search products by name or SKU..."
@@ -158,7 +158,7 @@ export default function ProductsPage() {
               setSearchQuery(e.target.value);
               setPage(1);
             }}
-            className="flex-1 bg-transparent border-none outline-none text-sm text-neutral-900 placeholder-neutral-500"
+            className="flex-1 bg-transparent border-none outline-none text-sm font-body text-neutral-900 placeholder-neutral-400"
           />
         </div>
       </Card>
@@ -178,26 +178,26 @@ export default function ProductsPage() {
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="bg-neutral-100 border-b-2 border-neutral-200">
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
+                  <tr className="bg-neutral-50 border-b-2 border-neutral-200">
+                    <th className="px-6 py-4 text-left text-sm font-semibold font-body text-neutral-700">
                       Name
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
+                    <th className="px-6 py-4 text-left text-sm font-semibold font-body text-neutral-700">
                       SKU
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
+                    <th className="px-6 py-4 text-left text-sm font-semibold font-body text-neutral-700">
                       Category
                     </th>
-                    <th className="px-6 py-4 text-right text-sm font-semibold text-neutral-700">
+                    <th className="px-6 py-4 text-right text-sm font-semibold font-body text-neutral-700">
                       Price
                     </th>
-                    <th className="px-6 py-4 text-right text-sm font-semibold text-neutral-700">
+                    <th className="px-6 py-4 text-right text-sm font-semibold font-body text-neutral-700">
                       Min Stock
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
+                    <th className="px-6 py-4 text-left text-sm font-semibold font-body text-neutral-700">
                       Status
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-neutral-700">
+                    <th className="px-6 py-4 text-left text-sm font-semibold font-body text-neutral-700">
                       Actions
                     </th>
                   </tr>
@@ -206,21 +206,21 @@ export default function ProductsPage() {
                   {products.map((product) => (
                     <tr
                       key={product.id}
-                      className="border-b border-neutral-200 hover:bg-neutral-50 transition-colors"
+                      className="border-b border-neutral-100 hover:bg-neutral-50 transition-colors"
                     >
-                      <td className="px-6 py-4 text-sm font-semibold text-neutral-900">
+                      <td className="px-6 py-4 text-sm font-semibold font-body text-neutral-900">
                         {product.name}
                       </td>
-                      <td className="px-6 py-4 text-sm font-mono text-primary-600">
+                      <td className="px-6 py-4 text-sm font-mono font-body text-primary-600">
                         {product.sku}
                       </td>
-                      <td className="px-6 py-4 text-sm text-neutral-700">
+                      <td className="px-6 py-4 text-sm font-body text-neutral-700">
                         {product.category || 'Uncategorized'}
                       </td>
-                      <td className="px-6 py-4 text-sm font-semibold text-neutral-900 text-right">
+                      <td className="px-6 py-4 text-sm font-semibold font-body text-neutral-900 text-right">
                         {formatCurrency(product.price)}
                       </td>
-                      <td className="px-6 py-4 text-sm text-neutral-700 text-right">
+                      <td className="px-6 py-4 text-sm font-body text-neutral-700 text-right">
                         {product.min_stock_level}
                       </td>
                       <td className="px-6 py-4">
@@ -231,16 +231,18 @@ export default function ProductsPage() {
                         )}
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-3">
                           <Link
                             href={`/admin/products/${product.id}`}
-                            className="text-primary-600 hover:text-primary-700"
+                            className="text-primary-600 hover:text-primary-700 transition-colors p-1.5 rounded hover:bg-primary-50"
+                            title="Edit product"
                           >
                             <Edit className="w-4 h-4" />
                           </Link>
                           <button
                             onClick={() => handleDelete(product.id)}
-                            className="text-error-600 hover:text-error-700"
+                            className="text-error-600 hover:text-error-700 transition-colors p-1.5 rounded hover:bg-error-50"
+                            title="Delete product"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -253,23 +255,23 @@ export default function ProductsPage() {
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-between mt-6 pt-6 border-t border-neutral-200">
-              <p className="text-sm text-neutral-600">
-                Showing {(page - 1) * pagination.limit + 1}-
-                {Math.min(page * pagination.limit, pagination.total)} of {pagination.total} products
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-8 pt-6 border-t border-neutral-200">
+              <p className="text-sm font-body text-neutral-600">
+                Showing <span className="font-semibold text-neutral-900">{(page - 1) * pagination.limit + 1}</span>-
+                <span className="font-semibold text-neutral-900">{Math.min(page * pagination.limit, pagination.total)}</span> of <span className="font-semibold text-neutral-900">{pagination.total}</span> products
               </p>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <button
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="px-4 py-2 border-2 border-neutral-300 rounded-lg hover:bg-neutral-50 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-5 py-2.5 border-2 border-neutral-300 rounded-lg hover:bg-neutral-50 hover:border-neutral-400 text-sm font-semibold font-body text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all disabled:hover:bg-transparent disabled:hover:border-neutral-300"
                 >
                   Previous
                 </button>
                 <button
                   onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
                   disabled={page >= pagination.totalPages}
-                  className="px-4 py-2 border-2 border-neutral-300 rounded-lg hover:bg-neutral-50 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-5 py-2.5 border-2 border-neutral-300 rounded-lg hover:bg-neutral-50 hover:border-neutral-400 text-sm font-semibold font-body text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all disabled:hover:bg-transparent disabled:hover:border-neutral-300"
                 >
                   Next
                 </button>

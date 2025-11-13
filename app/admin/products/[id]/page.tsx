@@ -130,28 +130,28 @@ export default function EditProductPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 mb-6">
         <button
           onClick={() => router.back()}
-          className="p-2 hover:bg-neutral-100 rounded-lg"
+          className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5 text-neutral-700" />
         </button>
         <div>
-          <h1 className="font-display text-3xl md:text-4xl text-neutral-900">
+          <h1 className="font-display text-3xl md:text-4xl text-neutral-900 mb-1">
             Edit Product
           </h1>
-          <p className="text-neutral-600 mt-2">
+          <p className="text-neutral-600 text-sm font-body">
             Update product information
           </p>
         </div>
       </div>
 
       <Card>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-semibold text-neutral-700 mb-2">
+              <label className="block text-sm font-semibold font-body text-neutral-700 mb-2.5">
                 Product Name *
               </label>
               <input
@@ -159,12 +159,12 @@ export default function EditProductPage() {
                 required
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
+                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900 font-body transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-neutral-700 mb-2">
+              <label className="block text-sm font-semibold font-body text-neutral-700 mb-2.5">
                 SKU *
               </label>
               <input
@@ -172,12 +172,12 @@ export default function EditProductPage() {
                 required
                 value={formData.sku}
                 onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
+                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900 font-body transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-neutral-700 mb-2">
+              <label className="block text-sm font-semibold font-body text-neutral-700 mb-2.5">
                 Price *
               </label>
               <input
@@ -186,12 +186,12 @@ export default function EditProductPage() {
                 required
                 value={formData.price}
                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
+                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900 font-body transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-neutral-700 mb-2">
+              <label className="block text-sm font-semibold font-body text-neutral-700 mb-2.5">
                 Cost
               </label>
               <input
@@ -199,54 +199,54 @@ export default function EditProductPage() {
                 step="0.01"
                 value={formData.cost}
                 onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
+                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900 font-body transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-neutral-700 mb-2">
+              <label className="block text-sm font-semibold font-body text-neutral-700 mb-2.5">
                 Unit
               </label>
               <input
                 type="text"
                 value={formData.unit}
                 onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
+                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900 font-body transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-neutral-700 mb-2">
+              <label className="block text-sm font-semibold font-body text-neutral-700 mb-2.5">
                 Category
               </label>
               <input
                 type="text"
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
+                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900 font-body transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-neutral-700 mb-2">
+              <label className="block text-sm font-semibold font-body text-neutral-700 mb-2.5">
                 Minimum Stock Level
               </label>
               <input
                 type="number"
                 value={formData.min_stock_level}
                 onChange={(e) => setFormData({ ...formData, min_stock_level: e.target.value })}
-                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
+                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900 font-body transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-neutral-700 mb-2">
+              <label className="block text-sm font-semibold font-body text-neutral-700 mb-2.5">
                 Status
               </label>
               <select
                 value={formData.is_active ? 'active' : 'inactive'}
                 onChange={(e) => setFormData({ ...formData, is_active: e.target.value === 'active' })}
-                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
+                className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900 font-body transition-all"
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -255,26 +255,31 @@ export default function EditProductPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-neutral-700 mb-2">
+            <label className="block text-sm font-semibold font-body text-neutral-700 mb-2.5">
               Description
             </label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               rows={4}
-              className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900"
+              className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-neutral-900 font-body transition-all resize-none"
             />
           </div>
 
-          <div className="flex items-center justify-end space-x-4">
+          <div className="flex items-center justify-end space-x-4 pt-4 border-t border-neutral-200">
             <Button
               type="button"
               variant="secondary"
               onClick={() => router.back()}
+              className="px-6 py-2.5"
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={saving}>
+            <Button 
+              type="submit" 
+              disabled={saving}
+              className="px-6 py-2.5 min-w-[140px]"
+            >
               {saving ? 'Saving...' : 'Save Changes'}
             </Button>
           </div>
@@ -284,41 +289,41 @@ export default function EditProductPage() {
       {/* Product Statistics */}
       {product?.statistics && (
         <Card>
-          <h2 className="font-display text-xl text-neutral-900 mb-4">
+          <h2 className="font-display text-2xl font-bold text-neutral-900 mb-6 pb-4 border-b border-neutral-200">
             Product Statistics
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            <div>
-              <p className="text-sm text-neutral-600">Total Ordered</p>
-              <p className="text-lg font-semibold text-neutral-900">
-                {product.statistics.total_ordered}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+            <div className="space-y-1">
+              <p className="text-sm font-body text-neutral-600">Total Ordered</p>
+              <p className="text-xl font-bold font-display text-neutral-900">
+                {product.statistics.total_ordered.toLocaleString()}
               </p>
             </div>
-            <div>
-              <p className="text-sm text-neutral-600">Total Revenue</p>
-              <p className="text-lg font-semibold text-neutral-900">
+            <div className="space-y-1">
+              <p className="text-sm font-body text-neutral-600">Total Revenue</p>
+              <p className="text-xl font-bold font-display text-primary-600">
                 {new Intl.NumberFormat('en-US', {
                   style: 'currency',
                   currency: 'USD',
                 }).format(product.statistics.total_revenue)}
               </p>
             </div>
-            <div>
-              <p className="text-sm text-neutral-600">Order Count</p>
-              <p className="text-lg font-semibold text-neutral-900">
-                {product.statistics.order_count}
+            <div className="space-y-1">
+              <p className="text-sm font-body text-neutral-600">Order Count</p>
+              <p className="text-xl font-bold font-display text-neutral-900">
+                {product.statistics.order_count.toLocaleString()}
               </p>
             </div>
-            <div>
-              <p className="text-sm text-neutral-600">Stores with Stock</p>
-              <p className="text-lg font-semibold text-neutral-900">
+            <div className="space-y-1">
+              <p className="text-sm font-body text-neutral-600">Stores with Stock</p>
+              <p className="text-xl font-bold font-display text-neutral-900">
                 {product.statistics.stores_with_stock}
               </p>
             </div>
-            <div>
-              <p className="text-sm text-neutral-600">Total Stock</p>
-              <p className="text-lg font-semibold text-neutral-900">
-                {product.statistics.total_stock}
+            <div className="space-y-1">
+              <p className="text-sm font-body text-neutral-600">Total Stock</p>
+              <p className="text-xl font-bold font-display text-neutral-900">
+                {product.statistics.total_stock.toLocaleString()}
               </p>
             </div>
           </div>
@@ -328,7 +333,7 @@ export default function EditProductPage() {
       {/* Stock by Store */}
       {product?.stock_by_store && product.stock_by_store.length > 0 && (
         <Card>
-          <h2 className="font-display text-xl text-neutral-900 mb-4">
+          <h2 className="font-display text-2xl font-bold text-neutral-900 mb-6 pb-4 border-b border-neutral-200">
             Stock by Store
           </h2>
           <div className="overflow-x-auto">
