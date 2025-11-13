@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Loader } from "@/components/ui/Loader";
 import { ConfirmationDialog } from "@/components/ui/ConfirmationDialog";
 import { useToast } from "@/components/ui/ToastProvider";
-import { Plus, Search, Edit, Eye, Trash2 } from "lucide-react";
+import { Plus, Search, Edit, Eye, Trash2, CheckCircle2, PauseCircle } from "lucide-react";
 
 interface Store {
   id: string;
@@ -243,24 +243,32 @@ export default function StoresPage() {
                         {formatCurrency(store.current_balance)}
                       </td>
                       <td className="px-6 py-4">
-                        {store.is_active ? (
-                          <Badge variant="success">Active</Badge>
-                        ) : (
-                          <Badge variant="error">Inactive</Badge>
-                        )}
+                        <div className="flex items-center gap-2">
+                          {store.is_active ? (
+                            <>
+                              <CheckCircle2 className="w-5 h-5 text-success-600" />
+                              <Badge variant="success">Active</Badge>
+                            </>
+                          ) : (
+                            <>
+                              <PauseCircle className="w-5 h-5 text-neutral-400" />
+                              <Badge variant="error">Inactive</Badge>
+                            </>
+                          )}
+                        </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                           <Link
                             href={`/admin/stores/${store.id}`}
-                            className="px-3 py-1.5 glass rounded-premium text-primary-500 hover:text-primary-600 active:text-primary-700 hover:bg-white/35 text-sm font-semibold font-body transition-all"
+                            className="px-3 py-1.5 glass rounded-premium text-[#D2AC6A] hover:text-[#B8944F] active:text-[#9A7A3F] hover:bg-white/35 text-sm font-semibold font-body transition-all"
                             title="View store"
                           >
                             <Eye className="w-4 h-4" />
                           </Link>
                           <Link
                             href={`/admin/stores/${store.id}/edit`}
-                            className="px-3 py-1.5 glass rounded-premium text-primary-500 hover:text-primary-600 active:text-primary-700 hover:bg-white/35 text-sm font-semibold font-body transition-all"
+                            className="px-3 py-1.5 glass rounded-premium text-[#D2AC6A] hover:text-[#B8944F] active:text-[#9A7A3F] hover:bg-white/35 text-sm font-semibold font-body transition-all"
                             title="Edit store"
                           >
                             <Edit className="w-4 h-4" />

@@ -36,10 +36,10 @@ export const Sidebar = () => {
       <div className="mb-10 pb-6 border-b border-white/30">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-premium bg-gradient-gold flex items-center justify-center shadow-premium gold-glow">
-            <span className="font-bold font-body text-white text-lg">PF</span>
+            <span className="font-bold font-body text-[#D2AC6A] text-lg">PF</span>
           </div>
           <div>
-            <h1 className="font-bold font-body text-xl text-neutral-800">Pommy Foods</h1>
+            <h1 className="font-bold font-body text-xl text-[#D2AC6A] hover:text-[#B8944F] active:text-[#9A7A3F] transition-colors">Pommy Foods</h1>
             <p className="text-xs font-body text-neutral-600 mt-0.5">Admin Dashboard</p>
           </div>
         </div>
@@ -58,8 +58,8 @@ export const Sidebar = () => {
               className={cn(
                 "flex items-center gap-4 px-4 py-3.5 rounded-premium transition-all duration-300 group relative",
                 isActive
-                  ? "neu-inset bg-white/20 text-primary-600 shadow-neu-lg"
-                  : "text-neutral-700 hover:bg-white/10 hover:text-primary-600"
+                  ? "neu-inset bg-white/20 text-[#D2AC6A] shadow-neu-lg"
+                  : "text-neutral-700 hover:bg-white/10 hover:text-[#D2AC6A]"
               )}
             >
               <div className={cn(
@@ -70,12 +70,12 @@ export const Sidebar = () => {
               )}>
                 <Icon className={cn(
                   "w-5 h-5 transition-colors",
-                  isActive ? "text-primary-600" : "text-neutral-600 group-hover:text-primary-600"
+                  isActive ? "text-[#D2AC6A]" : "text-neutral-600 group-hover:text-[#D2AC6A]"
                 )} />
               </div>
               <span className="font-semibold font-body">{item.name}</span>
               {isActive && (
-                <div className="absolute right-4 w-1.5 h-8 bg-primary-500 rounded-full shadow-premium"></div>
+                <div className="absolute right-4 w-1.5 h-8 bg-[#D2AC6A] rounded-full shadow-premium"></div>
               )}
             </Link>
           );
