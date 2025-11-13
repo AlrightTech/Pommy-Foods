@@ -47,7 +47,13 @@ export default function NewProductPage() {
             ? errorData.details.join(', ') 
             : errorData.details
           : errorData.error || 'Failed to create product';
-        alert(`Failed to create product: ${errorMessage}`);
+        
+        // Show more helpful error message
+        if (errorMessage.includes('Invalid API key') || errorMessage.includes('service_role') || errorMessage.includes('SUPABASE_SERVICE_ROLE_KEY')) {
+          alert(`Configuration Error: ${errorMessage}\n\nPlease check your .env.local file and ensure SUPABASE_SERVICE_ROLE_KEY is set correctly.`);
+        } else {
+          alert(`Failed to create product: ${errorMessage}`);
+        }
       }
     } catch (error) {
       console.error('Error creating product:', error);

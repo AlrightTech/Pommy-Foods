@@ -10,7 +10,20 @@ export const dynamic = 'force-dynamic';
  */
 export async function GET(request: NextRequest) {
   try {
-    const adminSupabase = getSupabaseAdmin();
+    let adminSupabase;
+    try {
+      adminSupabase = getSupabaseAdmin();
+    } catch (adminError: any) {
+      console.error('Supabase admin client error:', adminError);
+      return NextResponse.json(
+        { 
+          error: 'Configuration error', 
+          details: adminError.message || 'Failed to initialize Supabase admin client. Please check your environment variables.'
+        },
+        { status: 500 }
+      );
+    }
+
     const searchParams = request.nextUrl.searchParams;
     
     const search = searchParams.get('search');
@@ -52,6 +65,17 @@ export async function GET(request: NextRequest) {
     const { data: products, error, count } = await query;
 
     if (error) {
+      console.error('Supabase error fetching products:', error);
+      // Check for specific Supabase error codes
+      if (error.code === 'PGRST301' || error.message?.includes('Invalid API key') || error.message?.includes('JWT')) {
+        return NextResponse.json(
+          { 
+            error: 'Authentication error', 
+            details: 'Invalid Supabase service role key. Please check your SUPABASE_SERVICE_ROLE_KEY environment variable in .env.local file.'
+          },
+          { status: 401 }
+        );
+      }
       throw error;
     }
 
@@ -59,33 +83,41 @@ export async function GET(request: NextRequest) {
     let filteredProducts = products || [];
     if (lowStock) {
       // Get stock levels for all products
-      const { data: stockData } = await adminSupabase
+      const { data: stockData, error: stockError } = await adminSupabase
         .from('store_stock')
         .select('product_id, current_stock, products!inner(min_stock_level)');
+      
+      if (stockError) {
+        console.error('Error fetching stock data for low stock filter:', stockError);
+        // Continue without low stock filter if there's an error
+        // This allows the products list to still be returned
+      }
 
       const lowStockProductIds = new Set<string>();
-      stockData?.forEach((stock: any) => {
-        const currentStock = stock.current_stock || 0;
-        const minStock = stock.products?.min_stock_level || 0;
-        if (currentStock < minStock) {
-          lowStockProductIds.add(stock.product_id);
-        }
-      });
-
-      // Also include products with no stock records (treat as 0 stock)
-      const productsWithStock = new Set(stockData?.map((s: any) => s.product_id) || []);
-      products?.forEach((product: any) => {
-        if (!productsWithStock.has(product.id)) {
-          const minStock = product.min_stock_level || 0;
-          if (minStock > 0) {
-            lowStockProductIds.add(product.id);
+      if (stockData) {
+        stockData.forEach((stock: any) => {
+          const currentStock = stock.current_stock || 0;
+          const minStock = stock.products?.min_stock_level || 0;
+          if (currentStock < minStock) {
+            lowStockProductIds.add(stock.product_id);
           }
-        }
-      });
+        });
 
-      filteredProducts = filteredProducts.filter((p: any) => 
-        lowStockProductIds.has(p.id)
-      );
+        // Also include products with no stock records (treat as 0 stock)
+        const productsWithStock = new Set(stockData.map((s: any) => s.product_id) || []);
+        products?.forEach((product: any) => {
+          if (!productsWithStock.has(product.id)) {
+            const minStock = product.min_stock_level || 0;
+            if (minStock > 0) {
+              lowStockProductIds.add(product.id);
+            }
+          }
+        });
+
+        filteredProducts = filteredProducts.filter((p: any) => 
+          lowStockProductIds.has(p.id)
+        );
+      }
     }
 
     return NextResponse.json({
@@ -99,8 +131,18 @@ export async function GET(request: NextRequest) {
     });
   } catch (error: any) {
     console.error('Error fetching products:', error);
+    
+    // Provide more specific error messages
+    let errorMessage = error.message || 'Failed to fetch products';
+    let errorDetails = error.message;
+    
+    if (errorMessage.includes('Invalid API key') || errorMessage.includes('JWT') || errorMessage.includes('service_role')) {
+      errorMessage = 'Invalid API key';
+      errorDetails = 'The Supabase service role key is invalid or missing. Please check your SUPABASE_SERVICE_ROLE_KEY in .env.local file.';
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to fetch products', details: error.message },
+      { error: errorMessage, details: errorDetails },
       { status: 500 }
     );
   }
@@ -112,7 +154,20 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    const adminSupabase = getSupabaseAdmin();
+    let adminSupabase;
+    try {
+      adminSupabase = getSupabaseAdmin();
+    } catch (adminError: any) {
+      console.error('Supabase admin client error:', adminError);
+      return NextResponse.json(
+        { 
+          error: 'Configuration error', 
+          details: adminError.message || 'Failed to initialize Supabase admin client. Please check your environment variables.'
+        },
+        { status: 500 }
+      );
+    }
+
     const body = await request.json();
 
     const { name, description, sku, price, cost, unit, category, min_stock_level, is_active } = body;
@@ -180,14 +235,35 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
+      console.error('Supabase error creating product:', error);
+      // Check for specific Supabase error codes
+      if (error.code === 'PGRST301' || error.message?.includes('Invalid API key') || error.message?.includes('JWT')) {
+        return NextResponse.json(
+          { 
+            error: 'Authentication error', 
+            details: 'Invalid Supabase service role key. Please check your SUPABASE_SERVICE_ROLE_KEY environment variable in .env.local file.'
+          },
+          { status: 401 }
+        );
+      }
       throw error;
     }
 
     return NextResponse.json({ product }, { status: 201 });
   } catch (error: any) {
     console.error('Error creating product:', error);
+    
+    // Provide more specific error messages
+    let errorMessage = error.message || 'Failed to create product';
+    let errorDetails = error.message;
+    
+    if (errorMessage.includes('Invalid API key') || errorMessage.includes('JWT') || errorMessage.includes('service_role')) {
+      errorMessage = 'Invalid API key';
+      errorDetails = 'The Supabase service role key is invalid or missing. Please check your SUPABASE_SERVICE_ROLE_KEY in .env.local file.';
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to create product', details: error.message },
+      { error: errorMessage, details: errorDetails },
       { status: 500 }
     );
   }
