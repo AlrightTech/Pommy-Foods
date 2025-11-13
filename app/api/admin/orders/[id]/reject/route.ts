@@ -20,7 +20,7 @@ export async function POST(
     // Get current order
     const { data: currentOrder, error: fetchError } = await adminSupabase
       .from('orders')
-      .select('id, status')
+      .select('id, status, notes')
       .eq('id', params.id)
       .single();
 

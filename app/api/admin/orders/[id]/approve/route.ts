@@ -96,7 +96,7 @@ export async function POST(
     }
 
     // Create kitchen sheet
-    let kitchenSheet = null;
+    let kitchenSheet: { id: string } | null = null;
     const { data: newKitchenSheet, error: kitchenError } = await adminSupabase
       .from('kitchen_sheets')
       .insert({
@@ -113,9 +113,10 @@ export async function POST(
 
       // Create kitchen sheet items
       const orderItems = order.order_items as any[];
-      if (orderItems && orderItems.length > 0) {
+      if (orderItems && orderItems.length > 0 && kitchenSheet) {
+        const kitchenSheetId = kitchenSheet.id;
         const kitchenItems = orderItems.map((item: any) => ({
-          kitchen_sheet_id: kitchenSheet.id,
+          kitchen_sheet_id: kitchenSheetId,
           product_id: item.product_id,
           quantity: item.quantity,
         }));
