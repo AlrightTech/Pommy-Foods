@@ -17,56 +17,10 @@ export default function KitchenLayout({
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      if (pathname === "/kitchen/login") {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) throw error;
-
-        if (!session) {
-          router.push("/kitchen/login");
-          return;
-        }
-
-        const { data: profile } = await supabase
-          .from("user_profiles")
-          .select("role")
-          .eq("id", session.user.id)
-          .single();
-
-        if (!profile || profile.role !== "kitchen_staff") {
-          router.push("/kitchen/login");
-          return;
-        }
-
-        setAuthenticated(true);
-      } catch (error) {
-        console.error("Auth error:", error);
-        router.push("/kitchen/login");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === "SIGNED_OUT" || !session) {
-          router.push("/kitchen/login");
-        }
-      }
-    );
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [router, pathname]);
+    // Authentication disabled - allow direct access to all kitchen pages
+    setAuthenticated(true);
+    setLoading(false);
+  }, []);
 
   if (loading) {
     return (
@@ -76,13 +30,7 @@ export default function KitchenLayout({
     );
   }
 
-  if (pathname === "/kitchen/login") {
-    return <>{children}</>;
-  }
-
-  if (!authenticated) {
-    return null;
-  }
+  // Always show layout (authentication disabled)
 
   return (
     <div className="min-h-screen bg-base">

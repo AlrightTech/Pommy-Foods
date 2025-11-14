@@ -17,59 +17,10 @@ export default function CustomerLayout({
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      // Allow access to login page without auth
-      if (pathname === "/customer/login") {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) throw error;
-
-        if (!session) {
-          router.push("/customer/login");
-          return;
-        }
-
-        // Check if user has store_owner role
-        const { data: profile } = await supabase
-          .from("user_profiles")
-          .select("role, store_id")
-          .eq("id", session.user.id)
-          .single();
-
-        if (!profile || profile.role !== "store_owner") {
-          router.push("/customer/login");
-          return;
-        }
-
-        setAuthenticated(true);
-      } catch (error) {
-        console.error("Auth error:", error);
-        router.push("/customer/login");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === "SIGNED_OUT" || !session) {
-          router.push("/customer/login");
-        }
-      }
-    );
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [router, pathname]);
+    // Authentication disabled - allow direct access to all customer pages
+    setAuthenticated(true);
+    setLoading(false);
+  }, []);
 
   if (loading) {
     return (
@@ -79,13 +30,7 @@ export default function CustomerLayout({
     );
   }
 
-  if (pathname === "/customer/login") {
-    return <>{children}</>;
-  }
-
-  if (!authenticated) {
-    return null;
-  }
+  // Always show layout (authentication disabled)
 
   return (
     <div className="min-h-screen bg-base">

@@ -27,13 +27,15 @@ import {
   FileText,
   CreditCard,
   Store,
-  Package
+  Package,
+  Clock
 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function LandingPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showComingSoon, setShowComingSoon] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -225,42 +227,141 @@ export default function LandingPage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {quickAccessModules.map((module, index) => (
-              <Link
-                key={index}
-                href={module.href}
-                className="group rounded-3xl p-6 hover:scale-105 transition-all duration-300 cursor-pointer"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.5) 100%)',
-                  backdropFilter: 'blur(30px)',
-                  boxShadow: '0 15px 50px rgba(210, 172, 106, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
-                  border: '1px solid rgba(210, 172, 106, 0.2)',
-                }}
-              >
-                <div className="flex items-start space-x-4">
-                  <div 
-                    className="w-14 h-14 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform flex-shrink-0"
+            {quickAccessModules.map((module, index) => {
+              // Driver App - Show Coming Soon popup
+              if (module.isComingSoon) {
+                return (
+                  <div
+                    key={index}
+                    onClick={() => setShowComingSoon(true)}
+                    className="group rounded-3xl p-6 hover:scale-105 transition-all duration-300 cursor-pointer relative"
                     style={{
-                      background: 'linear-gradient(135deg, #D2AC6A 0%, #B8944F 100%)',
-                      boxShadow: '0 8px 24px rgba(210, 172, 106, 0.3)',
+                      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.5) 100%)',
+                      backdropFilter: 'blur(30px)',
+                      boxShadow: '0 15px 50px rgba(210, 172, 106, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
+                      border: '1px solid rgba(210, 172, 106, 0.2)',
                     }}
                   >
-                    <module.icon className="w-7 h-7 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-neutral-800 mb-2 group-hover:text-[#D2AC6A] transition-colors" style={{ fontFamily: 'Poppins, sans-serif' }}>
-                      {module.title}
-                    </h3>
-                    <p className="text-sm text-neutral-600 leading-relaxed mb-3">{module.description}</p>
-                    <div className="flex items-center text-[#D2AC6A] text-sm font-semibold">
-                      <span>Access Module</span>
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    <div className="absolute top-3 right-3">
+                      <span className="px-3 py-1 rounded-full bg-[#D2AC6A] text-white text-xs font-semibold">
+                        Coming Soon
+                      </span>
+                    </div>
+                    <div className="flex items-start space-x-4">
+                      <div 
+                        className="w-14 h-14 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform flex-shrink-0 opacity-60"
+                        style={{
+                          background: 'linear-gradient(135deg, #D2AC6A 0%, #B8944F 100%)',
+                          boxShadow: '0 8px 24px rgba(210, 172, 106, 0.3)',
+                        }}
+                      >
+                        <module.icon className="w-7 h-7 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-neutral-800 mb-2 group-hover:text-[#D2AC6A] transition-colors" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                          {module.title}
+                        </h3>
+                        <p className="text-sm text-neutral-600 leading-relaxed mb-3">{module.description}</p>
+                        <div className="flex items-center text-[#D2AC6A] text-sm font-semibold">
+                          <Clock className="w-4 h-4 mr-2" />
+                          <span>Coming Soon</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                );
+              }
+
+              // Regular modules - Link to dashboard
+              return (
+                <Link
+                  key={index}
+                  href={module.href}
+                  className="group rounded-3xl p-6 hover:scale-105 transition-all duration-300 cursor-pointer"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.5) 100%)',
+                    backdropFilter: 'blur(30px)',
+                    boxShadow: '0 15px 50px rgba(210, 172, 106, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
+                    border: '1px solid rgba(210, 172, 106, 0.2)',
+                  }}
+                >
+                  <div className="flex items-start space-x-4">
+                    <div 
+                      className="w-14 h-14 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform flex-shrink-0"
+                      style={{
+                        background: 'linear-gradient(135deg, #D2AC6A 0%, #B8944F 100%)',
+                        boxShadow: '0 8px 24px rgba(210, 172, 106, 0.3)',
+                      }}
+                    >
+                      <module.icon className="w-7 h-7 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-neutral-800 mb-2 group-hover:text-[#D2AC6A] transition-colors" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                        {module.title}
+                      </h3>
+                      <p className="text-sm text-neutral-600 leading-relaxed mb-3">{module.description}</p>
+                      <div className="flex items-center text-[#D2AC6A] text-sm font-semibold">
+                        <span>Access Module</span>
+                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
+          
+          {/* Coming Soon Modal */}
+          {showComingSoon && (
+            <div 
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+              style={{
+                background: 'rgba(0, 0, 0, 0.5)',
+                backdropFilter: 'blur(4px)',
+              }}
+              onClick={() => setShowComingSoon(false)}
+            >
+              <div 
+                className="rounded-3xl p-8 max-w-md w-full relative"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%)',
+                  backdropFilter: 'blur(30px)',
+                  boxShadow: '0 20px 60px rgba(210, 172, 106, 0.3)',
+                  border: '1px solid rgba(210, 172, 106, 0.3)',
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  onClick={() => setShowComingSoon(false)}
+                  className="absolute top-4 right-4 w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center transition-colors"
+                >
+                  <X className="w-5 h-5 text-neutral-600" />
+                </button>
+                
+                <div className="text-center">
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#D2AC6A] to-[#B8944F] flex items-center justify-center mx-auto mb-6 shadow-lg">
+                    <Truck className="w-10 h-10 text-white" />
+                  </div>
+                  <h3 className="text-3xl font-bold text-neutral-900 mb-3" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                    Coming Soon
+                  </h3>
+                  <p className="text-lg text-neutral-600 mb-6">
+                    The Driver App is currently under development. We&apos;re working hard to bring you an amazing delivery management experience!
+                  </p>
+                  <div className="flex items-center justify-center space-x-2 text-[#D2AC6A] mb-6">
+                    <Clock className="w-5 h-5" />
+                    <span className="font-semibold">Stay tuned for updates</span>
+                  </div>
+                  <button
+                    onClick={() => setShowComingSoon(false)}
+                    className="px-8 py-3 rounded-xl bg-[#D2AC6A] text-white font-semibold hover:shadow-xl transition-all duration-300 hover:scale-105"
+                  >
+                    Got it
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -436,37 +537,43 @@ const quickAccessModules = [
     icon: Shield,
     title: 'Admin Dashboard',
     description: 'Complete control over orders, products, stores, and analytics',
-    href: '/admin/dashboard'
+    href: '/admin/dashboard',
+    isComingSoon: false
   },
   {
     icon: Utensils,
     title: 'Kitchen Module',
     description: 'Manage kitchen sheets, track orders, and coordinate food preparation',
-    href: '/kitchen/dashboard'
+    href: '/kitchen/dashboard',
+    isComingSoon: false
   },
   {
     icon: Truck,
     title: 'Driver App',
     description: 'Track deliveries, manage routes, and handle customer interactions',
-    href: '/driver/dashboard'
+    href: '/driver/dashboard',
+    isComingSoon: true
   },
   {
     icon: ShoppingBag,
     title: 'Customer Portal',
     description: 'Browse products, place orders, and track your purchases',
-    href: '/customer/dashboard'
+    href: '/customer/dashboard',
+    isComingSoon: false
   },
   {
     icon: Package,
     title: 'Products',
     description: 'Manage inventory, stock levels, and product information',
-    href: '/admin/products'
+    href: '/admin/products',
+    isComingSoon: false
   },
   {
-    icon: FileText,
-    title: 'Orders & Invoices',
-    description: 'Process orders, generate invoices, and manage payments',
-    href: '/admin/orders'
+    icon: Store,
+    title: 'Stores',
+    description: 'Manage store locations, settings, and store-specific operations',
+    href: '/admin/stores',
+    isComingSoon: false
   }
 ];
 
