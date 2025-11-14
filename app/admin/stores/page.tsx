@@ -168,7 +168,7 @@ export default function StoresPage() {
       {/* Search */}
       <Card variant="glass">
         <div className="flex items-center gap-3 glass rounded-premium px-4 py-2.5 h-11 focus-within:shadow-glass-lg focus-within:bg-white/35 transition-all">
-          <Search className="w-4 h-4 text-primary-600 flex-shrink-0" />
+          <Search className="w-4 h-4 text-primary flex-shrink-0" />
           <input
             type="text"
             placeholder="Search stores by name or email..."
@@ -246,12 +246,12 @@ export default function StoresPage() {
                         <div className="flex items-center gap-2">
                         {store.is_active ? (
                             <>
-                              <CheckCircle2 className="w-5 h-5 text-success-600" />
+                              <CheckCircle2 className="w-5 h-5" style={{ color: 'var(--color-success)' }} />
                           <Badge variant="success">Active</Badge>
                             </>
                         ) : (
                             <>
-                              <PauseCircle className="w-5 h-5 text-neutral-400" />
+                              <PauseCircle className="w-5 h-5" style={{ color: 'var(--color-neutral-400)' }} />
                           <Badge variant="error">Inactive</Badge>
                             </>
                         )}
@@ -261,21 +261,22 @@ export default function StoresPage() {
                         <div className="flex items-center gap-2">
                           <Link
                             href={`/admin/stores/${store.id}`}
-                            className="px-3 py-1.5 glass rounded-premium text-[#D2AC6A] hover:text-[#B8944F] active:text-[#9A7A3F] hover:bg-white/35 text-sm font-semibold font-body transition-all"
+                            className="px-3 py-1.5 glass rounded-premium text-primary hover:text-[var(--color-primary-dark)] active:text-[var(--color-primary-darker)] hover:bg-primary-hover text-sm font-semibold font-body transition-all"
                             title="View store"
                           >
                             <Eye className="w-4 h-4" />
                           </Link>
                           <Link
                             href={`/admin/stores/${store.id}/edit`}
-                            className="px-3 py-1.5 glass rounded-premium text-[#D2AC6A] hover:text-[#B8944F] active:text-[#9A7A3F] hover:bg-white/35 text-sm font-semibold font-body transition-all"
+                            className="px-3 py-1.5 glass rounded-premium text-primary hover:text-[var(--color-primary-dark)] active:text-[var(--color-primary-darker)] hover:bg-primary-hover text-sm font-semibold font-body transition-all"
                             title="Edit store"
                           >
                             <Edit className="w-4 h-4" />
                           </Link>
                           <button
                             onClick={() => handleDeleteClick(store.id, store.name)}
-                            className="px-3 py-1.5 glass rounded-premium text-error-600 hover:text-error-700 hover:bg-white/35 text-sm font-semibold font-body transition-all"
+                            className="px-3 py-1.5 glass rounded-premium hover:bg-white/35 text-sm font-semibold font-body transition-all"
+                            style={{ color: 'var(--color-error)' }}
                             title="Deactivate store"
                           >
                             <Trash2 className="w-4 h-4" />

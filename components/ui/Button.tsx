@@ -19,12 +19,12 @@ export const Button: React.FC<ButtonProps> = ({
   const variants = {
     // Primary: Golden background, white text
     primary: "bg-gradient-gold text-white shadow-premium hover:shadow-premium-lg hover:-translate-y-0.5 active:translate-y-0 disabled:text-white/70",
-    // Secondary: Glassmorphic, primary text color #D2AC6A
-    secondary: "glass text-[#D2AC6A] hover:text-[#B8944F] hover:bg-white/35 hover:shadow-glass-lg active:text-[#9A7A3F] disabled:text-[#D2AC6A]/50",
-    // Neu: Neumorphic, primary text color #D2AC6A
-    neu: "neu text-[#D2AC6A] hover:text-[#B8944F] hover:shadow-neu-lg active:text-[#9A7A3F] active:neu-inset disabled:text-[#D2AC6A]/50",
-    // Glass: Glassmorphic, primary text color #D2AC6A
-    glass: "glass text-[#D2AC6A] hover:text-[#B8944F] hover:bg-white/35 active:text-[#9A7A3F] disabled:text-[#D2AC6A]/50",
+    // Secondary: Glassmorphic, primary text color with hover background
+    secondary: "glass text-primary hover:text-[var(--color-primary-dark)] hover:bg-primary-hover hover:shadow-glass-lg active:text-[var(--color-primary-darker)] disabled:text-primary/50",
+    // Neu: Neumorphic, primary text color with hover background
+    neu: "neu text-primary hover:text-[var(--color-primary-dark)] hover:bg-primary-hover hover:shadow-neu-lg active:text-[var(--color-primary-darker)] active:neu-inset disabled:text-primary/50",
+    // Glass: Glassmorphic, primary text color with hover background
+    glass: "glass text-primary hover:text-[var(--color-primary-dark)] hover:bg-primary-hover active:text-[var(--color-primary-darker)] disabled:text-primary/50",
     // Danger: Error background, white text
     danger: "bg-error-600 text-white shadow-premium hover:bg-error-700 hover:shadow-premium-lg hover:-translate-y-0.5 active:translate-y-0 active:bg-error-800 disabled:text-white/70",
   };

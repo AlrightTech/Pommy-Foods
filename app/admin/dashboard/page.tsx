@@ -148,7 +148,7 @@ export default function DashboardPage() {
         </div>
         <div className="flex items-center gap-3">
           <div className="glass rounded-premium px-4 py-2.5 flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-primary-600" />
+            <Calendar className="w-5 h-5 text-primary" />
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
@@ -160,8 +160,8 @@ export default function DashboardPage() {
               <option value="365">Last year</option>
             </select>
           </div>
-          <button className="glass rounded-premium px-4 py-2.5 hover:bg-white/35 transition-all">
-            <Filter className="w-5 h-5 text-primary-600" />
+          <button className="glass rounded-premium px-4 py-2.5 hover:bg-primary-hover transition-all">
+            <Filter className="w-5 h-5 text-primary" />
           </button>
         </div>
       </div>
@@ -238,7 +238,7 @@ export default function DashboardPage() {
           </div>
               <Link 
                 href="/admin/orders"
-                className="text-sm text-primary-500 hover:text-primary-600 active:text-primary-700 font-semibold font-body flex items-center gap-1 group transition-colors"
+                className="text-sm text-primary hover:text-[var(--color-primary-dark)] active:text-[var(--color-primary-darker)] font-semibold font-body flex items-center gap-1 group transition-colors"
               >
                 View All
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -265,7 +265,7 @@ export default function DashboardPage() {
                   onClick={() => router.push(`/admin/orders/${order.id}`)}
                 >
                   <td className="py-4 px-4">
-                    <span className="text-sm font-mono font-semibold text-primary-600">
+                    <span className="text-sm font-mono font-semibold text-primary">
                       {order.orderNumber}
                     </span>
                   </td>
@@ -280,7 +280,7 @@ export default function DashboardPage() {
                     {getStatusBadge(order.status)}
                   </td>
                   <td className="py-4 px-4">
-                    <button className="text-primary-500 hover:text-primary-600 active:text-primary-700 text-sm font-semibold font-body transition-colors">
+                    <button className="text-primary hover:text-[var(--color-primary-dark)] active:text-[var(--color-primary-darker)] text-sm font-semibold font-body transition-colors">
                       View
                     </button>
                   </td>
@@ -293,7 +293,7 @@ export default function DashboardPage() {
 
       {/* Floating "Add New Menu" Button - Neumorphic */}
       <Link href="/admin/products/new">
-        <button className="fixed bottom-8 right-8 w-16 h-16 neu-lg rounded-full flex items-center justify-center text-primary-500 hover:text-primary-600 active:text-primary-700 hover:shadow-neu-lg hover:scale-110 transition-all duration-300 z-50 gold-glow group">
+        <button className="fixed bottom-8 right-8 w-16 h-16 neu-lg rounded-full flex items-center justify-center text-primary hover:text-[var(--color-primary-dark)] active:text-[var(--color-primary-darker)] hover:bg-primary-hover hover:shadow-neu-lg hover:scale-110 transition-all duration-300 z-50 gold-glow group">
           <Plus className="w-8 h-8 group-hover:rotate-90 transition-transform duration-300" />
         </button>
       </Link>

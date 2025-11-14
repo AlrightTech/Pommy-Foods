@@ -159,7 +159,7 @@ export default function ProductsPage() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-1.5 h-10 bg-gradient-to-b from-primary-500 to-primary-600 rounded-full shadow-sm"></div>
+            <div className="w-1.5 h-10 bg-gradient-gold rounded-full shadow-sm"></div>
             <div>
               <h1 className="font-display text-3xl md:text-4xl text-neutral-900 mb-1">
                 Products
@@ -171,23 +171,23 @@ export default function ProductsPage() {
           </div>
         </div>
         <Link href="/admin/products/new">
-          <button className="group bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-semibold font-body px-6 py-3.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 min-w-[160px]">
-            <Plus className="w-5 h-5" />
+          <Button variant="primary" className="flex items-center gap-2 min-w-[160px]">
+            <Plus className="w-4 h-4" />
             <span>Add Product</span>
-          </button>
+          </Button>
         </Link>
       </div>
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="p-4 bg-gradient-to-br from-primary-50 to-primary-100/50 border-primary-200">
+        <Card className="p-4" style={{ background: 'linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary-lighter) 100%)', borderColor: 'var(--color-primary)' }}>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-body text-neutral-600 mb-1">Total Products</p>
               <p className="text-2xl font-bold font-display text-neutral-900">{stats.total}</p>
             </div>
-            <div className="w-12 h-12 rounded-lg bg-primary-500/10 flex items-center justify-center">
-              <Package className="w-6 h-6 text-primary-600" />
+            <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--color-primary-light)' }}>
+              <Package className="w-6 h-6 text-primary" />
             </div>
           </div>
         </Card>
@@ -230,7 +230,7 @@ export default function ProductsPage() {
       <Card className="mb-6">
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row gap-3">
-            <div className="flex-1 flex items-center space-x-3 bg-neutral-50 rounded-lg px-4 py-3 border border-neutral-200 focus-within:border-primary-300 focus-within:ring-2 focus-within:ring-primary-100 transition-all">
+            <div className="flex-1 flex items-center space-x-3 bg-neutral-50 rounded-lg px-4 py-3 border border-neutral-200 focus-within:border-primary focus-within:ring-2 transition-all" style={{ '--tw-ring-color': 'var(--color-primary-light)' } as React.CSSProperties}>
               <Search className="w-5 h-5 text-neutral-400 flex-shrink-0" />
               <input
                 type="text"
@@ -255,14 +255,15 @@ export default function ProductsPage() {
               onClick={() => setShowFilters(!showFilters)}
               className={`px-4 py-3 rounded-lg border-2 transition-all flex items-center gap-2 font-semibold text-sm font-body ${
                 showFilters || categoryFilter !== "all" || statusFilter !== "all"
-                  ? "bg-primary-50 border-primary-300 text-primary-700"
+                  ? "border-primary text-primary"
                   : "bg-white border-neutral-300 text-neutral-700 hover:bg-neutral-50"
               }`}
+              style={showFilters || categoryFilter !== "all" || statusFilter !== "all" ? { backgroundColor: 'var(--color-primary-light)' } : {}}
             >
               <Filter className="w-4 h-4" />
               Filters
               {(categoryFilter !== "all" || statusFilter !== "all") && (
-                <span className="bg-primary-500 text-white text-xs rounded-full px-2 py-0.5">
+                <span className="bg-primary text-white text-xs rounded-full px-2 py-0.5">
                   {[categoryFilter !== "all" ? 1 : 0, statusFilter !== "all" ? 1 : 0].reduce((a, b) => a + b, 0)}
                 </span>
               )}
@@ -282,7 +283,8 @@ export default function ProductsPage() {
                     setCategoryFilter(e.target.value);
                     setPage(1);
                   }}
-                  className="w-full px-3 py-2 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-sm font-body text-neutral-900"
+                  className="w-full px-3 py-2 border-2 border-neutral-300 rounded-lg focus:border-primary focus:ring-2 bg-white text-sm font-body text-neutral-900"
+                  style={{ '--tw-ring-color': 'var(--color-primary-light)' } as React.CSSProperties}
                 >
                   <option value="all">All Categories</option>
                   {categories.map(cat => (
@@ -301,7 +303,8 @@ export default function ProductsPage() {
                     setStatusFilter(e.target.value);
                     setPage(1);
                   }}
-                  className="w-full px-3 py-2 border-2 border-neutral-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-200 bg-white text-sm font-body text-neutral-900"
+                  className="w-full px-3 py-2 border-2 border-neutral-300 rounded-lg focus:border-primary focus:ring-2 bg-white text-sm font-body text-neutral-900"
+                  style={{ '--tw-ring-color': 'var(--color-primary-light)' } as React.CSSProperties}
                 >
                   <option value="all">All Status</option>
                   <option value="active">Active</option>
@@ -352,7 +355,7 @@ export default function ProductsPage() {
                   setCategoryFilter("all");
                   setStatusFilter("all");
                 }}
-                className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors font-semibold text-sm font-body"
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors font-semibold text-sm font-body"
               >
                 Clear Filters
               </button>
@@ -402,7 +405,7 @@ export default function ProductsPage() {
                       <td className="px-6 py-4 text-sm font-semibold font-body text-neutral-900">
                         {product.name}
                       </td>
-                      <td className="px-6 py-4 text-sm font-mono font-body text-primary-600">
+                      <td className="px-6 py-4 text-sm font-mono font-body text-primary">
                         {product.sku}
                       </td>
                       <td className="px-6 py-4 text-sm font-body text-neutral-700">
@@ -425,7 +428,10 @@ export default function ProductsPage() {
                         <div className="flex items-center space-x-2">
                           <Link
                             href={`/admin/products/${product.id}`}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold font-body text-primary-500 hover:text-primary-600 active:text-primary-700 bg-primary-50 hover:bg-primary-100 rounded-lg transition-colors disabled:text-primary-500/50"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold font-body text-primary hover:text-[var(--color-primary-dark)] active:text-[var(--color-primary-darker)] rounded-lg transition-colors disabled:text-primary/50"
+                            style={{ backgroundColor: 'var(--color-primary-light)' }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-hover)'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-primary-light)'}
                             title="Edit product"
                           >
                             <Edit className="w-3.5 h-3.5" />
@@ -433,7 +439,10 @@ export default function ProductsPage() {
                           </Link>
                           <button
                             onClick={() => handleDelete(product.id)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold font-body text-error-600 bg-error-50 hover:bg-error-100 rounded-lg transition-colors"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold font-body rounded-lg transition-colors"
+                            style={{ color: 'var(--color-error)', backgroundColor: 'var(--color-error-light)' }}
+                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.2)'}
+                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-error-light)'}
                             title="Delete product"
                           >
                             <Trash2 className="w-3.5 h-3.5" />

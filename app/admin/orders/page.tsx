@@ -236,7 +236,7 @@ function OrdersPageContent() {
       <Card variant="glass">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 flex items-center gap-3 glass rounded-premium px-4 py-2.5 h-11 focus-within:shadow-glass-lg focus-within:bg-white/35 transition-all">
-            <Search className="w-4 h-4 text-primary-600 flex-shrink-0" />
+            <Search className="w-4 h-4 text-primary flex-shrink-0" />
             <input
               type="text"
               placeholder="Search by Order ID or Store..."
@@ -309,7 +309,7 @@ function OrdersPageContent() {
                       key={order.id}
                       className="border-b border-white/20 hover:bg-white/10 transition-colors"
                     >
-                      <td className="px-6 py-4 text-sm font-mono text-primary-600">
+                      <td className="px-6 py-4 text-sm font-mono text-primary">
                         {order.order_number}
                       </td>
                       <td className="px-6 py-4 text-sm text-neutral-700">
@@ -331,7 +331,7 @@ function OrdersPageContent() {
                         <div className="flex items-center gap-2">
                           <Link
                             href={`/admin/orders/${order.id}`}
-                            className="px-3 py-1.5 glass rounded-premium text-primary-500 hover:text-primary-600 active:text-primary-700 hover:bg-white/35 text-sm font-semibold font-body transition-all"
+                            className="px-3 py-1.5 glass rounded-premium text-primary hover:text-[var(--color-primary-dark)] active:text-[var(--color-primary-darker)] hover:bg-primary-hover text-sm font-semibold font-body transition-all"
                           >
                             View
                           </Link>

@@ -46,7 +46,7 @@ export const StatCard: React.FC<StatCardProps> = ({
           "w-16 h-16 rounded-premium flex items-center justify-center shadow-premium transition-all duration-300 hover:scale-110",
           iconBg
         )}>
-          <Icon className="w-8 h-8 text-primary-600" />
+          <Icon className="w-8 h-8 text-primary" />
         </div>
       </div>
     </Card>

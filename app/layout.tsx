@@ -19,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${poppins.variable} font-body antialiased`}>
+    <html lang="en" style={{ overflowX: 'hidden' }}>
+      <body className={`${poppins.variable} font-body antialiased`} style={{ overflowX: 'hidden', width: '100%' }}>
         {children}
       </body>
     </html>

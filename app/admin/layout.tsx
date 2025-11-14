@@ -38,10 +38,10 @@ export default function AdminLayout({
 
   return (
     <ToastProvider>
-      <div className="min-h-screen bg-base">
+      <div className="min-h-screen bg-base" style={{ overflowX: 'hidden' }}>
         <Sidebar />
         <Header />
-        <main className="md:ml-80 pt-16 p-6 md:p-8 min-h-screen">
+        <main className="md:ml-80 pt-16 p-6 md:p-8 min-h-screen" style={{ overflowX: 'auto' }}>
           {children}
         </main>
       </div>
