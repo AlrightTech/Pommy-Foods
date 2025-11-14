@@ -244,17 +244,17 @@ export default function StoresPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          {store.is_active ? (
+                        {store.is_active ? (
                             <>
                               <CheckCircle2 className="w-5 h-5 text-success-600" />
-                              <Badge variant="success">Active</Badge>
+                          <Badge variant="success">Active</Badge>
                             </>
-                          ) : (
+                        ) : (
                             <>
                               <PauseCircle className="w-5 h-5 text-neutral-400" />
-                              <Badge variant="error">Inactive</Badge>
+                          <Badge variant="error">Inactive</Badge>
                             </>
-                          )}
+                        )}
                         </div>
                       </td>
                       <td className="px-6 py-4">

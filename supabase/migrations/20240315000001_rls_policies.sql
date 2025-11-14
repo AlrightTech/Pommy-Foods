@@ -201,3 +201,17 @@ CREATE POLICY "Admins can view all profiles" ON user_profiles
     )
   );
 
+-- Allow users to insert their own profile (for initial profile creation)
+CREATE POLICY "Users can insert their own profile" ON user_profiles
+  FOR INSERT WITH CHECK (auth.uid() = id);
+
+-- Allow admins to insert profiles (for creating other users)
+CREATE POLICY "Admins can insert profiles" ON user_profiles
+  FOR INSERT WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM user_profiles up
+      WHERE up.id = auth.uid()
+      AND up.role = 'admin'
+    )
+  );
+

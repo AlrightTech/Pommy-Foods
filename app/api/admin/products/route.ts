@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { validateProduct, validateSKUFormat } from '@/lib/utils/product-validation';
+import { handleSupabaseAdminError } from '@/lib/utils/api-error-handler';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,14 +15,7 @@ export async function GET(request: NextRequest) {
     try {
       adminSupabase = getSupabaseAdmin();
     } catch (adminError: any) {
-      console.error('Supabase admin client error:', adminError);
-      return NextResponse.json(
-        { 
-          error: 'Configuration error', 
-          details: adminError.message || 'Failed to initialize Supabase admin client. Please check your environment variables.'
-        },
-        { status: 500 }
-      );
+      return handleSupabaseAdminError(adminError);
     }
 
     const searchParams = request.nextUrl.searchParams;
@@ -158,17 +152,18 @@ export async function POST(request: NextRequest) {
     try {
       adminSupabase = getSupabaseAdmin();
     } catch (adminError: any) {
-      console.error('Supabase admin client error:', adminError);
-      return NextResponse.json(
-        { 
-          error: 'Configuration error', 
-          details: adminError.message || 'Failed to initialize Supabase admin client. Please check your environment variables.'
-        },
-        { status: 500 }
-      );
+      return handleSupabaseAdminError(adminError);
     }
 
-    const body = await request.json();
+    let body;
+    try {
+      body = await request.json();
+    } catch (parseError) {
+      return NextResponse.json(
+        { error: 'Invalid JSON in request body' },
+        { status: 400 }
+      );
+    }
 
     const { name, description, sku, price, cost, unit, category, min_stock_level, is_active } = body;
 

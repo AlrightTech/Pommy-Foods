@@ -1,11 +1,35 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const supabase = await createServerClient();
+
+    // Check if user is authenticated
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    
+    if (sessionError || !session) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    // Verify user has admin role
+    const { data: profile, error: profileError } = await supabase
+      .from('user_profiles')
+      .select('role')
+      .eq('id', session.user.id)
+      .single();
+
+    if (profileError || !profile || profile.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Forbidden - Admin access required' },
+        { status: 403 }
+      );
+    }
 
     // Get total orders count
     const { count: totalOrders } = await supabase
@@ -79,32 +103,48 @@ export async function GET() {
       return acc;
     }, {}) || {};
 
-    return NextResponse.json({
-      stats: {
-        totalOrders: totalOrders || 0,
-        revenue: revenue,
-        totalProducts: totalProducts || 0,
-        pendingApprovals: pendingApprovals || 0,
+    return NextResponse.json(
+      {
+        stats: {
+          totalOrders: totalOrders || 0,
+          revenue: revenue,
+          totalProducts: totalProducts || 0,
+          pendingApprovals: pendingApprovals || 0,
+        },
+        recentOrders: recentOrders?.map((order: any) => ({
+          id: order.id,
+          orderNumber: order.order_number,
+          store: order.stores?.name || 'Unknown',
+          amount: Number(order.final_amount || 0),
+          status: order.status,
+          date: order.created_at,
+        })) || [],
+        statusDistribution: statusCounts,
+        salesTrend: Object.entries(dailySales).map(([date, amount]) => ({
+          date,
+          amount: Number(amount),
+        })),
       },
-      recentOrders: recentOrders?.map((order: any) => ({
-        id: order.id,
-        orderNumber: order.order_number,
-        store: order.stores?.name || 'Unknown',
-        amount: Number(order.final_amount || 0),
-        status: order.status,
-        date: order.created_at,
-      })) || [],
-      statusDistribution: statusCounts,
-      salesTrend: Object.entries(dailySales).map(([date, amount]) => ({
-        date,
-        amount: Number(amount),
-      })),
-    });
-  } catch (error) {
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+  } catch (error: any) {
     console.error('Error fetching dashboard stats:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch dashboard statistics' },
-      { status: 500 }
+      { 
+        error: 'Failed to fetch dashboard statistics',
+        details: error?.message || 'Unknown error'
+      },
+      { 
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
     );
   }
 }

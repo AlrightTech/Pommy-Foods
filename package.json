@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "verify": "node scripts/verify-build.js"
+    "verify": "node scripts/verify-build.js",
+    "create-admin": "node scripts/create-admin.js"
   },
   "dependencies": {
     "react": "^18.3.1",

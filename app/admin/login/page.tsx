@@ -30,23 +30,88 @@ function AdminLoginForm() {
       if (authError) throw authError;
 
       if (data.session) {
-        // Check user role
-        const { data: profile } = await supabase
+        // Check user role with proper error handling
+        // Try querying with explicit headers to avoid 406 errors
+        const profileQuery = supabase
           .from("user_profiles")
-          .select("role")
-          .eq("id", data.session.user.id)
-          .single();
+          .select("role, email, full_name, is_active")
+          .eq("id", data.session.user.id);
+        
+        const { data: profile, error: profileError } = await profileQuery.maybeSingle();
 
-        if (profile && profile.role === "admin") {
-          showSuccess("Login successful! Redirecting...");
-          router.push("/admin/dashboard");
-          router.refresh();
-        } else {
-          await supabase.auth.signOut();
-          const errorMsg = "Access denied. Admin account required.";
+        // Log for debugging
+        console.log("Profile check:", { 
+          profile, 
+          profileError, 
+          userId: data.session.user.id,
+          errorCode: profileError?.code,
+          errorMessage: profileError?.message,
+          errorDetails: profileError?.details,
+          errorHint: profileError?.hint
+        });
+
+        if (profileError) {
+          console.error("Error fetching profile:", profileError);
+          console.error("Profile error details:", {
+            code: profileError.code,
+            message: profileError.message,
+            details: profileError.details,
+            hint: profileError.hint,
+            userId: data.session.user.id
+          });
+          
+          // If profile doesn't exist, provide helpful message
+          if (profileError.code === 'PGRST116' || profileError.code === 'PGRST301') {
+            await supabase.auth.signOut();
+            const errorMsg = `Admin profile not found for user ID: ${data.session.user.id}. Please run the fix_admin_login.sql script in Supabase SQL Editor.`;
+            setError(errorMsg);
+            showError(errorMsg);
+            return;
+          }
+          
+          // Handle 406 or other HTTP errors
+          if (profileError.message?.includes('406') || profileError.code === '406') {
+            await supabase.auth.signOut();
+            const errorMsg = `Database query failed. Please ensure your admin profile exists. User ID: ${data.session.user.id}. Run fix_admin_login.sql in Supabase SQL Editor.`;
+            setError(errorMsg);
+            showError(errorMsg);
+            return;
+          }
+          
+          // Show detailed error for debugging
+          const errorMsg = `Profile query failed: ${profileError.message || 'Unknown error'}. Code: ${profileError.code || 'N/A'}. User ID: ${data.session.user.id}`;
           setError(errorMsg);
           showError(errorMsg);
+          return;
         }
+
+        if (!profile) {
+          await supabase.auth.signOut();
+          const errorMsg = "Admin profile not found. Please contact system administrator to set up your admin account.";
+          setError(errorMsg);
+          showError(errorMsg);
+          return;
+        }
+
+        if (profile.role !== "admin") {
+          await supabase.auth.signOut();
+          const errorMsg = `Access denied. Your account has role "${profile.role || 'none'}" but admin role is required. Please contact system administrator.`;
+          setError(errorMsg);
+          showError(errorMsg);
+          return;
+        }
+
+        if (!profile.is_active) {
+          await supabase.auth.signOut();
+          const errorMsg = "Access denied. Your admin account is inactive. Please contact system administrator.";
+          setError(errorMsg);
+          showError(errorMsg);
+          return;
+        }
+
+        showSuccess("Login successful! Redirecting...");
+        router.push("/admin/dashboard");
+        router.refresh();
       }
     } catch (err: any) {
       const errorMsg = err.message || "Failed to login";

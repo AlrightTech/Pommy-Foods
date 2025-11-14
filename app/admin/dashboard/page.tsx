@@ -81,13 +81,29 @@ export default function DashboardPage() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/admin/stats');
-      if (response.ok) {
-        const result = await response.json();
+      const response = await fetch('/api/admin/stats', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('Error fetching dashboard data:', response.status, errorData);
+        // Keep using default/fallback data if API fails
+        return;
+      }
+
+      const result = await response.json();
+      if (result && typeof result === 'object') {
         setData(result);
       }
     } catch (err) {
       console.error('Error fetching dashboard data:', err);
+      // Keep using default/fallback data if fetch fails
     } finally {
       setLoading(false);
     }

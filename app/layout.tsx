@@ -9,8 +9,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Pommy Foods - Admin Dashboard",
-  description: "Order Management System for Pommy Foods",
+  title: "Pommy Foods - Premium Food Management Platform",
+  description: "Streamline orders, manage inventory, and delight customers with our comprehensive food management platform.",
 };
 
 export default function RootLayout({
