@@ -17,7 +17,17 @@ export default function KitchenLayout({
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
 
+  // Exclude login and register pages from auth check
+  const isAuthPage = pathname === "/kitchen/login" || pathname === "/kitchen/register";
+
   useEffect(() => {
+    // Skip auth check for login/register pages
+    if (isAuthPage) {
+      setLoading(false);
+      setAuthenticated(false);
+      return;
+    }
+
     const checkAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -55,7 +65,12 @@ export default function KitchenLayout({
     };
 
     checkAuth();
-  }, [router, pathname]);
+  }, [router, pathname, isAuthPage]);
+
+  // For auth pages, render without layout wrapper
+  if (isAuthPage) {
+    return <>{children}</>;
+  }
 
   if (loading) {
     return (
