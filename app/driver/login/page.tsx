@@ -46,7 +46,7 @@ export default function DriverLoginPage() {
           <LoginForm role="driver" />
 
           <div className="text-center text-sm text-neutral-600">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link
               href="/driver/register"
               className="text-primary-600 hover:text-primary-700 font-semibold"

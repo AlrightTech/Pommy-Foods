@@ -46,7 +46,7 @@ export default function KitchenLoginPage() {
           <LoginForm role="kitchen_staff" />
 
           <div className="text-center text-sm text-neutral-600">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link
               href="/kitchen/register"
               className="text-primary-600 hover:text-primary-700 font-semibold"
