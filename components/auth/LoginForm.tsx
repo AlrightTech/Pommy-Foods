@@ -52,16 +52,79 @@ export function LoginForm({ role, onSuccess }: LoginFormProps) {
       }
 
       // Get user profile to verify role
-      const { data: profile, error: profileError } = await supabase
+      let { data: profile, error: profileError } = await supabase
         .from("user_profiles")
         .select("*")
         .eq("id", authData.user.id)
         .single();
 
+      // If profile doesn't exist, try to create it via API (for admin accounts)
       if (profileError || !profile) {
-        setError("User profile not found");
-        setLoading(false);
-        return;
+        // Try to auto-create profile for admin accounts or if role matches user metadata
+        const userMetadata = authData.user.user_metadata || {};
+        const metadataRole = userMetadata.role;
+        
+        // Only auto-create if role matches or if it's an admin account
+        if (role === metadataRole || role === "admin") {
+          try {
+            const response = await fetch("/api/auth/fix-profile", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                userId: authData.user.id,
+                role: role,
+                email: authData.user.email,
+                fullName: userMetadata.full_name || authData.user.email?.split("@")[0] || "User",
+              }),
+            });
+
+            if (response.ok) {
+              const result = await response.json();
+              profile = result.profile;
+            } else {
+              // If API fails, try direct insert as fallback (may fail due to RLS)
+              const profileData: any = {
+                id: authData.user.id,
+                email: authData.user.email || "",
+                full_name: userMetadata.full_name || authData.user.email?.split("@")[0] || "User",
+                role: role,
+                is_active: true,
+              };
+
+              const { data: newProfile, error: createError } = await supabase
+                .from("user_profiles")
+                .insert(profileData)
+                .select()
+                .single();
+
+              if (createError || !newProfile) {
+                console.error("Failed to create user profile:", createError);
+                setError(
+                  "User profile not found. Please contact an administrator to create your profile, or use the admin creation script."
+                );
+                setLoading(false);
+                return;
+              }
+
+              profile = newProfile;
+            }
+          } catch (apiError) {
+            console.error("Error calling fix-profile API:", apiError);
+            setError(
+              "User profile not found. Please contact an administrator to create your profile."
+            );
+            setLoading(false);
+            return;
+          }
+        } else {
+          setError(
+            "User profile not found. Please contact an administrator to create your profile."
+          );
+          setLoading(false);
+          return;
+        }
       }
 
       if (!profile.is_active) {
