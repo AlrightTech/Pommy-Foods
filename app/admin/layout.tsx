@@ -66,7 +66,7 @@ export default function AdminLayout({
     };
 
     checkAuth();
-  }, [router, pathname, isAuthPage]);
+  }, [router, pathname]); // Removed isAuthPage from deps to avoid unnecessary re-runs
 
   // For auth pages, render without layout wrapper
   if (isAuthPage) {

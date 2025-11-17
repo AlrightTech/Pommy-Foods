@@ -67,6 +67,10 @@ export function LoginForm({ role, onSuccess }: LoginFormProps) {
         // Only auto-create if role matches or if it's an admin account
         if (role === metadataRole || role === "admin") {
           try {
+            // Add timeout to prevent hanging
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
             const response = await fetch("/api/auth/fix-profile", {
               method: "POST",
               headers: {
@@ -78,12 +82,17 @@ export function LoginForm({ role, onSuccess }: LoginFormProps) {
                 email: authData.user.email,
                 fullName: userMetadata.full_name || authData.user.email?.split("@")[0] || "User",
               }),
+              signal: controller.signal,
             });
+
+            clearTimeout(timeoutId);
 
             if (response.ok) {
               const result = await response.json();
               profile = result.profile;
             } else {
+              const errorData = await response.json().catch(() => ({}));
+              console.error("Fix-profile API error:", errorData);
               // If API fails, try direct insert as fallback (may fail due to RLS)
               const profileData: any = {
                 id: authData.user.id,
@@ -110,11 +119,18 @@ export function LoginForm({ role, onSuccess }: LoginFormProps) {
 
               profile = newProfile;
             }
-          } catch (apiError) {
+          } catch (apiError: any) {
             console.error("Error calling fix-profile API:", apiError);
-            setError(
-              "User profile not found. Please contact an administrator to create your profile."
-            );
+            // Handle timeout or network errors
+            if (apiError.name === "AbortError") {
+              setError(
+                "Request timed out. Please try again or contact an administrator."
+              );
+            } else {
+              setError(
+                "User profile not found. Please contact an administrator to create your profile."
+              );
+            }
             setLoading(false);
             return;
           }
@@ -141,14 +157,20 @@ export function LoginForm({ role, onSuccess }: LoginFormProps) {
         return;
       }
 
-      // Success - redirect to appropriate dashboard
+      // Success - ensure session is established, then redirect
+      setLoading(false); // Reset loading before redirect
+      
+      // Small delay to ensure session is fully established
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       if (onSuccess) {
         onSuccess();
       } else {
-        router.push(roleRedirects[role]);
-        router.refresh();
+        // Use replace to avoid back button issues and ensure clean navigation
+        window.location.href = roleRedirects[role]; // Use window.location for reliable redirect
       }
     } catch (err: any) {
+      console.error("Login error:", err);
       setError(err.message || "An error occurred during login");
       setLoading(false);
     }
