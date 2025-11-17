@@ -19,6 +19,29 @@ function createSupabaseClient(): SupabaseClient {
     throw new Error('Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY');
   }
 
+  // Validate URL format
+  if (!supabaseUrl.startsWith('http://') && !supabaseUrl.startsWith('https://')) {
+    const error = new Error(`Invalid Supabase URL format: "${supabaseUrl}". URL must start with http:// or https://`);
+    if (typeof window !== 'undefined') {
+      console.error('❌', error.message);
+    }
+    throw error;
+  }
+
+  // Validate URL is a valid Supabase URL
+  try {
+    const url = new URL(supabaseUrl);
+    if (!url.hostname.includes('supabase') && !url.hostname.includes('localhost')) {
+      console.warn('⚠️ Supabase URL does not appear to be a valid Supabase hostname:', url.hostname);
+    }
+  } catch (urlError) {
+    const error = new Error(`Invalid Supabase URL: "${supabaseUrl}". Please check your NEXT_PUBLIC_SUPABASE_URL in .env.local`);
+    if (typeof window !== 'undefined') {
+      console.error('❌', error.message);
+    }
+    throw error;
+  }
+
   // Create client - Supabase automatically adds apikey header
   // The apikey header is added automatically when you pass the anon key
   const client = createClient(supabaseUrl, supabaseAnonKey, {
