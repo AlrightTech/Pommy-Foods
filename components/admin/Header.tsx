@@ -34,7 +34,7 @@ export const Header = () => {
   return (
     <>
       {/* Mobile Header */}
-      <header className="glass-strong fixed top-0 left-0 right-0 z-50 border-b border-white/30 md:hidden" style={{ height: '64px' }}>
+      <header className="glass-strong border-b border-white/30 md:hidden w-full h-full" style={{ height: '64px', position: 'relative', zIndex: 50 }}>
         <div className="flex items-center justify-between px-4 sm:px-6 py-3 h-full w-full max-w-full">
           <div className="flex items-center gap-3">
             <button
@@ -63,13 +63,12 @@ export const Header = () => {
 
       {/* Desktop Header */}
       <header 
-        className="glass-strong fixed top-0 z-50 border-b border-white/30 hidden md:block" 
+        className="glass-strong border-b border-white/30 hidden md:block w-full h-full" 
         style={{ 
-          left: '320px', 
-          right: '0', 
-          width: 'calc(100% - 320px)',
           height: '64px',
-          maxWidth: 'calc(100vw - 320px)'
+          position: 'relative',
+          zIndex: 50,
+          width: '100%'
         }}
       >
         <div className="flex items-center justify-between px-4 md:px-6 py-3 h-full w-full max-w-full gap-2">
@@ -106,7 +105,7 @@ export const Header = () => {
               </button>
               
               {userMenuOpen && (
-                <div className="absolute right-0 mt-2 w-56 glass-strong rounded-premium shadow-glass-lg border border-white/40 py-2 z-50 animate-scale-in">
+                <div className="absolute right-0 mt-2 w-56 glass-strong rounded-premium shadow-glass-lg border border-white/40 py-2 z-[60] animate-scale-in">
                   <button className="w-full text-left px-4 py-2.5 text-sm font-body text-neutral-700 hover:bg-white/30 transition-colors rounded-lg mx-2">
                     Profile Settings
                   </button>

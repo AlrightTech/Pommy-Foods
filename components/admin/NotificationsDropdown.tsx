@@ -147,7 +147,7 @@ export function NotificationsDropdown({ userId }: NotificationsDropdownProps) {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-96 glass-strong rounded-premium shadow-lg border border-white/30 z-50">
+        <div className="absolute right-0 mt-2 w-96 glass-strong rounded-premium shadow-lg border border-white/30 z-[60]">
           <Card className="p-0">
             <div className="p-4 border-b border-neutral-200 flex items-center justify-between">
               <h3 className="font-semibold text-neutral-900">Notifications</h3>

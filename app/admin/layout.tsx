@@ -38,17 +38,66 @@ export default function AdminLayout({
 
   return (
     <ToastProvider>
-      <div className="min-h-screen bg-base" style={{ overflowX: 'hidden', width: '100%' }}>
-        <Sidebar />
-        <Header />
-        <main 
-          className="w-full min-h-screen pt-20 pb-8 px-4 md:px-6 lg:px-8"
-          style={{ 
-            marginLeft: '0'
+      <div 
+        className="min-h-screen bg-base"
+        style={{
+          display: 'grid',
+          gridTemplateRows: '64px 1fr',
+          gridTemplateColumns: 'auto 1fr',
+          width: '100%',
+          height: '100vh',
+          overflow: 'hidden'
+        }}
+      >
+        {/* Sidebar - spans both rows on desktop */}
+        <div
+          className="hidden md:block"
+          style={{
+            gridRow: '1 / -1',
+            gridColumn: '1 / 2',
+            zIndex: 40,
+            width: '320px'
           }}
         >
-          <div className="w-full max-w-full md:ml-80">
-            {children}
+          <Sidebar />
+        </div>
+
+        {/* Header - spans full width on mobile, excludes sidebar on desktop */}
+        <header
+          className="w-full md:col-start-2"
+          style={{
+            gridRow: '1 / 2',
+            gridColumn: '1 / -1',
+            zIndex: 50,
+            position: 'relative',
+            overflow: 'visible'
+          }}
+        >
+          <Header />
+        </header>
+
+        {/* Main Content Area */}
+        <main
+          className="w-full overflow-y-auto overflow-x-hidden md:col-start-2"
+          style={{
+            gridRow: '2 / -1',
+            gridColumn: '1 / -1',
+            padding: '1rem',
+            paddingTop: '1rem',
+            paddingBottom: '2rem',
+            overflow: 'visible'
+          }}
+        >
+          <div 
+            className="w-full max-w-full h-full"
+            style={{
+              paddingLeft: '0.5rem',
+              paddingRight: '0.5rem'
+            }}
+          >
+            <div className="md:pl-4 md:pr-6">
+              {children}
+            </div>
           </div>
         </main>
       </div>

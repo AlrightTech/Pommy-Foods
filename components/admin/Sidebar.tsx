@@ -33,7 +33,7 @@ export const Sidebar = () => {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-80 neu rounded-r-premium-lg p-6 hidden md:block z-40 border-r border-white/30 overflow-y-auto" style={{ overflowX: 'visible' }}>
+    <aside className="h-full w-80 neu rounded-r-premium-lg p-6 hidden md:block z-40 border-r border-white/30 overflow-y-auto" style={{ overflowX: 'visible', position: 'relative' }}>
       {/* Logo */}
       <div className="mb-10 pb-6 border-b border-white/30">
         <div className="flex items-center gap-3">
