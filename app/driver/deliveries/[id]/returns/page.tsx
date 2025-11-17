@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Loader } from "@/components/ui/Loader";
 import { ArrowLeft, Package } from "lucide-react";
+import { supabase } from "@/lib/supabase/client";
 import { ReturnForm } from "@/components/driver/ReturnForm";
 
 interface Delivery {
@@ -53,22 +54,58 @@ export default function ReturnsPage() {
     }
   }, [params.id, fetchDelivery]);
 
-  const handleReturnSubmit = async (returns: Array<{ productId: string; quantity: number; reason: string }>) => {
+  const handleReturnSubmit = async (returns: Array<{ productId: string; quantity: number; reason: string; expiryDate?: string; batchNumber?: string }>) => {
     if (!delivery?.orders) return;
 
     try {
       setSubmitting(true);
+      
+      // Get driver ID from session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        alert("Please log in to submit returns");
+        return;
+      }
+
+      // Transform returns to match API format
+      const formattedReturns = returns.map(ret => ({
+        product_id: ret.productId,
+        quantity: ret.quantity,
+        reason: ret.reason as 'expired' | 'damaged' | 'unsold',
+        expiry_date: ret.expiryDate || undefined,
+        batch_number: ret.batchNumber || undefined,
+      }));
+
       const response = await fetch(`/api/deliveries/${params.id}/returns`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          order_id: delivery.orders.id,
-          returns: returns,
+          returns: formattedReturns,
+          returned_by: session.user.id,
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to submit returns");
-      alert("Returns submitted successfully. Invoice will be adjusted.");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        let errorMessage = errorData.error || "Failed to submit returns";
+        if (errorData.details) {
+          if (Array.isArray(errorData.details)) {
+            errorMessage += "\n" + errorData.details.join("\n");
+          } else {
+            errorMessage += "\n" + errorData.details;
+          }
+        }
+        if (errorData.invalidItems && Array.isArray(errorData.invalidItems)) {
+          const invalidItemsMsg = errorData.invalidItems.map((item: any) => 
+            `${item.product_name}: ${item.reason}`
+          ).join("\n");
+          errorMessage += "\nInvalid items:\n" + invalidItemsMsg;
+        }
+        throw new Error(errorMessage);
+      }
+      
+      const data = await response.json();
+      alert(`Returns submitted successfully. Invoice adjusted by $${data.totalReturnAmount?.toFixed(2) || '0.00'}.`);
       router.back();
     } catch (error: any) {
       alert(error.message || "Failed to submit returns");

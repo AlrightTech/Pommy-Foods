@@ -35,7 +35,8 @@ export default function PaymentsPage() {
       const params = new URLSearchParams();
       if (statusFilter) params.append('status', statusFilter);
 
-      const response = await fetch(`/api/payments?${params.toString()}`);
+      // Use the admin payments API
+      const response = await fetch(`/api/admin/payments?${params.toString()}`);
       if (!response.ok) {
         throw new Error('Failed to fetch payments');
       }

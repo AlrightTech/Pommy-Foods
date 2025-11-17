@@ -67,11 +67,11 @@ export default function OrderModifyPage() {
     try {
       setSaving(true);
       const response = await fetch(`/api/admin/orders/${params.id}/modify`, {
-        method: "POST",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          order_items: modifiedItems.map((item) => ({
-            id: item.id,
+          action: "replace",
+          items: modifiedItems.map((item) => ({
             product_id: item.product_id,
             quantity: item.quantity,
             unit_price: item.unit_price,
@@ -81,10 +81,22 @@ export default function OrderModifyPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to modify order");
+        let errorMessage = errorData.error || "Failed to modify order";
+        
+        // Handle stock validation errors
+        if (errorData.details) {
+          if (Array.isArray(errorData.details)) {
+            errorMessage = errorData.details.join('\n');
+          } else {
+            errorMessage = errorData.details;
+          }
+        }
+        
+        throw new Error(errorMessage);
       }
 
-      alert("Order modified successfully");
+      const data = await response.json();
+      alert(data.message || "Order modified successfully. Totals and stock have been updated.");
       router.push(`/admin/orders/${params.id}`);
     } catch (error: any) {
       alert(error.message || "Failed to modify order");

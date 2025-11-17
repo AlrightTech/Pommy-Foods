@@ -48,14 +48,20 @@ export default function InvoicesPage() {
 
       const params = new URLSearchParams();
       params.append("store_id", profile.store_id);
-      if (statusFilter) params.append("status", statusFilter);
+      if (statusFilter) params.append("payment_status", statusFilter);
       if (searchQuery) params.append("search", searchQuery);
 
-      const response = await fetch(`/api/invoices?${params.toString()}`);
+      // Use the new customer invoices API
+      const response = await fetch(`/api/customer/invoices?${params.toString()}`);
       if (!response.ok) throw new Error("Failed to fetch invoices");
 
       const data = await response.json();
-      setInvoices(data.invoices || []);
+      // Transform to include payment info
+      const transformedInvoices = (data.invoices || []).map((inv: any) => ({
+        ...inv,
+        payment_status: inv.is_overdue ? 'overdue' : inv.payment_status,
+      }));
+      setInvoices(transformedInvoices);
     } catch (error) {
       console.error("Error fetching invoices:", error);
     } finally {

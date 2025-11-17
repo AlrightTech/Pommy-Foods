@@ -11,7 +11,8 @@ import {
   BarChart3,
   Settings,
   Users,
-  FileText
+  FileText,
+  PackageX
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +23,7 @@ const navigation = [
   { name: "Stores", href: "/admin/stores", icon: Users },
   { name: "Kitchen Sheets", href: "/admin/kitchen-sheets", icon: FileText },
   { name: "Deliveries", href: "/admin/deliveries", icon: Truck },
+  { name: "Returns & Wastage", href: "/admin/returns", icon: PackageX },
   { name: "Payments", href: "/admin/payments", icon: DollarSign },
   { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
   { name: "Settings", href: "/admin/settings", icon: Settings },
@@ -35,8 +37,8 @@ export const Sidebar = () => {
       {/* Logo */}
       <div className="mb-10 pb-6 border-b border-white/30">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-premium bg-gradient-gold flex items-center justify-center shadow-premium gold-glow">
-            <span className="font-bold font-body text-white text-lg">PF</span>
+          <div className="w-12 h-12 rounded-premium bg-white flex items-center justify-center shadow-premium gold-glow border-2" style={{ borderColor: '#D2AC6A' }}>
+            <span className="font-bold font-body text-primary text-lg">PF</span>
           </div>
           <div>
             <h1 className="font-bold font-body text-xl text-primary hover:text-[var(--color-primary-dark)] active:text-[var(--color-primary-darker)] transition-colors">Pommy Foods</h1>

@@ -86,46 +86,44 @@ export function StockUpdateForm({
         throw new Error("Invalid stock value");
       }
 
-      // Update stock in database
+      // Get current stock to calculate difference
       const { data: existingStock } = await supabase
         .from("store_stock")
-        .select("id")
+        .select("current_stock")
         .eq("store_id", storeId)
         .eq("product_id", productId)
         .single();
 
-      if (existingStock) {
-        // Update existing stock
-        const { error: updateError } = await supabase
-          .from("store_stock")
-          .update({ current_stock: newStock })
-          .eq("id", existingStock.id);
+      const currentStock = existingStock?.current_stock || 0;
+      const difference = newStock - currentStock;
 
-        if (updateError) throw updateError;
-      } else {
-        // Create new stock entry
-        const { error: insertError } = await supabase
-          .from("store_stock")
-          .insert({
-            store_id: storeId,
-            product_id: productId,
-            current_stock: newStock,
-          });
+      // Use the new API endpoint for stock updates
+      const response = await fetch(`/api/stores/${storeId}/stock`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          updates: [
+            {
+              product_id: productId,
+              quantity: difference, // Positive to increase, negative to decrease
+            },
+          ],
+          updated_by: (await supabase.auth.getSession()).data.session?.user.id || null,
+        }),
+      });
 
-        if (insertError) throw insertError;
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to update stock");
       }
 
-      // Trigger replenishment check via API
-      try {
-        await fetch("/api/admin/orders/generate-replenishment", {
-          method: "POST",
-        });
-      } catch (err) {
-        // Non-critical - just log
-        console.log("Replenishment check failed:", err);
-      }
+      const data = await response.json();
+      
+      // Get the updated stock value from response
+      const updatedItem = data.updates?.find((u: any) => u.product_id === productId);
+      const finalStock = updatedItem?.new_stock || newStock;
 
-      onUpdate(productId, newStock);
+      onUpdate(productId, finalStock);
     } catch (err: any) {
       setError(err.message || "Failed to update stock");
     } finally {

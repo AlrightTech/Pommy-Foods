@@ -21,52 +21,90 @@ export default function AnalyticsPage() {
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState('30');
 
+  const [returnsData, setReturnsData] = useState<any>(null);
+  const [paymentsData, setPaymentsData] = useState<any>(null);
+  const [deliveriesData, setDeliveriesData] = useState<any>(null);
+
   const fetchAnalytics = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/admin/analytics?days=${dateRange}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch analytics');
+      
+      // Calculate date range
+      const days = parseInt(dateRange);
+      const endDate = new Date().toISOString().split('T')[0];
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - days);
+      const startDateStr = startDate.toISOString().split('T')[0];
+
+      // Fetch sales analytics
+      const salesResponse = await fetch(`/api/admin/analytics/sales?start_date=${startDateStr}&end_date=${endDate}`);
+      const salesData = salesResponse.ok ? await salesResponse.json() : null;
+
+      // Fetch returns analytics
+      const returnsResponse = await fetch(`/api/admin/analytics/returns?start_date=${startDateStr}&end_date=${endDate}`);
+      const returnsResult = returnsResponse.ok ? await returnsResponse.json() : null;
+      setReturnsData(returnsResult);
+
+      // Fetch payments analytics
+      const paymentsResponse = await fetch(`/api/admin/analytics/payments?start_date=${startDateStr}&end_date=${endDate}`);
+      const paymentsResult = paymentsResponse.ok ? await paymentsResponse.json() : null;
+      setPaymentsData(paymentsResult);
+
+      // Fetch deliveries analytics
+      const deliveriesResponse = await fetch(`/api/admin/analytics/deliveries?start_date=${startDateStr}&end_date=${endDate}`);
+      const deliveriesResult = deliveriesResponse.ok ? await deliveriesResponse.json() : null;
+      setDeliveriesData(deliveriesResult);
+
+      // Transform sales data
+      if (salesData) {
+        const transformedData: AnalyticsData = {
+          totalRevenue: salesData.summary?.netSales || 0,
+          totalOrders: salesData.summary?.orderCount || 0,
+          averageOrderValue: salesData.summary?.orderCount > 0 
+            ? (salesData.summary.netSales / salesData.summary.orderCount) 
+            : 0,
+          topProducts: salesData.salesByProduct?.slice(0, 10).map((p: any) => ({
+            name: p.product_name,
+            quantity: p.totalSold || 0,
+          })) || [],
+          salesByStore: salesData.salesByRegion?.map((s: any) => ({
+            store: s.region,
+            revenue: s.netSales || 0,
+          })) || [],
+          salesTrend: [], // Will be populated from sales data if available
+        };
+        setData(transformedData);
+      } else {
+        // Fallback to static data
+        const staticData: AnalyticsData = {
+          totalRevenue: 456789.50,
+          totalOrders: 1247,
+          averageOrderValue: 366.25,
+          topProducts: [
+            { name: 'Premium Coffee Beans', quantity: 245 },
+            { name: 'Organic Tea Selection', quantity: 189 },
+            { name: 'Artisan Bread Loaf', quantity: 156 },
+            { name: 'Fresh Milk 1L', quantity: 134 },
+            { name: 'Free Range Eggs (12)', quantity: 112 },
+          ],
+          salesByStore: [
+            { store: 'Downtown Convenience', revenue: 125450.00 },
+            { store: 'Main Street Market', revenue: 98760.50 },
+            { store: 'Corner Store', revenue: 87650.25 },
+          ],
+          salesTrend: Array.from({ length: days }, (_, i) => {
+            const date = new Date();
+            date.setDate(date.getDate() - (days - 1 - i));
+            return {
+              date: date.toISOString().split('T')[0],
+              amount: Math.floor(Math.random() * 5000) + 10000,
+            };
+          }),
+        };
+        setData(staticData);
       }
-      const result = await response.json();
-      setData(result);
     } catch (error) {
       console.error('Error fetching analytics:', error);
-      // Use static data as fallback
-      const days = parseInt(dateRange);
-      const staticData: AnalyticsData = {
-        totalRevenue: 456789.50,
-        totalOrders: 1247,
-        averageOrderValue: 366.25,
-        topProducts: [
-          { name: 'Premium Coffee Beans', quantity: 245 },
-          { name: 'Organic Tea Selection', quantity: 189 },
-          { name: 'Artisan Bread Loaf', quantity: 156 },
-          { name: 'Fresh Milk 1L', quantity: 134 },
-          { name: 'Free Range Eggs (12)', quantity: 112 },
-          { name: 'Organic Honey 500g', quantity: 98 },
-          { name: 'Whole Grain Cereal', quantity: 87 },
-          { name: 'Yogurt Assorted', quantity: 76 },
-          { name: 'Fresh Vegetables Pack', quantity: 65 },
-          { name: 'Premium Olive Oil', quantity: 54 },
-        ],
-        salesByStore: [
-          { store: 'Downtown Convenience', revenue: 125450.00 },
-          { store: 'Main Street Market', revenue: 98760.50 },
-          { store: 'Corner Store', revenue: 87650.25 },
-          { store: 'Quick Mart', revenue: 65430.75 },
-          { store: 'Food Express', revenue: 53420.00 },
-        ],
-        salesTrend: Array.from({ length: days }, (_, i) => {
-          const date = new Date();
-          date.setDate(date.getDate() - (days - 1 - i));
-          return {
-            date: date.toISOString().split('T')[0],
-            amount: Math.floor(Math.random() * 5000) + 10000,
-          };
-        }),
-      };
-      setData(staticData);
     } finally {
       setLoading(false);
     }
@@ -203,18 +241,32 @@ export default function AnalyticsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="p-4 bg-warning-50 rounded-lg border border-warning-200">
             <p className="text-xs text-warning-700 mb-1">Total Returns</p>
-            <p className="text-2xl font-bold text-warning-900">0</p>
+            <p className="text-2xl font-bold text-warning-900">
+              {returnsData?.summary?.totalReturns || 0}
+            </p>
             <p className="text-xs text-warning-600 mt-1">Items returned this period</p>
           </div>
           <div className="p-4 bg-error-50 rounded-lg border border-error-200">
             <p className="text-xs text-error-700 mb-1">Wastage Value</p>
-            <p className="text-2xl font-bold text-error-900">{formatCurrency(0)}</p>
+            <p className="text-2xl font-bold text-error-900">
+              {formatCurrency(returnsData?.summary?.totalWastageValue || 0)}
+            </p>
             <p className="text-xs text-error-600 mt-1">Estimated loss from returns</p>
           </div>
         </div>
-        <div className="mt-4 text-sm text-neutral-500">
-          <p>Returns/wastage data will be populated as drivers log expired item returns.</p>
-        </div>
+        {returnsData?.wastageByReason && Object.keys(returnsData.wastageByReason).length > 0 && (
+          <div className="mt-4">
+            <p className="text-sm font-semibold text-neutral-700 mb-2">Returns by Reason:</p>
+            <div className="flex gap-2 flex-wrap">
+              {Object.entries(returnsData.wastageByReason).map(([reason, quantity]: [string, any]) => (
+                <div key={reason} className="px-3 py-1 bg-neutral-100 rounded-lg">
+                  <span className="text-xs font-medium text-neutral-700 capitalize">{reason}: </span>
+                  <span className="text-xs font-bold text-neutral-900">{quantity}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </Card>
 
       {/* Payment Collection Reports */}
@@ -225,18 +277,80 @@ export default function AnalyticsPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="p-4 bg-primary-50 rounded-lg border border-primary-200">
             <p className="text-xs text-primary-700 mb-1">Cash Payments</p>
-            <p className="text-xl font-bold text-primary-900">{formatCurrency(0)}</p>
+            <p className="text-xl font-bold text-primary-900">
+              {formatCurrency(paymentsData?.stats?.cash_collected || 0)}
+            </p>
+            <p className="text-xs text-primary-600 mt-1">
+              {paymentsData?.stats?.cash_count || 0} transactions
+            </p>
           </div>
           <div className="p-4 bg-info-50 rounded-lg border border-info-200">
             <p className="text-xs text-info-700 mb-1">Direct Debit</p>
-            <p className="text-xl font-bold text-info-900">{formatCurrency(0)}</p>
+            <p className="text-xl font-bold text-info-900">
+              {formatCurrency(paymentsData?.stats?.direct_debit_collected || 0)}
+            </p>
+            <p className="text-xs text-info-600 mt-1">
+              {paymentsData?.stats?.direct_debit_count || 0} transactions
+            </p>
           </div>
           <div className="p-4 bg-success-50 rounded-lg border border-success-200">
-            <p className="text-xs text-success-700 mb-1">Collection Rate</p>
-            <p className="text-xl font-bold text-success-900">0%</p>
+            <p className="text-xs text-success-700 mb-1">Total Collected</p>
+            <p className="text-xl font-bold text-success-900">
+              {formatCurrency(paymentsData?.stats?.total_collected || 0)}
+            </p>
+            <p className="text-xs text-success-600 mt-1">
+              {paymentsData?.stats?.payment_count || 0} total payments
+            </p>
           </div>
         </div>
+        {paymentsData?.overdueAccounts && paymentsData.overdueAccounts.length > 0 && (
+          <div className="mt-4 p-4 bg-error-50 rounded-lg border border-error-200">
+            <p className="text-sm font-semibold text-error-700 mb-2">
+              Overdue Accounts: {paymentsData.overdueAccounts.length}
+            </p>
+            <p className="text-xs text-error-600">
+              Total overdue amount: {formatCurrency(
+                paymentsData.overdueAccounts.reduce((sum: number, acc: any) => sum + acc.total_amount, 0)
+              )}
+            </p>
+          </div>
+        )}
       </Card>
+
+      {/* Delivery Performance */}
+      {deliveriesData && (
+        <Card>
+          <h2 className="font-display text-xl text-neutral-900 mb-4">
+            Delivery Performance
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="p-4 bg-success-50 rounded-lg border border-success-200">
+              <p className="text-xs text-success-700 mb-1">On-Time Rate</p>
+              <p className="text-xl font-bold text-success-900">
+                {deliveriesData.performance?.on_time_percentage || 0}%
+              </p>
+            </div>
+            <div className="p-4 bg-info-50 rounded-lg border border-info-200">
+              <p className="text-xs text-info-700 mb-1">Total Deliveries</p>
+              <p className="text-xl font-bold text-info-900">
+                {deliveriesData.performance?.total_deliveries || 0}
+              </p>
+            </div>
+            <div className="p-4 bg-primary-50 rounded-lg border border-primary-200">
+              <p className="text-xs text-primary-700 mb-1">Avg Delivery Time</p>
+              <p className="text-xl font-bold text-primary-900">
+                {deliveriesData.performance?.average_delivery_time_hours?.toFixed(1) || 0}h
+              </p>
+            </div>
+            <div className="p-4 bg-warning-50 rounded-lg border border-warning-200">
+              <p className="text-xs text-warning-700 mb-1">Late Deliveries</p>
+              <p className="text-xl font-bold text-warning-900">
+                {deliveriesData.performance?.late_deliveries || 0}
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
     </div>
   );
 }

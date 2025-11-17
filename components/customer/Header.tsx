@@ -49,11 +49,11 @@ export const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 md:left-64 h-20 bg-white border-b border-neutral-200 shadow-sm z-30">
-      <div className="h-full px-4 md:px-6 flex items-center justify-between">
+    <header className="fixed top-0 z-30 h-20 bg-white border-b border-neutral-200 shadow-sm" style={{ left: '256px', right: '0', width: 'calc(100% - 256px)' }}>
+      <div className="h-full px-4 md:px-6 flex items-center justify-between w-full">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
-            <Store className="w-5 h-5 text-primary-600" />
+            <Store className="w-5 h-5 text-primary" />
             {!loading && storeName && (
               <span className="font-semibold text-neutral-900">{storeName}</span>
             )}

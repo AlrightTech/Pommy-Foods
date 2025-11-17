@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { validateOrderForApproval } from '@/lib/utils/order-validation';
+import { validateStockAvailability, updateStock } from '@/lib/services/stock-management';
+import { generateInvoice } from '@/lib/services/invoice-generation';
+import { sendOrderApprovalNotification } from '@/lib/services/notifications';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,6 +27,19 @@ export async function POST(
         { 
           error: 'Order validation failed', 
           details: validation.errors 
+        },
+        { status: 400 }
+      );
+    }
+
+    // Validate stock availability
+    const stockValidation = await validateStockAvailability(params.id);
+    if (!stockValidation.isValid) {
+      return NextResponse.json(
+        { 
+          error: 'Stock validation failed', 
+          details: stockValidation.errors,
+          insufficientStock: stockValidation.insufficientStock
         },
         { status: 400 }
       );
@@ -95,12 +111,39 @@ export async function POST(
         .eq('id', store.id);
     }
 
+    // Update stock levels (decrease stock for approved order)
+    const orderItems = order.order_items as any[];
+    if (orderItems && orderItems.length > 0) {
+      for (const item of orderItems) {
+        try {
+          await updateStock({
+            store_id: order.store_id,
+            product_id: item.product_id,
+            quantity: item.quantity,
+            reason: 'order_approved',
+            order_id: params.id,
+            updated_by: approved_by || null,
+          });
+        } catch (stockError: any) {
+          console.error(`Failed to update stock for product ${item.product_id}:`, stockError);
+          // Continue with other items even if one fails
+        }
+      }
+    }
+
     // Create kitchen sheet
     let kitchenSheet: { id: string } | null = null;
+    
+    // Generate sheet number
+    const timestamp = Date.now();
+    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+    const sheetNumber = `KS-${timestamp}-${random}`;
+    
     const { data: newKitchenSheet, error: kitchenError } = await adminSupabase
       .from('kitchen_sheets')
       .insert({
         order_id: params.id,
+        sheet_number: sheetNumber,
       })
       .select()
       .single();
@@ -147,6 +190,32 @@ export async function POST(
       // Continue even if delivery creation fails
     } else {
       delivery = newDelivery;
+      
+      // Create delivery note record
+      try {
+        const { createDeliveryNote } = await import('@/lib/services/document-generation');
+        await createDeliveryNote(newDelivery.id, params.id, order.store_id);
+      } catch (noteError: any) {
+        console.error('Error creating delivery note:', noteError);
+        // Continue even if delivery note creation fails
+      }
+    }
+
+    // Generate invoice
+    let invoice = null;
+    try {
+      invoice = await generateInvoice(params.id);
+    } catch (invoiceError: any) {
+      console.error('Error generating invoice:', invoiceError);
+      // Continue even if invoice generation fails
+    }
+
+    // Send notification to store owner
+    try {
+      await sendOrderApprovalNotification(order.store_id, params.id);
+    } catch (notificationError: any) {
+      console.error('Error sending order approval notification:', notificationError);
+      // Continue even if notification fails
     }
 
     // Fetch updated order
@@ -179,15 +248,13 @@ export async function POST(
       console.error('Error fetching updated order:', fetchError);
     }
 
-    // TODO: Send notification to store owner
-    // This would be implemented with email/push notification service
-
     return NextResponse.json({ 
       success: true,
       message: 'Order approved successfully',
       order: updatedOrder || order,
       kitchenSheet,
       delivery,
+      invoice,
     });
   } catch (error: any) {
     console.error('Error approving order:', error);

@@ -93,25 +93,41 @@ export default function KitchenSheetDetailPage() {
     }
   };
 
-  const handleMarkPrepared = async () => {
+  const handleMarkPrepared = async (itemIds?: string[]) => {
     if (!sheet) return;
 
     try {
       setUpdating(true);
+      
+      // Get all item IDs if not provided
+      const itemsToMark = itemIds || sheet.kitchen_sheet_items?.map(item => item.id) || [];
+      
       const response = await fetch(
         `/api/admin/kitchen-sheets/${params.id}`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prepared_at: new Date().toISOString() }),
+          body: JSON.stringify({
+            action: 'mark_prepared',
+            item_ids: itemsToMark,
+            prepared_by: 'kitchen-staff', // TODO: Get from auth
+          }),
         }
       );
 
-      if (!response.ok) throw new Error("Failed to mark as prepared");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to mark as prepared");
+      }
+      
+      const data = await response.json();
+      if (data.allPrepared) {
+        alert("All items prepared! You can now mark the sheet as completed.");
+      }
       fetchSheet();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error marking as prepared:", error);
-      alert("Failed to update kitchen sheet");
+      alert(error.message || "Failed to update kitchen sheet");
     } finally {
       setUpdating(false);
     }
@@ -134,15 +150,22 @@ export default function KitchenSheetDetailPage() {
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ completed_at: new Date().toISOString() }),
+          body: JSON.stringify({
+            action: 'mark_completed',
+          }),
         }
       );
 
-      if (!response.ok) throw new Error("Failed to mark as completed");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to mark as completed");
+      }
+      
+      alert("Kitchen sheet marked as completed!");
       fetchSheet();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error marking as completed:", error);
-      alert("Failed to update kitchen sheet");
+      alert(error.message || "Failed to update kitchen sheet");
     } finally {
       setUpdating(false);
     }
@@ -186,7 +209,7 @@ export default function KitchenSheetDetailPage() {
         <div className="flex items-center space-x-3">
           {!sheet.prepared_at && (
             <Button
-              onClick={handleMarkPrepared}
+              onClick={() => handleMarkPrepared()}
               disabled={updating}
               variant="secondary"
             >

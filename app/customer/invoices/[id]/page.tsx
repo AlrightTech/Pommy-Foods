@@ -56,7 +56,8 @@ export default function InvoiceDetailPage() {
   const fetchInvoice = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/invoices/${params.id}`);
+      // Use the new customer invoices API
+      const response = await fetch(`/api/customer/invoices/${params.id}`);
       if (!response.ok) throw new Error("Failed to fetch invoice");
 
       const data = await response.json();

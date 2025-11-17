@@ -1,15 +1,25 @@
 "use client";
 
 import { Bell, Search, User, Menu, ChevronDown, Package } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import { Sidebar } from "./Sidebar";
+import { NotificationsDropdown } from "./NotificationsDropdown";
 
 export const Header = () => {
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getUserId = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUserId(session?.user.id || null);
+    };
+    getUserId();
+  }, []);
 
   const handleSignOut = async () => {
     try {
@@ -23,39 +33,61 @@ export const Header = () => {
 
   return (
     <>
-      <header className="glass-strong fixed top-0 left-0 right-0 md:left-80 z-50 border-b border-white/30" style={{ width: '100%', maxWidth: '100vw' }}>
-        <div className="flex items-center justify-between px-6 py-3 h-16" style={{ width: '100%' }}>
-          <div className="flex items-center gap-4">
+      {/* Mobile Header */}
+      <header className="glass-strong fixed top-0 left-0 right-0 z-50 border-b border-white/30 md:hidden" style={{ height: '64px' }}>
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 h-full w-full max-w-full">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2.5 text-neutral-700 hover:bg-white/20 rounded-premium transition-all"
+              className="p-2.5 text-neutral-700 hover:bg-white/20 rounded-premium transition-all"
             >
               <Menu className="w-6 h-6" />
             </button>
-            <div className="md:hidden flex items-center gap-3">
-              <div className="w-10 h-10 rounded-premium bg-gradient-gold flex items-center justify-center shadow-premium">
-                <span className="font-bold font-body text-sm text-white">PF</span>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-premium bg-white flex items-center justify-center shadow-premium border-2" style={{ borderColor: '#D2AC6A' }}>
+                <span className="font-bold font-body text-sm text-primary">PF</span>
               </div>
               <span className="font-bold font-body text-lg text-primary hover:text-[var(--color-primary-dark)] active:text-[var(--color-primary-darker)] transition-colors">Pommy Foods</span>
             </div>
           </div>
           
           <div className="flex items-center gap-4">
+            {userId && <NotificationsDropdown userId={userId} />}
+            
+            <div className="w-8 h-8 rounded-premium bg-gradient-gold flex items-center justify-center shadow-premium">
+              <User className="w-4 h-4 text-white" />
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Desktop Header */}
+      <header 
+        className="glass-strong fixed top-0 z-50 border-b border-white/30 hidden md:block" 
+        style={{ 
+          left: '320px', 
+          right: '0', 
+          width: 'calc(100% - 320px)',
+          height: '64px',
+          maxWidth: 'calc(100vw - 320px)'
+        }}
+      >
+        <div className="flex items-center justify-between px-4 md:px-6 py-3 h-full w-full max-w-full gap-2">
+          <div className="flex items-center gap-2 md:gap-4 flex-1 min-w-0">
             {/* Search Field */}
-            <div className="hidden md:flex items-center gap-2 glass rounded-premium px-3 py-2 h-10 min-w-[300px] focus-within:shadow-glass-lg focus-within:bg-white/35 transition-all">
+            <div className="flex items-center gap-2 glass rounded-premium px-2 md:px-3 py-2 h-10 min-w-[200px] md:min-w-[300px] max-w-full flex-1 focus-within:shadow-glass-lg focus-within:bg-white/35 transition-all">
               <Search className="w-4 h-4 text-primary flex-shrink-0" />
               <input
                 type="text"
                 placeholder="Search orders, products, stores..."
-                className="bg-transparent border-none outline-none text-sm font-body text-neutral-800 placeholder-neutral-500 flex-1 h-full"
+                className="bg-transparent border-none outline-none text-sm font-body text-neutral-800 placeholder-neutral-500 flex-1 h-full min-w-0"
               />
             </div>
-            
+          </div>
+          
+          <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
             {/* Notification Bell */}
-            <button className="relative p-2 glass rounded-premium hover:bg-white/35 transition-all group h-10 w-10 flex items-center justify-center">
-              <Bell className="w-4 h-4 text-neutral-700 group-hover:text-primary transition-colors" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full ring-2 ring-white shadow-sm"></span>
-            </button>
+            {userId && <NotificationsDropdown userId={userId} />}
             
             {/* Profile Avatar */}
             <div className="relative">

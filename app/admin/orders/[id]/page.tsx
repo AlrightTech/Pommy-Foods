@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Loader } from "@/components/ui/Loader";
 import { OrderStatusBadge } from "@/components/admin/OrderStatusBadge";
-import { ArrowLeft, CheckCircle2, XCircle, Edit, RefreshCw, Package } from "lucide-react";
+import { ArrowLeft, CheckCircle2, XCircle, Edit, RefreshCw, Package, Download, FileText, DollarSign } from "lucide-react";
 import { format } from "date-fns";
 
 interface OrderItem {
@@ -39,6 +39,14 @@ interface Delivery {
   driver_id: string | null;
 }
 
+interface Invoice {
+  id: string;
+  invoice_number: string;
+  total_amount: number;
+  payment_status: string;
+  due_date: string;
+}
+
 interface Order {
   id: string;
   order_number: string;
@@ -55,10 +63,13 @@ interface Order {
     email: string;
     phone: string | null;
     address: string | null;
+    credit_limit: number;
+    current_balance: number;
   } | null;
   order_items: OrderItem[];
   kitchen_sheets?: KitchenSheet[];
   deliveries?: Delivery[];
+  invoices?: Invoice[];
 }
 
 export default function OrderDetailPage() {
@@ -94,7 +105,7 @@ export default function OrderDetailPage() {
   }, [params.id, fetchOrder]);
 
   const handleApprove = async () => {
-    if (!confirm('Are you sure you want to approve this order? This will generate a kitchen sheet and delivery note, and update the store balance.')) {
+    if (!confirm('Are you sure you want to approve this order? This will:\n- Validate stock availability\n- Update stock levels\n- Generate kitchen sheet and delivery note\n- Generate invoice\n- Update store balance')) {
       return;
     }
 
@@ -108,15 +119,32 @@ export default function OrderDetailPage() {
 
       if (response.ok) {
         const data = await response.json();
-        alert(data.message || 'Order approved successfully! Kitchen sheet and delivery note have been generated.');
+        const successMessage = [
+          data.message || 'Order approved successfully!',
+          data.kitchenSheet && 'Kitchen sheet generated',
+          data.delivery && 'Delivery note generated',
+          data.invoice && `Invoice ${data.invoice.invoice_number} generated`
+        ].filter(Boolean).join('\n');
+        alert(successMessage);
         fetchOrder();
       } else {
         const errorData = await response.json().catch(() => ({}));
-        const errorMessage = errorData.details 
-          ? Array.isArray(errorData.details) 
-            ? errorData.details.join('\n') 
-            : errorData.details
-          : errorData.error || 'Failed to approve order';
+        let errorMessage = errorData.error || 'Failed to approve order';
+        
+        // Handle stock validation errors
+        if (errorData.insufficientStock && Array.isArray(errorData.insufficientStock)) {
+          const stockErrors = errorData.insufficientStock.map((item: any) => 
+            `${item.product_name}: Required ${item.required}, Available ${item.available}`
+          ).join('\n');
+          errorMessage = `Insufficient Stock:\n${stockErrors}`;
+        } else if (errorData.details) {
+          if (Array.isArray(errorData.details)) {
+            errorMessage = errorData.details.join('\n');
+          } else {
+            errorMessage = errorData.details;
+          }
+        }
+        
         alert(`Failed to approve order:\n${errorMessage}`);
       }
     } catch (err) {
@@ -124,6 +152,57 @@ export default function OrderDetailPage() {
       alert('Failed to approve order. Please try again.');
     } finally {
       setIsApproving(false);
+    }
+  };
+
+  const handleDownloadKitchenSheet = async (kitchenSheetId: string) => {
+    try {
+      const response = await fetch(`/api/admin/kitchen-sheets/${kitchenSheetId}/download?format=json`);
+      if (response.ok) {
+        const data = await response.json();
+        // For now, show data. In production, generate PDF
+        console.log('Kitchen Sheet Data:', data.kitchenSheet);
+        alert('Kitchen sheet data downloaded. PDF generation coming soon.');
+      } else {
+        alert('Failed to download kitchen sheet');
+      }
+    } catch (error) {
+      console.error('Error downloading kitchen sheet:', error);
+      alert('Failed to download kitchen sheet');
+    }
+  };
+
+  const handleDownloadDeliveryNote = async (deliveryId: string) => {
+    try {
+      const response = await fetch(`/api/admin/deliveries/${deliveryId}/download?format=json`);
+      if (response.ok) {
+        const data = await response.json();
+        // For now, show data. In production, generate PDF
+        console.log('Delivery Note Data:', data.deliveryNote);
+        alert('Delivery note data downloaded. PDF generation coming soon.');
+      } else {
+        alert('Failed to download delivery note');
+      }
+    } catch (error) {
+      console.error('Error downloading delivery note:', error);
+      alert('Failed to download delivery note');
+    }
+  };
+
+  const handleDownloadInvoice = async (invoiceId: string) => {
+    try {
+      const response = await fetch(`/api/admin/invoices/${invoiceId}/download?format=json`);
+      if (response.ok) {
+        const data = await response.json();
+        // For now, show data. In production, generate PDF
+        console.log('Invoice Data:', data.invoice);
+        alert('Invoice data downloaded. PDF generation coming soon.');
+      } else {
+        alert('Failed to download invoice');
+      }
+    } catch (error) {
+      console.error('Error downloading invoice:', error);
+      alert('Failed to download invoice');
     }
   };
 
@@ -343,11 +422,22 @@ export default function OrderDetailPage() {
           {/* Kitchen Sheet */}
           {order.kitchen_sheets && order.kitchen_sheets.length > 0 && (
             <Card>
-              <div className="flex items-center gap-2 mb-4">
-                <Package className="w-5 h-5 text-primary-600" />
-                <h2 className="font-display text-xl text-neutral-900">
-                  Kitchen Sheet
-                </h2>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Package className="w-5 h-5 text-primary" />
+                  <h2 className="font-display text-xl text-neutral-900">
+                    Kitchen Sheet
+                  </h2>
+                </div>
+                <Button
+                  onClick={() => handleDownloadKitchenSheet(order.kitchen_sheets![0].id)}
+                  variant="glass"
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Download</span>
+                </Button>
               </div>
               <div className="space-y-2">
                 <p className="text-sm">
@@ -376,14 +466,74 @@ export default function OrderDetailPage() {
             </Card>
           )}
 
+          {/* Invoice */}
+          {order.invoices && order.invoices.length > 0 && (
+            <Card>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-primary" />
+                  <h2 className="font-display text-xl text-neutral-900">
+                    Invoice
+                  </h2>
+                </div>
+                <Button
+                  onClick={() => handleDownloadInvoice(order.invoices![0].id)}
+                  variant="glass"
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Download</span>
+                </Button>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm">
+                  <span className="font-semibold text-neutral-700">Invoice Number:</span>{' '}
+                  <span className="text-neutral-900 font-mono">{order.invoices[0].invoice_number}</span>
+                </p>
+                <p className="text-sm">
+                  <span className="font-semibold text-neutral-700">Amount:</span>{' '}
+                  <span className="text-neutral-900 font-semibold">{formatCurrency(order.invoices[0].total_amount)}</span>
+                </p>
+                <p className="text-sm">
+                  <span className="font-semibold text-neutral-700">Payment Status:</span>{' '}
+                  <span className={`capitalize ${
+                    order.invoices[0].payment_status === 'paid' ? 'text-success-600' : 
+                    order.invoices[0].payment_status === 'overdue' ? 'text-error-600' : 
+                    'text-neutral-600'
+                  }`}>
+                    {order.invoices[0].payment_status}
+                  </span>
+                </p>
+                <p className="text-sm">
+                  <span className="font-semibold text-neutral-700">Due Date:</span>{' '}
+                  <span className="text-neutral-900">
+                    {format(new Date(order.invoices[0].due_date), 'MMM dd, yyyy')}
+                  </span>
+                </p>
+              </div>
+            </Card>
+          )}
+
           {/* Delivery Note */}
           {order.deliveries && order.deliveries.length > 0 && (
             <Card>
-              <div className="flex items-center gap-2 mb-4">
-                <Package className="w-5 h-5 text-primary-600" />
-                <h2 className="font-display text-xl text-neutral-900">
-                  Delivery
-                </h2>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Package className="w-5 h-5 text-primary" />
+                  <h2 className="font-display text-xl text-neutral-900">
+                    Delivery
+                  </h2>
+                </div>
+                <Button
+                  onClick={() => handleDownloadDeliveryNote(order.deliveries![0].id)}
+                  variant="glass"
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Download Note</span>
+                </Button>
               </div>
               <div className="space-y-2">
                 <p className="text-sm">
@@ -412,7 +562,7 @@ export default function OrderDetailPage() {
         </div>
 
         {/* Order Summary */}
-        <div>
+        <div className="space-y-6">
           <Card>
             <h2 className="font-semibold text-xl font-body text-neutral-900 mb-4">
               Order Summary
@@ -434,7 +584,7 @@ export default function OrderDetailPage() {
               )}
               <div className="border-t border-neutral-200 pt-3 flex justify-between">
                 <span className="font-semibold text-neutral-900">Total:</span>
-                <span className="font-bold text-lg text-primary-600">
+                <span className="font-bold text-lg text-primary">
                   {formatCurrency(order.final_amount)}
                 </span>
               </div>
@@ -448,6 +598,42 @@ export default function OrderDetailPage() {
               </div>
             )}
           </Card>
+
+          {/* Store Credit Info */}
+          {order.stores && (
+            <Card>
+              <div className="flex items-center gap-2 mb-4">
+                <DollarSign className="w-5 h-5 text-primary" />
+                <h2 className="font-semibold text-xl font-body text-neutral-900">
+                  Store Credit
+                </h2>
+              </div>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-neutral-600">Credit Limit:</span>
+                  <span className="font-semibold text-neutral-900">
+                    {formatCurrency(order.stores.credit_limit || 0)}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-neutral-600">Current Balance:</span>
+                  <span className={`font-semibold ${
+                    (order.stores.current_balance || 0) > (order.stores.credit_limit || 0) 
+                      ? 'text-error-600' 
+                      : 'text-neutral-900'
+                  }`}>
+                    {formatCurrency(order.stores.current_balance || 0)}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-neutral-600">Available Credit:</span>
+                  <span className="font-semibold text-success-600">
+                    {formatCurrency(Math.max(0, (order.stores.credit_limit || 0) - (order.stores.current_balance || 0)))}
+                  </span>
+                </div>
+              </div>
+            </Card>
+          )}
         </div>
       </div>
     </div>

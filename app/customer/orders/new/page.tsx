@@ -94,15 +94,18 @@ export default function NewOrderPage() {
         0
       );
 
-      const response = await fetch("/api/orders", {
+      // Use the new customer orders API
+      const response = await fetch("/api/customer/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           store_id: storeId,
-          order_items: orderItems,
-          notes: notes || null,
-          total_amount: totalAmount,
-          final_amount: totalAmount,
+          items: orderItems.map(item => ({
+            product_id: item.product_id,
+            quantity: item.quantity,
+            unit_price: item.unit_price,
+          })),
+          discount_amount: 0,
         }),
       });
 

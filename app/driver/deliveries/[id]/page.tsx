@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Loader } from "@/components/ui/Loader";
 import { ArrowLeft, MapPin, Package, CheckCircle2, Camera, Thermometer } from "lucide-react";
 import { format } from "date-fns";
+import { supabase } from "@/lib/supabase/client";
 import { TemperatureLogger } from "@/components/driver/TemperatureLogger";
 import { SignaturePad } from "@/components/ui/SignaturePad";
 
@@ -91,37 +92,73 @@ export default function DeliveryDetailPage() {
     }
   };
 
-  const handleTemperatureSubmit = async (temperature: number) => {
+  const handleTemperatureSubmit = async (temperature: number, productId?: string, location?: string) => {
     try {
-      const response = await fetch(`/api/deliveries/${params.id}`, {
-        method: "PATCH",
+      // Get driver ID from session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        alert("Please log in to record temperature");
+        return;
+      }
+
+      // Use the new temperature API endpoint
+      const response = await fetch(`/api/deliveries/${params.id}/temperature`, {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ temperature_reading: temperature }),
+        body: JSON.stringify({
+          temperature,
+          product_id: productId || null,
+          location: location || null,
+          recorded_by: session.user.id,
+          source: 'manual',
+        }),
       });
 
-      if (!response.ok) throw new Error("Failed to save temperature");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to save temperature");
+      }
+      
       setShowTemperatureForm(false);
       fetchDelivery();
-    } catch (error) {
+      alert("Temperature recorded successfully");
+    } catch (error: any) {
       console.error("Error saving temperature:", error);
-      alert("Failed to save temperature");
+      alert(error.message || "Failed to save temperature");
     }
   };
 
-  const handleSignatureSubmit = async (signature: string) => {
+  const handleSignatureSubmit = async (signature: string, photoUrl?: string) => {
     try {
+      // Get driver ID from session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        alert("Please log in to submit proof of delivery");
+        return;
+      }
+
+      // Use the delivery update endpoint which handles signature_data
       const response = await fetch(`/api/deliveries/${params.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ proof_of_delivery: signature }),
+        body: JSON.stringify({
+          signature_data: signature,
+          proof_of_delivery_url: photoUrl || null,
+          signed_by: session.user.id,
+        }),
       });
 
-      if (!response.ok) throw new Error("Failed to save signature");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to save signature");
+      }
+      
       setShowSignaturePad(false);
       fetchDelivery();
-    } catch (error) {
+      alert("Proof of delivery saved successfully");
+    } catch (error: any) {
       console.error("Error saving signature:", error);
-      alert("Failed to save signature");
+      alert(error.message || "Failed to save signature");
     }
   };
 

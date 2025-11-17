@@ -95,3 +95,4 @@ Once you've created the admin account:
 3. ✅ Test creating stores, products, and orders
 4. ✅ Create additional admin accounts if needed
 
+

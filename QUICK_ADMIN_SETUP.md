@@ -118,3 +118,4 @@ After running the migration, these functions are available:
 - The service role bypasses RLS, so this should work from SQL Editor
 - If using authenticated user, ensure you have admin role first
 
+

@@ -47,7 +47,8 @@ export default function OrdersPage() {
       if (statusFilter) params.append("status", statusFilter);
       if (searchQuery) params.append("search", searchQuery);
 
-      const response = await fetch(`/api/orders?${params.toString()}`);
+      // Use the new customer orders API
+      const response = await fetch(`/api/customer/orders?${params.toString()}`);
       if (!response.ok) throw new Error("Failed to fetch orders");
 
       const data = await response.json();

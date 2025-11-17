@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Loader } from "@/components/ui/Loader";
 import { ArrowLeft, DollarSign, Camera } from "lucide-react";
+import { supabase } from "@/lib/supabase/client";
 import { PaymentForm } from "@/components/driver/PaymentForm";
 
 interface Delivery {
@@ -52,20 +53,32 @@ export default function PaymentPage() {
     if (!delivery?.orders) return;
 
     try {
-      const response = await fetch(`/api/payments`, {
+      // Get driver ID from session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        alert("Please log in to record payment");
+        return;
+      }
+
+      // Use the new delivery payment API
+      const response = await fetch(`/api/deliveries/${params.id}/payment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          order_id: delivery.orders.id,
           amount: paymentData.amount,
           payment_method: paymentData.method,
-          payment_status: "paid",
           receipt_url: paymentData.receipt,
+          collected_by: session.user.id,
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to record payment");
-      alert("Payment recorded successfully");
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to record payment");
+      }
+      
+      const data = await response.json();
+      alert(`Payment recorded successfully. Invoice updated.`);
       router.back();
     } catch (error: any) {
       alert(error.message || "Failed to record payment");

@@ -172,7 +172,7 @@ function OrdersPageContent() {
   };
 
   const handleApprove = async (orderId: string) => {
-    if (!confirm('Are you sure you want to approve this order? This will generate a kitchen sheet and delivery note.')) {
+    if (!confirm('Are you sure you want to approve this order? This will:\n- Validate stock availability\n- Update stock levels\n- Generate kitchen sheet and delivery note\n- Generate invoice\n- Update store balance')) {
       return;
     }
 
@@ -186,15 +186,32 @@ function OrdersPageContent() {
       if (response.ok) {
         const data = await response.json();
         fetchOrders();
-        alert(data.message || 'Order approved successfully! Kitchen sheet and delivery note have been generated.');
+        const successMessage = [
+          data.message || 'Order approved successfully!',
+          data.kitchenSheet && 'Kitchen sheet generated',
+          data.delivery && 'Delivery note generated',
+          data.invoice && `Invoice ${data.invoice.invoice_number} generated`
+        ].filter(Boolean).join('\n');
+        alert(successMessage);
       } else {
         const errorData = await response.json().catch(() => ({}));
-        const errorMessage = errorData.details 
-          ? Array.isArray(errorData.details) 
-            ? errorData.details.join(', ') 
-            : errorData.details
-          : errorData.error || 'Failed to approve order';
-        alert(`Failed to approve order: ${errorMessage}`);
+        let errorMessage = errorData.error || 'Failed to approve order';
+        
+        // Handle stock validation errors
+        if (errorData.insufficientStock && Array.isArray(errorData.insufficientStock)) {
+          const stockErrors = errorData.insufficientStock.map((item: any) => 
+            `${item.product_name}: Required ${item.required}, Available ${item.available}`
+          ).join('\n');
+          errorMessage = `Insufficient Stock:\n${stockErrors}`;
+        } else if (errorData.details) {
+          if (Array.isArray(errorData.details)) {
+            errorMessage = errorData.details.join('\n');
+          } else {
+            errorMessage = errorData.details;
+          }
+        }
+        
+        alert(`Failed to approve order:\n${errorMessage}`);
       }
     } catch (error) {
       console.error('Error approving order:', error);

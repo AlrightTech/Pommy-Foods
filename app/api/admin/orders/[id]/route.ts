@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { canTransitionStatus } from '@/lib/utils/order-validation';
+import { updateStock } from '@/lib/services/stock-management';
 
 export const dynamic = 'force-dynamic';
 
@@ -232,6 +233,34 @@ export async function DELETE(
       );
     }
 
+    // Get order items before cancelling
+    const { data: orderWithItems, error: fetchItemsError } = await adminSupabase
+      .from('orders')
+      .select(`
+        id,
+        store_id,
+        status,
+        final_amount,
+        stores (
+          id,
+          current_balance
+        ),
+        order_items (
+          id,
+          product_id,
+          quantity
+        )
+      `)
+      .eq('id', params.id)
+      .single();
+
+    if (fetchItemsError || !orderWithItems) {
+      return NextResponse.json(
+        { error: 'Order not found' },
+        { status: 404 }
+      );
+    }
+
     // Soft delete by setting status to cancelled
     const { data: order, error } = await adminSupabase
       .from('orders')
@@ -245,6 +274,43 @@ export async function DELETE(
 
     if (error) {
       throw error;
+    }
+
+    // Restore stock if order was approved (stock was decreased)
+    if (orderWithItems.status === 'approved') {
+      const orderItems = orderWithItems.order_items as any[];
+      if (orderItems && orderItems.length > 0) {
+        for (const item of orderItems) {
+          try {
+            await updateStock({
+              store_id: orderWithItems.store_id,
+              product_id: item.product_id,
+              quantity: item.quantity,
+              reason: 'order_cancelled',
+              order_id: params.id,
+            });
+          } catch (stockError: any) {
+            console.error(`Failed to restore stock for product ${item.product_id}:`, stockError);
+            // Continue with other items even if one fails
+          }
+        }
+      }
+
+      // Restore store balance (decrease balance when order is cancelled)
+      const store = orderWithItems.stores as any;
+      if (store) {
+        const currentBalance = parseFloat(store.current_balance || '0');
+        const orderAmount = parseFloat(orderWithItems.final_amount || '0');
+        const newBalance = Math.max(0, currentBalance - orderAmount);
+
+        await adminSupabase
+          .from('stores')
+          .update({
+            current_balance: newBalance,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', store.id);
+      }
     }
 
     return NextResponse.json({ 

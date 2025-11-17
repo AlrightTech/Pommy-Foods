@@ -32,23 +32,24 @@ export default function DriverDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [driverId, setDriverId] = useState<string | null>(null);
 
+  const [statistics, setStatistics] = useState<any>(null);
+
   const fetchDeliveries = useCallback(async () => {
     try {
       setLoading(true);
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
 
-      setDriverId(session.user.id);
+      const driverIdValue = session.user.id;
+      setDriverId(driverIdValue);
 
-      const params = new URLSearchParams();
-      params.append("driver_id", session.user.id);
-      params.append("status", "assigned,in_transit");
-
-      const response = await fetch(`/api/deliveries?${params.toString()}`);
+      // Use the new driver dashboard API
+      const response = await fetch(`/api/driver/dashboard?driver_id=${driverIdValue}`);
       if (!response.ok) throw new Error("Failed to fetch deliveries");
 
       const data = await response.json();
       setDeliveries(data.deliveries || []);
+      setStatistics(data.statistics || null);
     } catch (error) {
       console.error("Error fetching deliveries:", error);
     } finally {
@@ -60,8 +61,10 @@ export default function DriverDashboardPage() {
     fetchDeliveries();
   }, [fetchDeliveries]);
 
-  const pendingCount = deliveries.filter((d) => d.status === "assigned").length;
-  const inTransitCount = deliveries.filter((d) => d.status === "in_transit").length;
+  const pendingCount = statistics?.assigned || deliveries.filter((d) => d.status === "assigned").length;
+  const inTransitCount = statistics?.in_transit || deliveries.filter((d) => d.status === "in_transit").length;
+  const deliveredCount = statistics?.delivered || 0;
+  const totalCount = statistics?.total || deliveries.length;
 
   return (
     <div className="space-y-6 pb-6">
@@ -75,7 +78,7 @@ export default function DriverDashboardPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="p-4">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-warning-100 rounded-full flex items-center justify-center">
@@ -83,7 +86,7 @@ export default function DriverDashboardPage() {
             </div>
             <div>
               <p className="text-2xl font-bold text-neutral-900">{pendingCount}</p>
-              <p className="text-xs text-neutral-600">Pending</p>
+              <p className="text-xs text-neutral-600">Assigned</p>
             </div>
           </div>
         </Card>
@@ -95,6 +98,28 @@ export default function DriverDashboardPage() {
             <div>
               <p className="text-2xl font-bold text-neutral-900">{inTransitCount}</p>
               <p className="text-xs text-neutral-600">In Transit</p>
+            </div>
+          </div>
+        </Card>
+        <Card className="p-4">
+          <div className="flex items-center space-x-3">
+            <div className="w-12 h-12 bg-success-100 rounded-full flex items-center justify-center">
+              <CheckCircle2 className="w-6 h-6 text-success-600" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-neutral-900">{deliveredCount}</p>
+              <p className="text-xs text-neutral-600">Delivered</p>
+            </div>
+          </div>
+        </Card>
+        <Card className="p-4">
+          <div className="flex items-center space-x-3">
+            <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center">
+              <Truck className="w-6 h-6 text-primary" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-neutral-900">{totalCount}</p>
+              <p className="text-xs text-neutral-600">Total</p>
             </div>
           </div>
         </Card>

@@ -45,28 +45,17 @@ export default function StockPage() {
       if (!profile?.store_id) return;
       setStoreId(profile.store_id);
 
-      const { data, error } = await supabase
-        .from("store_stock")
-        .select(`
-          id,
-          product_id,
-          current_stock,
-          products (
-            id,
-            name,
-            sku,
-            min_stock_level,
-            unit
-          )
-        `)
-        .eq("store_id", profile.store_id)
-        .order("current_stock", { ascending: true });
+      // Use the new API endpoint
+      const response = await fetch(`/api/stores/${profile.store_id}/stock`);
+      if (!response.ok) throw new Error("Failed to fetch stock");
 
-      if (error) throw error;
-      // Transform data to match interface (products is returned as array from Supabase)
-      const transformedData = (data || []).map((item: any) => ({
-        ...item,
-        products: Array.isArray(item.products) ? item.products[0] || null : item.products || null,
+      const data = await response.json();
+      // Transform data to match interface
+      const transformedData = (data.stock || []).map((item: any) => ({
+        id: item.id || `${item.product_id}-${profile.store_id}`,
+        product_id: item.product_id,
+        current_stock: item.current_stock || 0,
+        products: item.products || null,
       }));
       setStockItems(transformedData);
     } catch (error) {

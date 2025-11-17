@@ -105,25 +105,25 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(
       {
-        stats: {
-          totalOrders: totalOrders || 0,
-          revenue: revenue,
-          totalProducts: totalProducts || 0,
-          pendingApprovals: pendingApprovals || 0,
-        },
-        recentOrders: recentOrders?.map((order: any) => ({
-          id: order.id,
-          orderNumber: order.order_number,
-          store: order.stores?.name || 'Unknown',
-          amount: Number(order.final_amount || 0),
-          status: order.status,
-          date: order.created_at,
-        })) || [],
-        statusDistribution: statusCounts,
-        salesTrend: Object.entries(dailySales).map(([date, amount]) => ({
-          date,
-          amount: Number(amount),
-        })),
+      stats: {
+        totalOrders: totalOrders || 0,
+        revenue: revenue,
+        totalProducts: totalProducts || 0,
+        pendingApprovals: pendingApprovals || 0,
+      },
+      recentOrders: recentOrders?.map((order: any) => ({
+        id: order.id,
+        orderNumber: order.order_number,
+        store: order.stores?.name || 'Unknown',
+        amount: Number(order.final_amount || 0),
+        status: order.status,
+        date: order.created_at,
+      })) || [],
+      statusDistribution: statusCounts,
+      salesTrend: Object.entries(dailySales).map(([date, amount]) => ({
+        date,
+        amount: Number(amount),
+      })),
       },
       {
         status: 200,

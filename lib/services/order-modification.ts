@@ -1,4 +1,6 @@
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
+import { modifyOrderStock } from '@/lib/services/stock-management';
+import { recalculateOrderTotals } from '@/lib/services/pricing';
 
 export interface OrderItemUpdate {
   product_id: string;
@@ -105,15 +107,64 @@ export async function modifyOrderItems(
     }
   }
 
-  // Update order totals
+  // Get current order items for stock calculation
+  const { data: currentOrder, error: currentOrderError } = await adminSupabase
+    .from('orders')
+    .select(`
+      id,
+      store_id,
+      status,
+      order_items (
+        id,
+        product_id,
+        quantity
+      )
+    `)
+    .eq('id', orderId)
+    .single();
+
+  if (currentOrderError || !currentOrder) {
+    throw new Error('Order not found');
+  }
+
+  // Update stock if order is approved (stock was already decreased)
+  // For draft/pending orders, we don't update stock yet
+  if (currentOrder.status === 'approved') {
+    const oldItems = (currentOrder.order_items as any[]).map((item: any) => ({
+      product_id: item.product_id,
+      quantity: item.quantity,
+    }));
+    const newItems = items.map(item => ({
+      product_id: item.product_id,
+      quantity: item.quantity,
+    }));
+
+    try {
+      await modifyOrderStock(
+        orderId,
+        oldItems,
+        newItems,
+        currentOrder.store_id
+      );
+    } catch (stockError: any) {
+      // Log but don't fail the order update if stock update fails
+      console.error('Failed to update stock during order modification:', stockError);
+    }
+  }
+
+  // Recalculate totals with discount
+  const { data: orderWithDiscount } = await adminSupabase
+    .from('orders')
+    .select('discount_amount')
+    .eq('id', orderId)
+    .single();
+
+  const discountAmount = orderWithDiscount?.discount_amount || 0;
+  const totals = await recalculateOrderTotals(orderId, discountAmount);
+
+  // Fetch updated order
   const { data: updatedOrder, error: updateError } = await adminSupabase
     .from('orders')
-    .update({
-      total_amount: totalAmount,
-      final_amount: totalAmount,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', orderId)
     .select(`
       *,
       stores (id, name, email),
@@ -122,6 +173,7 @@ export async function modifyOrderItems(
         products (id, name, sku, price)
       )
     `)
+    .eq('id', orderId)
     .single();
 
   if (updateError) {
