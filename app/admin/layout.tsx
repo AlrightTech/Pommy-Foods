@@ -19,10 +19,44 @@ export default function AdminLayout({
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Authentication disabled - allow direct access to all admin pages
-    setAuthenticated(true);
-    setLoading(false);
-  }, []);
+    const checkAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          router.push("/admin/login");
+          return;
+        }
+
+        // Verify admin role
+        const { data: profile } = await supabase
+          .from("user_profiles")
+          .select("role, is_active")
+          .eq("id", session.user.id)
+          .single();
+
+        if (!profile || profile.role !== "admin") {
+          await supabase.auth.signOut();
+          router.push("/admin/login");
+          return;
+        }
+
+        if (!profile.is_active) {
+          await supabase.auth.signOut();
+          router.push("/admin/login");
+          return;
+        }
+
+        setAuthenticated(true);
+      } catch (error) {
+        console.error("Auth check error:", error);
+        router.push("/admin/login");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, [router, pathname]);
 
   if (loading) {
     return (
@@ -34,72 +68,34 @@ export default function AdminLayout({
     );
   }
 
-  // Always show layout (authentication disabled)
+  if (!authenticated) {
+    return null;
+  }
 
   return (
     <ToastProvider>
-      <div 
-        className="min-h-screen bg-base"
-        style={{
-          display: 'grid',
-          gridTemplateRows: '64px 1fr',
-          gridTemplateColumns: 'auto 1fr',
-          width: '100%',
-          height: '100vh',
-          overflow: 'hidden'
-        }}
-      >
-        {/* Sidebar - spans both rows on desktop */}
-        <div
-          className="hidden md:block"
-          style={{
-            gridRow: '1 / -1',
-            gridColumn: '1 / 2',
-            zIndex: 40,
-            width: '320px'
-          }}
-        >
-          <Sidebar />
-        </div>
+      <div className="min-h-screen bg-base overflow-hidden">
+        <div className="flex h-screen">
+          {/* Sidebar - Fixed on desktop */}
+          <aside className="hidden md:block fixed left-0 top-0 h-screen z-40">
+            <Sidebar />
+          </aside>
 
-        {/* Header - spans full width on mobile, excludes sidebar on desktop */}
-        <header
-          className="w-full md:col-start-2"
-          style={{
-            gridRow: '1 / 2',
-            gridColumn: '1 / -1',
-            zIndex: 50,
-            position: 'relative',
-            overflow: 'visible'
-          }}
-        >
-          <Header />
-        </header>
+          {/* Main Content Area - Flex Layout */}
+          <div className="flex-1 flex flex-col md:ml-80 min-w-0">
+            {/* Header - Sticky */}
+            <header className="sticky top-0 z-40 w-full">
+              <Header />
+            </header>
 
-        {/* Main Content Area */}
-        <main
-          className="w-full overflow-y-auto overflow-x-hidden md:col-start-2"
-          style={{
-            gridRow: '2 / -1',
-            gridColumn: '1 / -1',
-            padding: '1rem',
-            paddingTop: '1rem',
-            paddingBottom: '2rem',
-            overflow: 'visible'
-          }}
-        >
-          <div 
-            className="w-full max-w-full h-full"
-            style={{
-              paddingLeft: '0.5rem',
-              paddingRight: '0.5rem'
-            }}
-          >
-            <div className="md:pl-4 md:pr-6">
-              {children}
-            </div>
+            {/* Scrollable Main Content */}
+            <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6">
+              <div className="max-w-full">
+                {children}
+              </div>
+            </main>
           </div>
-        </main>
+        </div>
       </div>
     </ToastProvider>
   );

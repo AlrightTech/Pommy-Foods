@@ -17,8 +17,13 @@ export function MobileNav() {
   const router = useRouter();
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push("/driver/login");
+    try {
+      await supabase.auth.signOut();
+      router.push("/driver/login");
+      router.refresh();
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
   };
 
   return (

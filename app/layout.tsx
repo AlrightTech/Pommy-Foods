@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import { AuthProviderWrapper } from "@/lib/auth/AuthProviderWrapper";
 
 const poppins = Poppins({ 
   subsets: ["latin"],
@@ -21,7 +22,9 @@ export default function RootLayout({
   return (
     <html lang="en" style={{ overflowX: 'hidden' }}>
       <body className={`${poppins.variable} font-body antialiased`} style={{ overflowX: 'hidden', width: '100%' }}>
-        {children}
+        <AuthProviderWrapper>
+          {children}
+        </AuthProviderWrapper>
       </body>
     </html>
   );

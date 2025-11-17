@@ -14,7 +14,7 @@ export const Sidebar = () => {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-gradient-to-b from-primary-50 to-primary-100 border-r border-primary-200 p-6 hidden md:block z-40 shadow-soft">
+    <aside className="h-full w-64 bg-gradient-to-b from-primary-50 to-primary-100 border-r border-primary-200 p-6 shadow-soft">
       <div className="mb-8">
         <h1 className="font-display text-xl text-primary-600">Pommy Foods</h1>
         <p className="text-xs text-neutral-600 mt-1">Kitchen Module</p>

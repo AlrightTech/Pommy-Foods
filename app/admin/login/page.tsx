@@ -2,20 +2,50 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase/client";
+import { LoginForm } from "@/components/auth/LoginForm";
+import { Card } from "@/components/ui/Card";
 import { Loader } from "@/components/ui/Loader";
 
 export default function AdminLoginPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Authentication disabled - redirect directly to dashboard
-    router.replace("/admin/dashboard");
+    // Check if already logged in
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        // Verify role
+        const { data: profile } = await supabase
+          .from("user_profiles")
+          .select("role")
+          .eq("id", session.user.id)
+          .single();
+
+        if (profile?.role === "admin") {
+          router.replace("/admin/dashboard");
+        }
+      }
+    };
+    checkSession();
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-base flex items-center justify-center">
-      <Loader text="Redirecting to dashboard..." fullScreen />
+    <div className="min-h-screen bg-base flex items-center justify-center p-4">
+      <Card className="w-full max-w-md">
+        <div className="p-8 space-y-6">
+          <div className="text-center space-y-2">
+            <h1 className="font-display text-3xl font-bold text-neutral-900">
+              Admin Login
+            </h1>
+            <p className="text-neutral-600">
+              Sign in to access the admin dashboard
+            </p>
+          </div>
+
+          <LoginForm role="admin" />
+        </div>
+      </Card>
     </div>
   );
 }
-

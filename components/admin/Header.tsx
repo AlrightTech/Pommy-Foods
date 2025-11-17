@@ -28,6 +28,8 @@ export const Header = () => {
       router.refresh();
     } catch (error) {
       console.error("Error signing out:", error);
+    } finally {
+      setUserMenuOpen(false);
     }
   };
 
@@ -105,7 +107,7 @@ export const Header = () => {
               </button>
               
               {userMenuOpen && (
-                <div className="absolute right-0 mt-2 w-56 glass-strong rounded-premium shadow-glass-lg border border-white/40 py-2 z-[60] animate-scale-in">
+                <div className="absolute right-0 mt-2 w-56 glass-strong rounded-premium shadow-glass-lg border border-white/40 py-2 z-50 animate-scale-in">
                   <button className="w-full text-left px-4 py-2.5 text-sm font-body text-neutral-700 hover:bg-white/30 transition-colors rounded-lg mx-2">
                     Profile Settings
                   </button>
