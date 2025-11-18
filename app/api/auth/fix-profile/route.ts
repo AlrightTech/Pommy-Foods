@@ -17,12 +17,17 @@ export async function POST(request: NextRequest) {
     // Use admin client for profile creation
     const supabase = getSupabaseAdmin();
 
-    // Check if profile exists
-    const { data: existingProfile } = await supabase
+    // Check if profile exists (use .maybeSingle() to handle 0 rows gracefully)
+    const { data: existingProfile, error: checkError } = await supabase
       .from("user_profiles")
       .select("*")
       .eq("id", userId)
-      .single();
+      .maybeSingle();
+
+    // If there's an error other than "not found", log it but continue
+    if (checkError && checkError.code !== "PGRST116") {
+      console.error("Error checking for existing profile:", checkError);
+    }
 
     if (existingProfile) {
       return NextResponse.json({

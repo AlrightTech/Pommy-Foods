@@ -52,14 +52,18 @@ export function LoginForm({ role, onSuccess }: LoginFormProps) {
       }
 
       // Get user profile to verify role
+      // Use maybeSingle() to handle 0 rows gracefully (PGRST116 error)
       let { data: profile, error: profileError } = await supabase
         .from("user_profiles")
         .select("*")
         .eq("id", authData.user.id)
-        .single();
+        .maybeSingle();
+
+      // Check if error is "no rows" (PGRST116) or actual error
+      const isProfileNotFound = profileError?.code === "PGRST116" || !profile;
 
       // If profile doesn't exist, try to create it via API (for admin accounts)
-      if (profileError || !profile) {
+      if (isProfileNotFound) {
         // Try to auto-create profile for admin accounts or if role matches user metadata
         const userMetadata = authData.user.user_metadata || {};
         const metadataRole = userMetadata.role;
@@ -89,10 +93,15 @@ export function LoginForm({ role, onSuccess }: LoginFormProps) {
 
             if (response.ok) {
               const result = await response.json();
-              profile = result.profile;
+              if (result.profile) {
+                profile = result.profile;
+                console.log("✅ Profile created successfully via API");
+              } else {
+                throw new Error("Profile creation succeeded but no profile returned");
+              }
             } else {
               const errorData = await response.json().catch(() => ({}));
-              console.error("Fix-profile API error:", errorData);
+              console.error("Fix-profile API error:", response.status, errorData);
               // If API fails, try direct insert as fallback (may fail due to RLS)
               const profileData: any = {
                 id: authData.user.id,
@@ -109,14 +118,17 @@ export function LoginForm({ role, onSuccess }: LoginFormProps) {
                 .single();
 
               if (createError || !newProfile) {
-                console.error("Failed to create user profile:", createError);
-                setError(
-                  "User profile not found. Please contact an administrator to create your profile, or use the admin creation script."
-                );
+                console.error("Failed to create user profile (direct insert):", createError);
+                // Provide more helpful error message
+                const errorMsg = createError?.message?.includes("permission") || createError?.message?.includes("RLS")
+                  ? "User profile not found. The profile creation failed due to permissions. Please contact an administrator to create your profile."
+                  : "User profile not found. Please contact an administrator to create your profile, or use the admin creation script.";
+                setError(errorMsg);
                 setLoading(false);
                 return;
               }
 
+              console.log("✅ Profile created successfully via direct insert");
               profile = newProfile;
             }
           } catch (apiError: any) {

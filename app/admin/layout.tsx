@@ -59,12 +59,12 @@ export default function AdminLayout({
           return;
         }
 
-        // Verify admin role
+        // Verify admin role (use maybeSingle() to handle 0 rows gracefully)
         const { data: profile, error: profileError } = await supabase
           .from("user_profiles")
           .select("role, is_active")
           .eq("id", session.user.id)
-          .single();
+          .maybeSingle();
 
         if (profileError) {
           console.error("Profile fetch error:", profileError);
@@ -73,6 +73,12 @@ export default function AdminLayout({
             const errorMsg = "Supabase configuration error. Please check your .env.local file and ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set correctly, then restart your dev server.";
             setConfigError(errorMsg);
             setLoading(false);
+            return;
+          }
+          // If profile not found (PGRST116), redirect to login
+          if (profileError.code === "PGRST116") {
+            console.warn("User profile not found, redirecting to login");
+            router.push("/admin/login");
             return;
           }
         }
