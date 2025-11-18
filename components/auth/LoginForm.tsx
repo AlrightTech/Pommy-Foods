@@ -53,11 +53,17 @@ export function LoginForm({ role, onSuccess }: LoginFormProps) {
 
       // Get user profile to verify role
       // Use maybeSingle() to handle 0 rows gracefully (PGRST116 error)
+      // Supabase client automatically sets correct Accept header for maybeSingle()
       let { data: profile, error: profileError } = await supabase
         .from("user_profiles")
         .select("*")
         .eq("id", authData.user.id)
         .maybeSingle();
+      
+      // Log for debugging (can be removed in production)
+      if (profileError && profileError.code !== "PGRST116") {
+        console.warn("Profile query error (non-PGRST116):", profileError);
+      }
 
       // Check if error is "no rows" (PGRST116) or actual error
       const isProfileNotFound = profileError?.code === "PGRST116" || !profile;

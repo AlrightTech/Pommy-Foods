@@ -42,23 +42,19 @@ function createSupabaseClient(): SupabaseClient {
     throw error;
   }
 
-  // Create client - Supabase automatically adds apikey header
-  // The apikey header is added automatically when you pass the anon key
+  // Create client - Supabase automatically adds apikey header and proper Accept headers
+  // Don't override headers as Supabase client handles them automatically based on query type
   const client = createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
       persistSession: true,
       autoRefreshToken: true,
       detectSessionInUrl: true,
     },
-    global: {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    },
     db: {
       schema: 'public',
     },
+    // Let Supabase handle headers automatically - it sets the correct Accept headers
+    // for .single() (application/vnd.pgjson.object+json) and arrays (application/json)
   });
 
   // Verify client is properly configured (client-side only)
