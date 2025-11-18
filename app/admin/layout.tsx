@@ -20,11 +20,11 @@ export default function AdminLayout({
   const [authenticated, setAuthenticated] = useState(false);
   const [configError, setConfigError] = useState<string | null>(null);
 
-  // Exclude login and register pages from auth check
-  const isAuthPage = pathname === "/admin/login" || pathname === "/admin/register";
-
   useEffect(() => {
-    // Skip auth check for login/register pages
+    // Exclude login page from auth check
+    const isAuthPage = pathname === "/admin/login";
+    
+    // Skip auth check for login page
     if (isAuthPage) {
       setLoading(false);
       setAuthenticated(false);
@@ -112,9 +112,10 @@ export default function AdminLayout({
     };
 
     checkAuth();
-  }, [router, pathname]); // Removed isAuthPage from deps to avoid unnecessary re-runs
+  }, [router, pathname]);
 
   // For auth pages, render without layout wrapper
+  const isAuthPage = pathname === "/admin/login";
   if (isAuthPage) {
     return <>{children}</>;
   }

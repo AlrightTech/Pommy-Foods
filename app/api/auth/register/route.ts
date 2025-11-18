@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
+import { createServerClient } from '@/lib/supabase/server';
 import { UserRole } from '@/types/database.types';
 
 export const dynamic = 'force-dynamic';
@@ -11,11 +12,15 @@ interface RegisterRequest {
   role: UserRole;
   phone?: string;
   store_id?: string;
+  is_active?: boolean;
 }
 
 /**
  * POST /api/auth/register
- * Register a new user account
+ * Create a new user account (Admin Only)
+ * 
+ * This endpoint is restricted to admin users only.
+ * Public registration has been disabled - only admins can create accounts.
  * 
  * Body:
  * {
@@ -25,10 +30,37 @@ interface RegisterRequest {
  *   role: 'admin' | 'store_owner' | 'driver' | 'kitchen_staff' (required)
  *   phone?: string (optional)
  *   store_id?: string (optional, required for store_owner)
+ *   is_active?: boolean (optional, defaults to true)
  * }
  */
 export async function POST(request: NextRequest) {
   try {
+    // Verify admin authentication
+    const serverSupabase = await createServerClient();
+    const { data: { session } } = await serverSupabase.auth.getSession();
+    
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Unauthorized. Admin authentication required.' },
+        { status: 401 }
+      );
+    }
+
+    // Verify user is admin
+    const { data: profile } = await serverSupabase
+      .from('user_profiles')
+      .select('role')
+      .eq('id', session.user.id)
+      .single();
+
+    if (!profile || profile.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Forbidden. Admin role required to create user accounts.' },
+        { status: 403 }
+      );
+    }
+
+    // Use admin client for user creation
     const supabase = getSupabaseAdmin();
 
     let body: RegisterRequest;
@@ -142,7 +174,7 @@ export async function POST(request: NextRequest) {
       email: email,
       full_name: full_name,
       role: role,
-      is_active: true,
+      is_active: body.is_active !== undefined ? body.is_active : true, // Allow admin to set status
     };
 
     if (phone) {

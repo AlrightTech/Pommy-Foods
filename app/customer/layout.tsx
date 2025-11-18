@@ -17,8 +17,8 @@ export default function CustomerLayout({
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
 
-  // Exclude login and register pages from auth check
-  const isAuthPage = pathname === "/customer/login" || pathname === "/customer/register";
+  // Exclude login page from auth check
+  const isAuthPage = pathname === "/customer/login";
 
   useEffect(() => {
     // Skip auth check for login/register pages

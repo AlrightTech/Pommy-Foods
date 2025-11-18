@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { Card } from "@/components/ui/Card";
-import Link from "next/link";
 
 export default function DriverLoginPage() {
   const router = useRouter();
@@ -44,16 +43,6 @@ export default function DriverLoginPage() {
           </div>
 
           <LoginForm role="driver" />
-
-          <div className="text-center text-sm text-neutral-600">
-            Don&apos;t have an account?{" "}
-            <Link
-              href="/driver/register"
-              className="text-primary-600 hover:text-primary-700 font-semibold"
-            >
-              Register here
-            </Link>
-          </div>
         </div>
       </Card>
     </div>

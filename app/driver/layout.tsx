@@ -16,8 +16,8 @@ export default function DriverLayout({
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
 
-  // Exclude login and register pages from auth check
-  const isAuthPage = pathname === "/driver/login" || pathname === "/driver/register";
+  // Exclude login page from auth check
+  const isAuthPage = pathname === "/driver/login";
 
   useEffect(() => {
     // Skip auth check for login/register pages
